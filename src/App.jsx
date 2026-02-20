@@ -59,9 +59,8 @@ function App() {
         };
     }, []);
 
-    const isAdmin = location.pathname === '/admin';
-    const isLogin = location.pathname === '/login';
-    const isSpecialPage = isAdmin || isLogin;
+    // Hide Header/Footer/Cursor on admin panel pages
+    const isSpecialPage = location.pathname.startsWith('/panel/');
 
     return (
         <div className="antialiased text-primary bg-background min-h-screen relative selection:bg-accent selection:text-white">
@@ -73,12 +72,16 @@ function App() {
                     <Route path="/catalog" element={<Catalog />} />
                     <Route path="/product/:id" element={<ProductDetail />} />
                     <Route path="/b2b" element={<B2B />} />
-                    <Route path="/admin" element={<Admin />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/blog/:id" element={<BlogPost />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/request" element={<Request />} />
+
+                    {/* Hidden admin panel — accessible only via secret UUID */}
+                    <Route path="/panel/:uuid/login" element={<Login />} />
+                    <Route path="/panel/:uuid/admin" element={<Admin />} />
+
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </main>

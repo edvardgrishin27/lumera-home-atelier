@@ -25,6 +25,8 @@ jobs:
         run: npm run build
         env:
           VITE_ADMIN_PASSWORD_HASH: ${{ secrets.VITE_ADMIN_PASSWORD_HASH }}
+          VITE_ADMIN_UUID: ${{ secrets.VITE_ADMIN_UUID }}
+          VITE_TOTP_SECRET: ${{ secrets.VITE_TOTP_SECRET }}
 
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1.2.0

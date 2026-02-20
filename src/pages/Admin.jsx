@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useContent } from '../context/ContentContext';
+import { isSessionValid, destroySession } from './Login';
 
 // ─── File Upload Component ───
 const FileUpload = ({ label, value, onChange }) => {
@@ -751,17 +752,24 @@ const SettingsTab = () => {
 const Admin = () => {
     const [activeTab, setActiveTab] = useState('catalog'); // Default to Catalog as requested
     const navigate = useNavigate();
+    const { uuid } = useParams();
+
+    // Validate UUID + session
+    const validUuid = import.meta.env.VITE_ADMIN_UUID;
 
     useEffect(() => {
-        const isAuth = localStorage.getItem('isAuthenticated');
-        if (!isAuth) {
-            navigate('/login');
+        if (uuid !== validUuid || !isSessionValid()) {
+            if (uuid === validUuid) {
+                navigate(`/panel/${uuid}/login`, { replace: true });
+            } else {
+                navigate('/', { replace: true });
+            }
         }
-    }, [navigate]);
+    }, [navigate, uuid, validUuid]);
 
     const handleLogout = () => {
-        localStorage.removeItem('isAuthenticated');
-        navigate('/login');
+        destroySession();
+        navigate(`/panel/${uuid}/login`);
     };
 
     const tabs = [
