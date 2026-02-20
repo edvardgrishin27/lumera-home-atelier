@@ -29,7 +29,7 @@ const B2B = () => {
                 </h1>
                 <div className="h-[1px] w-full bg-primary/20 mb-12 reveal-item origin-left"></div>
                 <div className="flex flex-col md:flex-row gap-12 reveal-item">
-                    <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-secondary md:w-1/4 pt-2">{b.subtitle}</p>
+                    <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-accent md:w-1/4 pt-2">{b.subtitle}</p>
                     <p className="font-serif text-2xl md:text-3xl leading-relaxed text-primary/80 md:w-3/4">
                         {b.description}
                     </p>
