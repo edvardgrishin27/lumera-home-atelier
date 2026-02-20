@@ -14,13 +14,13 @@ const Footer = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-32">
-                {/* Image (Mood) - Left Side */}
-                <div className="md:col-span-4 self-end">
-                    <div className="aspect-[4/3] overflow-hidden opacity-90 hover:opacity-100 transition-all duration-700">
+                {/* Image (Mood) - Left Side, bottom-aligned with text columns */}
+                <div className="md:col-span-4 self-end group">
+                    <div className="aspect-[3/2] overflow-hidden rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
                         <img
-                            src="https://images.unsplash.com/photo-1550581190-9c1c48d21d6c?auto=format&fit=crop&q=80&w=2000"
+                            src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=2000"
                             alt="Interior Detail"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105"
                         />
                     </div>
                 </div>
