@@ -59,6 +59,13 @@ function App() {
         };
     }, []);
 
+    // Scroll to top on every route change
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }, [location.pathname]);
+
     // Hide Header/Footer/Cursor on admin panel pages
     const isSpecialPage = location.pathname.startsWith('/panel/');
 
