@@ -87,7 +87,7 @@ const NotFound = () => {
 
                     <Link
                         to="/catalog"
-                        className="inline-flex items-center gap-3 bg-transparent text-primary px-8 py-4 rounded-full text-xs uppercase tracking-[0.2em] border border-primary/15 hover:border-accent/50 hover:text-accent transition-all duration-500 ease-spring hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                        className="inline-flex items-center gap-3 bg-transparent text-primary px-8 py-4 rounded-full text-xs uppercase tracking-[0.2em] border border-primary/30 hover:border-accent hover:text-accent transition-all duration-500 ease-spring hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
                         Каталог
                     </Link>
