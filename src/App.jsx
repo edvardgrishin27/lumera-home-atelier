@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import gsap from 'gsap';
@@ -25,6 +25,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 function App() {
     const location = useLocation();
+    const lenisRef = useRef(null);
 
     useEffect(() => {
         const lenis = new Lenis({
@@ -37,6 +38,8 @@ function App() {
             wheelMultiplier: 1,
             touchMultiplier: 2,
         });
+
+        lenisRef.current = lenis;
 
         function raf(time) {
             lenis.raf(time);
@@ -55,12 +58,16 @@ function App() {
 
         return () => {
             lenis.destroy();
+            lenisRef.current = null;
             gsap.ticker.remove(lenis.raf);
         };
     }, []);
 
-    // Scroll to top on every route change
+    // Scroll to top on every route change — reset both Lenis and native scroll
     useEffect(() => {
+        if (lenisRef.current) {
+            lenisRef.current.scrollTo(0, { immediate: true });
+        }
         window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
