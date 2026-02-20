@@ -117,7 +117,7 @@ const Home = () => {
 
                                 {/* Quick View Tag */}
                                 <div className="absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-spring transform translate-y-4 group-hover:translate-y-0">
-                                    <div className="bg-surface/95 backdrop-blur-sm px-6 py-2 text-[10px] uppercase tracking-widest text-primary rounded-full shadow-lg whitespace-nowrap border border-primary/10">
+                                    <div className="bg-accent/90 backdrop-blur-sm px-6 py-2 text-[10px] uppercase tracking-widest text-white rounded-full shadow-[0_4px_15px_rgba(196,162,101,0.4)] whitespace-nowrap">
                                         {home.productView || 'Подробнее'}
                                     </div>
                                 </div>

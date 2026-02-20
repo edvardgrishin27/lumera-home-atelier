@@ -173,7 +173,7 @@ const ProductDetail = () => {
                                                     key={i}
                                                     onClick={() => setSelectedSize(i)}
                                                     aria-label={`Выбрать размер ${size.label}`}
-                                                    className={`px-4 py-2.5 text-[11px] font-sans tracking-wide rounded-full transition-all duration-300 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent border ${selectedSize === i ? 'bg-primary text-white border-primary shadow-md scale-105' : 'bg-transparent text-primary border-primary/20 hover:border-primary/50 hover:bg-black/5'}`}
+                                                    className={`px-4 py-2.5 text-[11px] font-sans tracking-wide rounded-full transition-all duration-300 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent border ${selectedSize === i ? 'bg-accent text-white border-accent shadow-md scale-105' : 'bg-transparent text-primary border-primary/20 hover:border-accent/50 hover:bg-primary/5'}`}
                                                 >
                                                     {size.label}
                                                 </button>
@@ -183,7 +183,7 @@ const ProductDetail = () => {
                                 )}
 
                                 {/* Premium CTA Button */}
-                                <Link to="/request" className="w-full bg-primary text-white py-5 text-xs uppercase tracking-[0.2em] rounded-full hover:bg-black transition-all duration-500 ease-spring block text-center shadow-lg hover:shadow-hover-glow hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary">
+                                <Link to="/request" className="w-full bg-accent text-white py-5 text-xs uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-all duration-500 ease-spring block text-center shadow-[0_4px_15px_rgba(196,162,101,0.25)] hover:shadow-[0_0_25px_rgba(196,162,101,0.55)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent">
                                     Оформить заказ
                                 </Link>
 
@@ -197,7 +197,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Bottom Section: Boca Style (Mood) */}
-            <div className="w-full bg-white py-20 lg:py-40">
+            <div className="w-full bg-surface py-20 lg:py-40">
                 <div className="px-6 md:px-12 mb-20 text-center reveal">
                     <span className="text-xs uppercase tracking-[0.3em] text-accent block mb-4">Mood</span>
                     <h2 className="text-4xl md:text-6xl font-serif font-thin">В интерьере</h2>
