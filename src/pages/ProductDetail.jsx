@@ -99,6 +99,11 @@ const ProductDetail = () => {
                                     src={gallery[activeImage]}
                                     alt={product.name}
                                     className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105"
+                                    loading="eager"
+                                    fetchPriority="high"
+                                    decoding="async"
+                                    width="1000"
+                                    height="750"
                                 />
                             )}
                             {/* Subtle Cinematic Overlay */}
@@ -121,7 +126,7 @@ const ProductDetail = () => {
                                             </div>
                                         </div>
                                     ) : (
-                                        <img src={media} className="w-full h-full object-cover" alt={`Миниатюра галереи ${idx + 1}`} />
+                                        <img src={media} className="w-full h-full object-cover" alt={`Миниатюра галереи ${idx + 1}`} loading="lazy" decoding="async" width="250" height="250" />
                                     )}
                                 </button>
                             ))}
@@ -247,7 +252,7 @@ const ProductDetail = () => {
                     )}
 
                     <div className="aspect-[3/4] overflow-hidden reveal">
-                        <img src={gallery[1] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt="Detail 1" />
+                        <img src={gallery[1] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt="Detail 1" loading="lazy" decoding="async" width="800" height="1067" />
                     </div>
 
                     <div className="aspect-[3/4] bg-background p-12 flex flex-col justify-center items-center text-center reveal">
@@ -256,7 +261,7 @@ const ProductDetail = () => {
                     </div>
 
                     <div className="aspect-square md:aspect-[4/3] overflow-hidden md:col-span-2 reveal">
-                        <img src={gallery[2] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt="Detail 2" />
+                        <img src={gallery[2] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt="Detail 2" loading="lazy" decoding="async" width="1200" height="900" />
                     </div>
 
                 </div>

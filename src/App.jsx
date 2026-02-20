@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import gsap from 'gsap';
@@ -8,18 +8,19 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import CustomCursor from './components/Cursor';
 
-import Home from './pages/Home';
-import Catalog from './pages/Catalog';
-import ProductDetail from './pages/ProductDetail';
-import B2B from './pages/B2B';
-import Admin from './pages/Admin';
-import About from './pages/About';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import Contact from './pages/Contact';
-import Request from './pages/Request';
-import Login from './pages/Login';
-import NotFound from './pages/NotFound';
+// Lazy-loaded pages for code splitting
+const Home = lazy(() => import('./pages/Home'));
+const Catalog = lazy(() => import('./pages/Catalog'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const B2B = lazy(() => import('./pages/B2B'));
+const Admin = lazy(() => import('./pages/Admin'));
+const About = lazy(() => import('./pages/About'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Request = lazy(() => import('./pages/Request'));
+const Login = lazy(() => import('./pages/Login'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -99,23 +100,25 @@ function App() {
             {!isSpecialPage && <CustomCursor />}
             {!isSpecialPage && <Header />}
             <main>
-                <Routes location={location} key={location.pathname}>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/catalog" element={<Catalog />} />
-                    <Route path="/product/:slug" element={<ProductDetail />} />
-                    <Route path="/b2b" element={<B2B />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/blog" element={<Blog />} />
-                    <Route path="/blog/:slug" element={<BlogPost />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/request" element={<Request />} />
+                <Suspense fallback={<div className="min-h-screen bg-background" />}>
+                    <Routes location={location} key={location.pathname}>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/catalog" element={<Catalog />} />
+                        <Route path="/product/:slug" element={<ProductDetail />} />
+                        <Route path="/b2b" element={<B2B />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/blog" element={<Blog />} />
+                        <Route path="/blog/:slug" element={<BlogPost />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/request" element={<Request />} />
 
-                    {/* Hidden admin panel — accessible only via secret UUID */}
-                    <Route path="/panel/:uuid/login" element={<Login />} />
-                    <Route path="/panel/:uuid/admin" element={<Admin />} />
+                        {/* Hidden admin panel — accessible only via secret UUID */}
+                        <Route path="/panel/:uuid/login" element={<Login />} />
+                        <Route path="/panel/:uuid/admin" element={<Admin />} />
 
-                    <Route path="*" element={<NotFound />} />
-                </Routes>
+                        <Route path="*" element={<NotFound />} />
+                    </Routes>
+                </Suspense>
             </main>
             {!isSpecialPage && <Footer />}
         </div>

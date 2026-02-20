@@ -61,6 +61,10 @@ const Contact = () => {
                         src={cPage.image1}
                         alt="Contact Studio"
                         className="w-full h-full object-cover reveal transform scale-105 transition-transform duration-1000 ease-spring group-hover:scale-110"
+                        loading="lazy"
+                        decoding="async"
+                        width="800"
+                        height="1000"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent mix-blend-multiply reveal" />
                     <div className="absolute inset-0 rounded-2xl shadow-elevated group-hover:shadow-hover-glow pointer-events-none transition-shadow duration-500 m-8" />

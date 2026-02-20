@@ -84,7 +84,7 @@ const Home = () => {
                     </h1>
                 </div>
                 <div className="absolute top-0 right-0 w-full md:w-[60%] h-full z-0 overflow-hidden">
-                    <img ref={heroImgRef} src={home.heroImage} alt="Hero Interior" className="w-full h-[120%] object-cover -mt-[10%]" />
+                    <img ref={heroImgRef} src={home.heroImage} alt="Hero Interior" className="w-full h-[120%] object-cover -mt-[10%]" loading="eager" fetchPriority="high" decoding="async" width="1200" height="800" />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent z-10" />
                     <div className="absolute inset-0 bg-black/5 md:bg-transparent z-10 mix-blend-multiply" />
                 </div>
@@ -124,6 +124,10 @@ const Home = () => {
                                     src={product.image}
                                     className="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105"
                                     alt={product.name}
+                                    loading="lazy"
+                                    decoding="async"
+                                    width="600"
+                                    height="750"
                                 />
                                 {/* Cinematic Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />

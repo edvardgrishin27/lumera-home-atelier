@@ -75,6 +75,10 @@ const Catalog = () => {
                                     src={product.image}
                                     alt={product.name}
                                     className="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105"
+                                    loading="lazy"
+                                    decoding="async"
+                                    width="800"
+                                    height="600"
                                 />
                                 {/* Cinematic gradient for depth */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
