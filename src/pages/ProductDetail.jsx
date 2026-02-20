@@ -45,7 +45,7 @@ const ProductDetail = () => {
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
         return () => ctx.revert();
-    }, [id]);
+    }, [slug]);
 
     if (!product) return <div className="pt-40 text-center">Загрузка...</div>;
 
