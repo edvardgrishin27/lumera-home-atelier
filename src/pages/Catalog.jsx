@@ -26,7 +26,7 @@ const Catalog = () => {
     }, [filter]);
 
     return (
-        <div ref={containerRef} className="pt-32 pb-20 px-6 md:px-12 min-h-screen bg-background bg-noise">
+        <div ref={containerRef} className="pt-32 pb-20 px-6 md:px-12 min-h-screen bg-background">
             <div className="max-w-[1800px] mx-auto content-layer">
                 <header className="mb-20 flex flex-col items-center">
                     <h1 className="text-6xl md:text-8xl font-serif font-thin mb-12 text-primary tracking-tight">Коллекция</h1>

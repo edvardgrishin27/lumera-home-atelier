@@ -59,7 +59,7 @@ const Home = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="w-full bg-background overflow-hidden bg-noise">
+        <div ref={containerRef} className="w-full bg-background overflow-hidden">
 
             {/* Hero Section */}
             <section className="hero-container content-layer relative h-[100vh] w-full bg-background flex flex-col justify-center px-8 md:px-20 pt-20">

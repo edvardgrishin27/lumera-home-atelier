@@ -36,7 +36,7 @@ const Blog = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="pt-40 pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background bg-noise w-full overflow-hidden">
+        <div ref={containerRef} className="pt-40 pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background w-full overflow-hidden">
             <div className="max-w-[1600px] mx-auto content-layer mb-32">
                 <div className="mb-20 text-center reveal">
                     <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6 block">{blog.subtitle}</span>

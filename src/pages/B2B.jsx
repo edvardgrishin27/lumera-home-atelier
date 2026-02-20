@@ -20,7 +20,7 @@ const B2B = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="bg-background min-h-screen w-full relative pt-40 px-6 md:px-20 pb-20 bg-noise">
+        <div ref={containerRef} className="bg-background min-h-screen w-full relative pt-40 px-6 md:px-20 pb-20">
 
             {/* Hero Text */}
             <div className="max-w-4xl mb-32 content-layer relative">

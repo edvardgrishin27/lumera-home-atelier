@@ -53,7 +53,7 @@ const ProductDetail = () => {
     const isVideo = (url) => url && url.match(/\.(mp4|webm|ogg)$/i);
 
     return (
-        <div ref={containerRef} className="bg-background min-h-screen bg-noise">
+        <div ref={containerRef} className="bg-background min-h-screen">
 
             {/* Top Section: Refined 2026 Premium Style */}
             <div className="pt-32 pb-20 px-6 md:px-12 max-w-[1600px] mx-auto content-layer">

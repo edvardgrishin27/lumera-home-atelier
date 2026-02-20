@@ -33,7 +33,7 @@ const NotFound = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="min-h-screen bg-background bg-noise flex items-center justify-center px-6 relative overflow-hidden">
+        <div ref={containerRef} className="min-h-screen bg-background flex items-center justify-center px-6 relative overflow-hidden">
             {/* Background decorative elements */}
             <div className="absolute inset-0 pointer-events-none">
                 {/* Subtle radial gradient for depth */}

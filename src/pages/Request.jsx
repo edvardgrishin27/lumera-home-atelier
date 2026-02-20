@@ -16,7 +16,7 @@ const Request = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="min-h-screen bg-background flex flex-col items-center justify-center px-4 md:px-0 py-32 bg-noise">
+        <div ref={containerRef} className="min-h-screen bg-background flex flex-col items-center justify-center px-4 md:px-0 py-32">
             <div className="max-w-xl w-full content-layer bg-surface p-12 md:p-16 rounded-3xl shadow-floating relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-background via-primary to-background opacity-20"></div>
 

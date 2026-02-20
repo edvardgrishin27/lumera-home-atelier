@@ -19,7 +19,7 @@ const Contact = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="min-h-screen bg-background bg-noise w-full relative pt-32 lg:pt-0">
+        <div ref={containerRef} className="min-h-screen bg-background w-full relative pt-32 lg:pt-0">
             <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen content-layer relative">
 
                 {/* Visual Left Side */}

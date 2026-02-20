@@ -32,7 +32,7 @@ const About = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="pt-40 px-6 md:px-20 min-h-screen bg-background bg-noise w-full overflow-hidden">
+        <div ref={containerRef} className="pt-40 px-6 md:px-20 min-h-screen bg-background w-full overflow-hidden">
             <div className="max-w-[1600px] mx-auto content-layer mb-32">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
 
