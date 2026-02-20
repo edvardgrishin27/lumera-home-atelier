@@ -122,7 +122,7 @@ const Header = () => {
                 <Link
                     to="/request"
                     aria-label="Оставить заявку на премиальную мебель"
-                    className="px-7 py-3 bg-[#121212] text-white text-[10px] md:text-xs font-sans uppercase tracking-widest transition-all duration-300 ease-out rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_25px_rgba(196,162,101,0.55)] hover:bg-[#1a1a1a] hover:-translate-y-1 active:scale-95 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                    className="px-7 py-3 bg-accent text-white text-[10px] md:text-xs font-sans uppercase tracking-widest transition-all duration-300 ease-out rounded-full shadow-[0_4px_15px_rgba(196,162,101,0.25)] hover:shadow-[0_0_25px_rgba(196,162,101,0.55)] hover:bg-accent/85 hover:-translate-y-1 active:scale-95 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
                     onClick={() => setIsMenuOpen(false)}
                 >
                     Оставить заявку

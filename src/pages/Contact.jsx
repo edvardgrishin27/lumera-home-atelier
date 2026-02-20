@@ -67,7 +67,7 @@ const Contact = () => {
                                 <div className="space-y-4 relative group">
                                     <input type="tel" placeholder={cPage.formPhone || 'ТЕЛЕФОН'} aria-label={cPage.formPhone || 'Телефон'} className="w-full bg-transparent border-b border-primary/10 py-3 text-lg font-serif outline-none focus:border-primary transition-colors duration-300 placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
                                 </div>
-                                <button aria-label="Отправить форму" className="self-start px-12 py-5 bg-primary text-white text-[10px] uppercase tracking-[0.2em] rounded-full hover:bg-black transition-all duration-500 ease-spring mt-4 shadow-lg hover:shadow-hover-glow hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary">
+                                <button aria-label="Отправить форму" className="self-start px-12 py-5 bg-accent text-white text-[10px] uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-all duration-500 ease-spring mt-4 shadow-lg hover:shadow-[0_0_25px_rgba(196,162,101,0.4)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent">
                                     {cPage.formSubmit || 'ОТПРАВИТЬ'}
                                 </button>
                             </form>

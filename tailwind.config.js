@@ -35,8 +35,8 @@ export default {
         'elevated': '0 4px 6px -1px rgba(51, 51, 51, 0.05), 0 10px 15px -3px rgba(51, 51, 51, 0.08)',
         // Super soft, wide shadow for floating elements
         'floating': '0 10px 25px -5px rgba(51, 51, 51, 0.04), 0 20px 48px 5px rgba(51, 51, 51, 0.06)',
-        // Intense 2026 premium light glow on hover
-        'hover-glow': '0 0 30px rgba(255, 255, 255, 0.5)',
+        // Gold accent glow on hover — works on both light and dark
+        'hover-glow': '0 0 30px rgba(196, 162, 101, 0.35)',
       }
     },
   },

@@ -36,7 +36,7 @@ const Catalog = () => {
                             <button
                                 key={cat}
                                 onClick={() => setFilter(cat)}
-                                className={`text-xs uppercase tracking-[0.2em] transition-all duration-300 ease-spring hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-full px-4 py-2 ${filter === cat ? 'text-primary font-bold bg-primary/10' : 'text-primary/50 hover:bg-black/5'}`}
+                                className={`text-xs uppercase tracking-[0.2em] transition-all duration-300 ease-spring hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-full px-4 py-2 border ${filter === cat ? 'text-primary font-bold bg-primary/10 border-primary/20' : 'text-primary/50 hover:bg-primary/5 border-transparent'}`}
                             >
                                 {cat === 'All' ? 'Все' : cat}
                             </button>

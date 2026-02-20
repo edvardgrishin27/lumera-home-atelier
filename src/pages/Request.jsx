@@ -53,7 +53,7 @@ const Request = () => {
                                     key={method}
                                     type="button"
                                     onClick={() => setContactMethod(method)}
-                                    className={`px-6 py-3 text-[10px] uppercase tracking-[0.2em] rounded-full transition-all duration-500 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${contactMethod === method ? 'bg-primary text-white shadow-elevated scale-105' : 'bg-background text-primary border border-primary/5 hover:border-primary/20 hover:bg-primary/5'}`}
+                                    className={`px-6 py-3 text-[10px] uppercase tracking-[0.2em] rounded-full transition-all duration-500 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${contactMethod === method ? 'bg-accent text-white shadow-elevated scale-105' : 'bg-surface text-primary border border-primary/20 hover:border-accent/50 hover:bg-primary/5'}`}
                                 >
                                     {method}
                                 </button>
@@ -63,7 +63,7 @@ const Request = () => {
 
                     {/* Submit */}
                     <div className="pt-8">
-                        <button className="w-full py-5 bg-primary text-white text-[10px] uppercase tracking-[0.2em] rounded-full hover:bg-black transition-all duration-500 ease-spring shadow-lg hover:shadow-hover-glow hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary">
+                        <button className="w-full py-5 bg-accent text-white text-[10px] uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-all duration-500 ease-spring shadow-lg hover:shadow-[0_0_25px_rgba(196,162,101,0.4)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent">
                             Отправить заявку
                         </button>
                         <p className="text-[10px] text-center text-secondary mt-6 uppercase tracking-[0.2em]">

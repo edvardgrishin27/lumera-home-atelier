@@ -129,3 +129,26 @@ html.lenis {
 .RevealImage.is-revealed {
   clip-path: inset(0 0 0 0);
 }
+
+/* Dark mode: stronger shadows with gold tint for visibility */
+html.dark .shadow-elevated {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.06);
+}
+
+html.dark .shadow-floating {
+  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.08);
+}
+
+html.dark .shadow-hover-glow,
+html.dark .group:hover .group-hover\:shadow-hover-glow {
+  box-shadow: 0 0 35px rgba(212, 175, 55, 0.2), 0 0 0 1px rgba(212, 175, 55, 0.1);
+}
+
+html.dark .group:hover .group-hover\:shadow-floating {
+  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.5), 0 0 60px -10px rgba(212, 175, 55, 0.15);
+}
+
+/* Dark mode: reduce noise opacity for cleaner background */
+html.dark .bg-noise::before {
+  opacity: 0.02;
+}
