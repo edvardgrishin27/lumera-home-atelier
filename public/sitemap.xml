@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://lumera.ru/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://lumera.ru/catalog</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://lumera.ru/b2b</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://lumera.ru/about</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://lumera.ru/blog</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://lumera.ru/contact</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://lumera.ru/request</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+</urlset>
