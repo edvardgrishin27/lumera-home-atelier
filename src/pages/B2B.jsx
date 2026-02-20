@@ -1,12 +1,30 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
+import { submitForm } from '../utils/submitForm';
 
 const B2B = () => {
     const containerRef = useRef(null);
     const { content } = useContent();
     const b = content.b2b;
+    const [form, setForm] = useState({ name: '', company: '', email: '', phone: '' });
+    const [status, setStatus] = useState('idle'); // idle | sending | success | error
+
+    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!form.name.trim() || !form.email.trim()) return;
+        setStatus('sending');
+        try {
+            await submitForm({ ...form, message: '', page: 'B2B' });
+            setStatus('success');
+            setForm({ name: '', company: '', email: '', phone: '' });
+        } catch {
+            setStatus('error');
+        }
+    };
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -63,17 +81,23 @@ const B2B = () => {
                         </p>
                     </div>
                     <div className="md:w-2/3">
-                        <form className="flex flex-col gap-12">
+                        <form className="flex flex-col gap-12" onSubmit={handleSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                                <input type="text" placeholder="Имя *" className="w-full border-b border-primary/20 py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
-                                <input type="text" placeholder="Компания" className="w-full border-b border-primary/20 py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
+                                <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="Имя *" required className="w-full border-b border-primary/20 py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
+                                <input type="text" name="company" value={form.company} onChange={handleChange} placeholder="Компания" className="w-full border-b border-primary/20 py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                                <input type="email" placeholder="Email *" className="w-full border-b border-primary/20 py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
-                                <input type="tel" placeholder="Телефон" className="w-full border-b border-primary/20 py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
+                                <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="Email *" required className="w-full border-b border-primary/20 py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
+                                <input type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="Телефон" className="w-full border-b border-primary/20 py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
                             </div>
-                            <button className="self-start px-12 py-5 bg-accent text-white text-[10px] uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-all duration-500 ease-spring mt-8 shadow-lg hover:shadow-[0_0_25px_rgba(196,162,101,0.4)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent">
-                                Отправить запрос
+                            {status === 'success' && (
+                                <p className="text-accent font-serif text-lg">Спасибо! Мы свяжемся с вами в ближайшее время.</p>
+                            )}
+                            {status === 'error' && (
+                                <p className="text-red-500 font-serif text-lg">Произошла ошибка. Попробуйте ещё раз.</p>
+                            )}
+                            <button type="submit" disabled={status === 'sending'} className="self-start px-12 py-5 bg-accent text-white text-[10px] uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-opacity transition-transform duration-500 ease-spring mt-8 shadow-lg hover:shadow-[0_0_25px_rgba(196,162,101,0.4)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent disabled:opacity-50">
+                                {status === 'sending' ? 'Отправка...' : 'Отправить запрос'}
                             </button>
                         </form>
                     </div>

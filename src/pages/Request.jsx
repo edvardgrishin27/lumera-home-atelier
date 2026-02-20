@@ -1,9 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
+import { submitForm } from '../utils/submitForm';
 
 const Request = () => {
     const containerRef = useRef(null);
-    const [contactMethod, setContactMethod] = useState('whatsapp');
+    const [contactMethod, setContactMethod] = useState('WhatsApp');
+    const [form, setForm] = useState({ name: '', phone: '' });
+    const [status, setStatus] = useState('idle');
+
+    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!form.name.trim() || !form.phone.trim()) return;
+        setStatus('sending');
+        try {
+            await submitForm({ ...form, email: '', company: '', message: `Способ связи: ${contactMethod}`, page: 'Заявка' });
+            setStatus('success');
+            setForm({ name: '', phone: '' });
+        } catch {
+            setStatus('error');
+        }
+    };
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -25,12 +43,16 @@ const Request = () => {
                     Заполните форму, и мы свяжемся с вами в течение 15 минут для уточнения деталей.
                 </p>
 
-                <form className="space-y-12 reveal">
+                <form className="space-y-12 reveal" onSubmit={handleSubmit}>
                     {/* Name */}
                     <div className="relative group">
                         <input
                             type="text"
+                            name="name"
+                            value={form.name}
+                            onChange={handleChange}
                             placeholder="Ваше имя"
+                            required
                             className="w-full bg-transparent border-b border-primary/10 py-4 text-xl font-serif text-primary outline-none focus:border-primary transition-colors duration-300 placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase"
                         />
                     </div>
@@ -39,7 +61,11 @@ const Request = () => {
                     <div className="relative group">
                         <input
                             type="tel"
+                            name="phone"
+                            value={form.phone}
+                            onChange={handleChange}
                             placeholder="Телефон"
+                            required
                             className="w-full bg-transparent border-b border-primary/10 py-4 text-xl font-serif text-primary outline-none focus:border-primary transition-colors duration-300 placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase"
                         />
                     </div>
@@ -53,7 +79,7 @@ const Request = () => {
                                     key={method}
                                     type="button"
                                     onClick={() => setContactMethod(method)}
-                                    className={`px-6 py-3 text-[10px] uppercase tracking-[0.2em] rounded-full transition-all duration-500 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${contactMethod === method ? 'bg-accent text-white shadow-elevated scale-105' : 'bg-surface text-primary border border-primary/20 hover:border-accent/50 hover:bg-primary/5'}`}
+                                    className={`px-6 py-3 text-[10px] uppercase tracking-[0.2em] rounded-full transition-opacity transition-transform duration-500 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${contactMethod === method ? 'bg-accent text-white shadow-elevated scale-105' : 'bg-surface text-primary border border-primary/20 hover:border-accent/50 hover:bg-primary/5'}`}
                                 >
                                     {method}
                                 </button>
@@ -61,10 +87,17 @@ const Request = () => {
                         </div>
                     </div>
 
+                    {status === 'success' && (
+                        <p className="text-accent font-serif text-lg text-center">Спасибо! Мы свяжемся с вами в ближайшее время.</p>
+                    )}
+                    {status === 'error' && (
+                        <p className="text-red-500 font-serif text-lg text-center">Произошла ошибка. Попробуйте ещё раз.</p>
+                    )}
+
                     {/* Submit */}
                     <div className="pt-8">
-                        <button className="w-full py-5 bg-accent text-white text-[10px] uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-all duration-500 ease-spring shadow-lg hover:shadow-[0_0_25px_rgba(196,162,101,0.4)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent">
-                            Отправить заявку
+                        <button type="submit" disabled={status === 'sending'} className="w-full py-5 bg-accent text-white text-[10px] uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-opacity transition-transform duration-500 ease-spring shadow-lg hover:shadow-[0_0_25px_rgba(196,162,101,0.4)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent disabled:opacity-50">
+                            {status === 'sending' ? 'Отправка...' : 'Отправить заявку'}
                         </button>
                         <p className="text-[10px] text-center text-secondary mt-6 uppercase tracking-[0.2em]">
                             Нажимая кнопку, вы соглашаетесь с <a href="#" className="border-b border-secondary/50 hover:text-primary transition-colors">политикой конфиденциальности</a>

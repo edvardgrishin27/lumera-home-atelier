@@ -92,7 +92,7 @@ const defaultContent = {
     // Site Settings
     settings: {
         phone: '8 (499) 877-16-78',
-        email: 'info@lumera.su',
+        email: 'info@lumerahome.ru',
         scheduleMSK: 'Пн-Пт 10:00 - 20:00, Сб-Вс 11:00 - 19:00',
         scheduleSPB: 'Пн-Вс 11:00 - 19:00',
         whatsapp: 'https://whatsapp.com',
@@ -125,6 +125,8 @@ export const ContentProvider = ({ children }) => {
                 if (parsed.b2b && revertImgUrl(parsed.b2b.image2) === null) parsed.b2b.image2 = defaultContent.b2b.image2;
                 // Migration: Replace old bright office with dark premium office
                 if (parsed.b2b && parsed.b2b.image2 && parsed.b2b.image2.includes('1497215728101')) parsed.b2b.image2 = defaultContent.b2b.image2;
+                // Migration: Update email from lumera.su to lumerahome.ru
+                if (parsed.settings && parsed.settings.email && parsed.settings.email.includes('lumera.su')) parsed.settings.email = defaultContent.settings.email;
                 if (parsed.contactPage) {
                     // Always use the latest contact image
                     parsed.contactPage.image1 = defaultContent.contactPage.image1;
