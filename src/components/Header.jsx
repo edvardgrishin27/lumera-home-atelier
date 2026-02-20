@@ -122,7 +122,7 @@ const Header = () => {
                 <button
                     onClick={toggleTheme}
                     aria-label="Переключить тему"
-                    className="text-primary hover:text-accent transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-full p-2"
+                    className="text-primary hover:text-accent border border-primary/20 hover:border-accent/40 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-full p-2.5"
                 >
                     {isDarkMode ? (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -149,7 +149,7 @@ const Header = () => {
                 <button
                     onClick={toggleTheme}
                     aria-label="Переключить тему"
-                    className="text-primary hover:text-accent transition-colors duration-300"
+                    className="text-primary hover:text-accent border border-primary/20 hover:border-accent/40 transition-all duration-300 rounded-full p-2.5"
                 >
                     {isDarkMode ? (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

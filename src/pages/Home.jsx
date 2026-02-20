@@ -137,8 +137,7 @@ const Home = () => {
             </section>
 
             {/* Philosophy Quote */}
-            <section className="py-40 px-6 md:px-20 text-center bg-background relative z-10 content-layer border-t border-primary/5">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-20 bg-primary/10"></div>
+            <section className="py-40 px-6 md:px-20 text-center bg-background relative z-10 content-layer">
                 <p
                     className="font-serif text-3xl md:text-5xl leading-relaxed max-w-4xl mx-auto text-primary whitespace-pre-line"
                     dangerouslySetInnerHTML={{
