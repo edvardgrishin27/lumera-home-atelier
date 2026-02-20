@@ -123,6 +123,8 @@ export const ContentProvider = ({ children }) => {
                 if (parsed.about && revertImgUrl(parsed.about.image1) === null) parsed.about.image1 = defaultContent.about.image1;
                 if (parsed.b2b && revertImgUrl(parsed.b2b.image1) === null) parsed.b2b.image1 = defaultContent.b2b.image1;
                 if (parsed.b2b && revertImgUrl(parsed.b2b.image2) === null) parsed.b2b.image2 = defaultContent.b2b.image2;
+                // Migration: Replace old bright office with dark premium office
+                if (parsed.b2b && parsed.b2b.image2 && parsed.b2b.image2.includes('1497215728101')) parsed.b2b.image2 = defaultContent.b2b.image2;
                 if (parsed.contactPage) {
                     // Always use the latest contact image
                     parsed.contactPage.image1 = defaultContent.contactPage.image1;
@@ -131,6 +133,9 @@ export const ContentProvider = ({ children }) => {
                 if (parsed.products) {
                     parsed.products = parsed.products.map(savedProd => {
                         const defaultProd = defaultProducts.find(p => p.id === savedProd.id);
+                        // Migration: Replace broken Unsplash images with working defaults
+                        const img = savedProd.image || '';
+                        if (defaultProd && img.includes('1634712282287')) savedProd.image = defaultProd.image;
                         return {
                             ...savedProd,
                             colors: savedProd.colors?.length ? savedProd.colors : (defaultProd?.colors || []),
