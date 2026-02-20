@@ -1,18 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Scroll to top helper — works with Lenis
+const scrollToTop = () => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    // Also dispatch for Lenis to pick up
+    window.dispatchEvent(new Event('scrollToTop'));
+};
+
 const Header = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const headerRef = useRef(null);
     const logoTextRef = useRef(null);
     const subTextRef = useRef(null);
     const navRef = useRef(null);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    // Handle nav link click — if already on this page, scroll to top
+    const handleNavClick = (e, path) => {
+        if (location.pathname === path) {
+            e.preventDefault();
+            scrollToTop();
+        }
+    };
 
     useEffect(() => {
         const savedTheme = localStorage.getItem('lumera_theme');
@@ -75,7 +93,7 @@ const Header = () => {
             className="fixed top-0 left-0 w-full z-50 px-8 md:px-12 py-6 flex justify-between items-center transition-colors duration-300 bg-background/90 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
         >
             {/* Logo Section - Shrinks on scroll */}
-            <Link to="/" className="relative z-50 group origin-left">
+            <Link to="/" onClick={(e) => handleNavClick(e, '/')} className="relative z-50 group origin-left">
                 <div ref={logoTextRef} className="text-3xl md:text-5xl font-serif font-light tracking-tight text-primary nowrap whitespace-nowrap">
                     LUMERA
                 </div>
@@ -90,6 +108,7 @@ const Header = () => {
                     <Link
                         key={link.path}
                         to={link.path}
+                        onClick={(e) => handleNavClick(e, link.path)}
                         className={`text-xs font-sans tracking-[0.2em] uppercase relative group py-2
               ${location.pathname === link.path ? 'text-primary opacity-100' : 'text-primary opacity-60 hover:opacity-100'}`}
                     >
@@ -123,7 +142,7 @@ const Header = () => {
                     to="/request"
                     aria-label="Оставить заявку на премиальную мебель"
                     className="px-7 py-3 bg-accent text-white text-[10px] md:text-xs font-sans uppercase tracking-widest transition-all duration-300 ease-out rounded-full shadow-[0_4px_15px_rgba(196,162,101,0.25)] hover:shadow-[0_0_25px_rgba(196,162,101,0.55)] hover:bg-accent/85 hover:-translate-y-1 active:scale-95 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={(e) => { setIsMenuOpen(false); handleNavClick(e, '/request'); }}
                 >
                     Оставить заявку
                 </Link>

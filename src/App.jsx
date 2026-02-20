@@ -56,7 +56,16 @@ function App() {
 
         window.scrollTo(0, 0);
 
+        // Listen for scrollToTop events from Header nav clicks
+        const handleScrollToTop = () => {
+            if (lenisRef.current) {
+                lenisRef.current.scrollTo(0, { immediate: true });
+            }
+        };
+        window.addEventListener('scrollToTop', handleScrollToTop);
+
         return () => {
+            window.removeEventListener('scrollToTop', handleScrollToTop);
             lenis.destroy();
             lenisRef.current = null;
             gsap.ticker.remove(lenis.raf);
