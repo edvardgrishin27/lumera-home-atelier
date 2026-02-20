@@ -75,6 +75,21 @@ const Header = () => {
         return () => ctx.revert();
     }, []);
 
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isMenuOpen]);
+
+    // Close menu on route change
+    useEffect(() => {
+        setIsMenuOpen(false);
+    }, [location.pathname]);
+
     const navLinks = [
         { name: 'Каталог', path: '/catalog' },
         { name: 'Бизнесу', path: '/b2b' },
@@ -149,7 +164,7 @@ const Header = () => {
                 <button
                     onClick={toggleTheme}
                     aria-label="Переключить тему"
-                    className="text-primary hover:text-accent border border-primary/20 hover:border-accent/40 transition-all duration-300 rounded-full p-2.5"
+                    className="text-primary hover:text-accent border border-primary/20 hover:border-accent/40 transition-colors duration-300 rounded-full p-2.5"
                 >
                     {isDarkMode ? (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -161,11 +176,53 @@ const Header = () => {
                         </svg>
                     )}
                 </button>
-                <div className="cursor-pointer space-y-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                    <div className="w-8 h-[1px] bg-primary transition-all duration-300"></div>
-                    <div className="w-8 h-[1px] bg-primary transition-all duration-300"></div>
-                </div>
+                <button
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    aria-label={isMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
+                    aria-expanded={isMenuOpen}
+                    className="relative z-50 w-10 h-10 flex flex-col items-center justify-center gap-[7px] -mr-2"
+                >
+                    <span className={`block w-7 h-[1.5px] bg-primary transition-transform duration-300 ease-out origin-center ${isMenuOpen ? 'translate-y-[4.25px] rotate-45' : ''}`} />
+                    <span className={`block w-7 h-[1.5px] bg-primary transition-transform duration-300 ease-out origin-center ${isMenuOpen ? '-translate-y-[4.25px] -rotate-45' : ''}`} />
+                </button>
             </div>
+
+            {/* Mobile Menu Overlay */}
+            <div
+                className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                onClick={() => setIsMenuOpen(false)}
+                aria-hidden="true"
+            />
+
+            {/* Mobile Menu Drawer */}
+            <nav
+                className={`fixed top-0 right-0 h-[100dvh] w-[min(80vw,320px)] z-40 bg-background shadow-floating pt-28 px-8 pb-10 flex flex-col md:hidden transition-transform duration-300 ease-out ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                aria-label="Мобильное меню"
+            >
+                <div className="flex flex-col gap-1">
+                    {navLinks.map((link) => (
+                        <Link
+                            key={link.path}
+                            to={link.path}
+                            onClick={(e) => { setIsMenuOpen(false); handleNavClick(e, link.path); }}
+                            className={`text-sm font-sans tracking-[0.15em] uppercase py-3.5 border-b border-primary/10 transition-opacity duration-200
+                                ${location.pathname === link.path ? 'text-accent opacity-100' : 'text-primary opacity-70 active:opacity-100'}`}
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
+                </div>
+
+                <div className="mt-auto pt-6">
+                    <Link
+                        to="/request"
+                        onClick={(e) => { setIsMenuOpen(false); handleNavClick(e, '/request'); }}
+                        className="block w-full text-center px-7 py-4 bg-accent text-white text-xs font-sans uppercase tracking-widest rounded-full shadow-[0_4px_15px_rgba(196,162,101,0.25)] active:scale-95 transition-transform duration-200"
+                    >
+                        Оставить заявку
+                    </Link>
+                </div>
+            </nav>
         </header>
     );
 };
