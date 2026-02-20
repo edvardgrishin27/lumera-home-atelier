@@ -34,9 +34,25 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          envs: VITE_ADMIN_PASSWORD_HASH,VITE_ADMIN_UUID,VITE_TOTP_SECRET
           script: |
             cd /opt/lumera
             git pull origin main
+
+            # Create .env for Docker build args
+            cat > .env << ENVEOF
+            VITE_ADMIN_PASSWORD_HASH=$VITE_ADMIN_PASSWORD_HASH
+            VITE_ADMIN_UUID=$VITE_ADMIN_UUID
+            VITE_TOTP_SECRET=$VITE_TOTP_SECRET
+            ENVEOF
+
             docker compose down
             docker compose up -d --build
             docker system prune -f
+
+            # Remove .env after build for security
+            rm -f .env
+        env:
+          VITE_ADMIN_PASSWORD_HASH: ${{ secrets.VITE_ADMIN_PASSWORD_HASH }}
+          VITE_ADMIN_UUID: ${{ secrets.VITE_ADMIN_UUID }}
+          VITE_TOTP_SECRET: ${{ secrets.VITE_TOTP_SECRET }}

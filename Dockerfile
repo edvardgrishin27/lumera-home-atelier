@@ -3,6 +3,16 @@ FROM node:20-alpine as build
 
 WORKDIR /app
 
+# Build arguments for Vite env variables (needed at build time)
+ARG VITE_ADMIN_PASSWORD_HASH
+ARG VITE_ADMIN_UUID
+ARG VITE_TOTP_SECRET
+
+# Make them available as env vars during build
+ENV VITE_ADMIN_PASSWORD_HASH=$VITE_ADMIN_PASSWORD_HASH
+ENV VITE_ADMIN_UUID=$VITE_ADMIN_UUID
+ENV VITE_TOTP_SECRET=$VITE_TOTP_SECRET
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
