@@ -46,7 +46,7 @@ export const products = [
         name: "Marble Blocks",
         category: "Tables",
         price: 120000,
-        image: "https://images.unsplash.com/photo-1634712282287-14ed57ef99a8?auto=format&fit=crop&q=80&w=2000",
+        image: "https://images.unsplash.com/photo-1638127369513-18e87b426e31?auto=format&fit=crop&q=80&w=2000",
         description: "Журнальный стол из каррарского мрамора с геометрическим основанием.",
         specs: "Диаметр: 100 см | Высота: 35 см"
     },

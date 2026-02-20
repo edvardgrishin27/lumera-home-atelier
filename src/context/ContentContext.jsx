@@ -34,7 +34,7 @@ const defaultContent = {
         subtitle: 'Архитекторам, Дизайнерам и Рестораторам',
         description: 'Особое направление Lumera — комплексные интерьерные решения для бизнеса. Мы комплектуем премиальные рестораны, бутик-отели, представительские офисы и любые коммерческие пространства, где важна атмосфера. Наша команда обеспечивает прямые поставки с ведущих европейских фабрик, эксклюзивные коммерческие условия и строгую логистику под ключ.',
         image1: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=2600', // Premium luxury restaurant interior
-        image2: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=2600', // Premium luxury office
+        image2: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2600', // Dark premium office
         formTitle: 'Стать партнером',
         formSubtitle: 'Заполните форму, и ваш персональный менеджер свяжется с вами сегодня',
     },
