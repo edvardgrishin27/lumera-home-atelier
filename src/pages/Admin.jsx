@@ -2,21 +2,38 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useContent } from '../context/ContentContext';
 import { isSessionValid, destroySession } from './Login';
+import { uploadFile } from '../utils/uploadToS3';
 
 // ─── File Upload Component ───
-const FileUpload = ({ label, value, onChange }) => {
+const FileUpload = ({ label, value, onChange, folder = 'pages' }) => {
     const fileInputRef = useRef(null);
+    const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const file = e.target.files[0];
-        if (file) {
+        if (!file) return;
+
+        setUploading(true);
+        setError('');
+        try {
+            const isVideo = file.type.startsWith('video/');
+            const effectiveFolder = isVideo ? 'video' : folder;
+            const url = await uploadFile(file, effectiveFolder);
+            onChange(url);
+        } catch (err) {
+            console.error('Upload failed:', err);
+            setError('S3 недоступен, сохранено локально');
+            // Fallback: base64
             const reader = new FileReader();
-            reader.onloadend = () => {
-                onChange(reader.result);
-            };
+            reader.onloadend = () => onChange(reader.result);
             reader.readAsDataURL(file);
+        } finally {
+            setUploading(false);
         }
     };
+
+    const isVideoValue = value && (value.startsWith('data:video') || value.endsWith('.mp4') || value.endsWith('.webm'));
 
     return (
         <div className="mb-6">
@@ -24,7 +41,7 @@ const FileUpload = ({ label, value, onChange }) => {
             <div className="flex items-center gap-4">
                 {value && (
                     <div className="w-16 h-16 rounded-full bg-gray-100 overflow-hidden shrink-0 border border-gray-200">
-                        {value.startsWith('data:video') || value.endsWith('.mp4') ? (
+                        {isVideoValue ? (
                             <video src={value} className="w-full h-full object-cover" />
                         ) : (
                             <img src={value} alt="Preview" className="w-full h-full object-cover" />
@@ -50,10 +67,16 @@ const FileUpload = ({ label, value, onChange }) => {
                         <button
                             type="button"
                             onClick={() => fileInputRef.current.click()}
-                            className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded transition-colors flex items-center gap-2"
+                            disabled={uploading}
+                            className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded transition-colors flex items-center gap-2 disabled:opacity-50"
                         >
-                            <span>📂</span> Загрузить с компьютера
+                            {uploading ? (
+                                <><span className="animate-spin inline-block">⏳</span> Загрузка на S3...</>
+                            ) : (
+                                <><span>📂</span> Загрузить с компьютера</>
+                            )}
                         </button>
+                        {error && <p className="text-[10px] text-amber-600 mt-1">{error}</p>}
                     </div>
                 </div>
             </div>
@@ -62,24 +85,33 @@ const FileUpload = ({ label, value, onChange }) => {
 };
 
 // ─── Gallery Editor Component (Multi-upload) ───
-const GalleryEditor = ({ images = [], onChange }) => {
+const GalleryEditor = ({ images = [], onChange, folder = 'products' }) => {
     const isVideo = (url) => url && url.match(/\.(mp4|webm|ogg)$/i);
+    const [uploading, setUploading] = useState(false);
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
         if (files.length === 0) return;
 
-        const promises = files.map(file => {
-            return new Promise((resolve) => {
+        setUploading(true);
+        try {
+            const urls = await Promise.all(
+                files.map(file => uploadFile(file, folder))
+            );
+            onChange([...images, ...urls]);
+        } catch (err) {
+            console.error('Gallery upload failed:', err);
+            // Fallback: base64
+            const promises = files.map(file => new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onloadend = () => resolve(reader.result);
                 reader.readAsDataURL(file);
-            });
-        });
-
-        Promise.all(promises).then(newImages => {
-            onChange([...images, ...newImages]);
-        });
+            }));
+            const fallbackUrls = await Promise.all(promises);
+            onChange([...images, ...fallbackUrls]);
+        } finally {
+            setUploading(false);
+        }
     };
 
     const removeImage = (index) => {
@@ -140,17 +172,22 @@ const GalleryEditor = ({ images = [], onChange }) => {
             )}
 
             {/* Upload Button */}
-            <label className="cursor-pointer inline-flex items-center gap-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 px-4 py-3 rounded-full text-xs uppercase tracking-wider transition-colors">
-                <span className="text-lg">＋</span> Добавить фото
+            <label className={`cursor-pointer inline-flex items-center gap-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 px-4 py-3 rounded-full text-xs uppercase tracking-wider transition-colors ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                {uploading ? (
+                    <><span className="animate-spin inline-block">⏳</span> Загрузка на S3...</>
+                ) : (
+                    <><span className="text-lg">＋</span> Добавить фото</>
+                )}
                 <input
                     type="file"
                     multiple
                     accept="image/*"
                     className="hidden"
                     onChange={handleFileChange}
+                    disabled={uploading}
                 />
             </label>
-            <p className="text-[10px] text-gray-400 mt-2">Можно выбрать несколько файлов сразу. Они добавятся к текущим.</p>
+            <p className="text-[10px] text-gray-400 mt-2">Можно выбрать несколько файлов сразу. Они загрузятся на S3.</p>
         </div>
     );
 };
@@ -333,12 +370,12 @@ const ProductsTab = () => {
                         <Field label="Название" value={newProduct.name} onChange={v => setNewProduct({ ...newProduct, name: v })} />
                         <Field label="Категория" value={newProduct.category} onChange={v => setNewProduct({ ...newProduct, category: v })} />
                         <Field label="Цена (₽)" value={newProduct.price} onChange={v => setNewProduct({ ...newProduct, price: v })} type="number" />
-                        <FileUpload label="Фото" value={newProduct.image} onChange={v => setNewProduct({ ...newProduct, image: v })} />
+                        <FileUpload label="Фото" value={newProduct.image} onChange={v => setNewProduct({ ...newProduct, image: v })} folder="products" />
                         <div className="md:col-span-2">
                             <Field label="Описание" value={newProduct.description} onChange={v => setNewProduct({ ...newProduct, description: v })} type="textarea" />
                         </div>
                         <Field label="Краткие размеры" value={newProduct.specs} onChange={v => setNewProduct({ ...newProduct, specs: v })} />
-                        <FileUpload label="Видео" value={newProduct.video} onChange={v => setNewProduct({ ...newProduct, video: v })} />
+                        <FileUpload label="Видео" value={newProduct.video} onChange={v => setNewProduct({ ...newProduct, video: v })} folder="video" />
 
                         <div className="md:col-span-2 border-t border-blue-200 pt-6 mt-4">
                             <h4 className="font-semibold text-blue-800 mb-4">Детальные характеристики</h4>
@@ -353,7 +390,7 @@ const ProductsTab = () => {
                             <DetailsEditor details={newProduct.details} onChange={v => setNewProduct({ ...newProduct, details: v })} />
                         </div>
                         <div className="md:col-span-2">
-                            <GalleryEditor images={newProduct.gallery} onChange={v => setNewProduct({ ...newProduct, gallery: v })} />
+                            <GalleryEditor images={newProduct.gallery} onChange={v => setNewProduct({ ...newProduct, gallery: v })} folder="products" />
                         </div>
                     </div>
                     <button onClick={handleAdd} className="bg-blue-600 text-white px-6 py-2 rounded-full text-sm mt-4 hover:bg-blue-700">
@@ -373,12 +410,12 @@ const ProductsTab = () => {
                                     <Field label="Название" value={editData.name} onChange={v => setEditData({ ...editData, name: v })} />
                                     <Field label="Категория" value={editData.category} onChange={v => setEditData({ ...editData, category: v })} />
                                     <Field label="Цена (₽)" value={editData.price} onChange={v => setEditData({ ...editData, price: parseInt(v) || 0 })} type="number" />
-                                    <FileUpload label="Главное фото" value={editData.image} onChange={v => setEditData({ ...editData, image: v })} />
+                                    <FileUpload label="Главное фото" value={editData.image} onChange={v => setEditData({ ...editData, image: v })} folder="products" />
                                     <div className="md:col-span-2">
                                         <Field label="Описание" value={editData.description} onChange={v => setEditData({ ...editData, description: v })} type="textarea" rows={4} />
                                     </div>
                                     <Field label="Краткие размеры" value={editData.specs} onChange={v => setEditData({ ...editData, specs: v })} />
-                                    <FileUpload label="Видео" value={editData.video || ''} onChange={v => setEditData({ ...editData, video: v })} />
+                                    <FileUpload label="Видео" value={editData.video || ''} onChange={v => setEditData({ ...editData, video: v })} folder="video" />
 
                                     <div className="md:col-span-2 border-t border-gray-100 pt-6 mt-4">
                                         <h4 className="font-semibold text-gray-800 mb-4">Детальные характеристики</h4>
@@ -393,7 +430,7 @@ const ProductsTab = () => {
                                         <DetailsEditor details={editData.details} onChange={v => setEditData({ ...editData, details: v })} />
                                     </div>
                                     <div className="md:col-span-2">
-                                        <GalleryEditor images={editData.gallery} onChange={v => setEditData({ ...editData, gallery: v })} />
+                                        <GalleryEditor images={editData.gallery} onChange={v => setEditData({ ...editData, gallery: v })} folder="products" />
                                     </div>
                                 </div>
                                 <div className="flex gap-3 mt-4">
@@ -441,13 +478,17 @@ const CatalogTab = () => {
         reorderProducts(newOrder);
     };
 
-    const handleImageUpload = (e, productId) => {
+    const handleImageUpload = async (e, productId) => {
         const file = e.target.files[0];
-        if (file) {
+        if (!file) return;
+        try {
+            const url = await uploadFile(file, 'products');
+            updateProduct(productId, { image: url });
+        } catch (err) {
+            console.error('Catalog image upload failed:', err);
+            // Fallback: base64
             const reader = new FileReader();
-            reader.onloadend = () => {
-                updateProduct(productId, { image: reader.result });
-            };
+            reader.onloadend = () => updateProduct(productId, { image: reader.result });
             reader.readAsDataURL(file);
         }
     };
@@ -549,7 +590,7 @@ const HomeTab = () => {
                     <Field label="Заголовок (строка 2)" value={h.heroTitle2} onChange={v => updateHome('heroTitle2', v)} />
                     <Field label="Заголовок (строка 3)" value={h.heroTitle3} onChange={v => updateHome('heroTitle3', v)} />
                 </div>
-                <FileUpload label="Фото Hero" value={h.heroImage} onChange={v => updateHome('heroImage', v)} />
+                <FileUpload label="Фото Hero" value={h.heroImage} onChange={v => updateHome('heroImage', v)} folder="pages" />
                 <Field label="Описание под Hero" value={h.heroDescription} onChange={v => updateHome('heroDescription', v)} type="textarea" />
             </div>
 
@@ -599,7 +640,7 @@ const BlogPostsEditor = ({ posts, onChange }) => {
                         <Field label="Заголовок статьи" value={post.title} onChange={v => handlePostChange(post.id, 'title', v)} />
                         <Field label="Категория" value={post.category} onChange={v => handlePostChange(post.id, 'category', v)} />
                         <Field label="Дата (Текст)" value={post.date} onChange={v => handlePostChange(post.id, 'date', v)} />
-                        <FileUpload label="Фото обложки" value={post.image} onChange={v => handlePostChange(post.id, 'image', v)} />
+                        <FileUpload label="Фото обложки" value={post.image} onChange={v => handlePostChange(post.id, 'image', v)} folder="blog" />
                         <div className="col-span-1 md:col-span-2">
                             <Field label="Текст статьи" value={post.excerpt} onChange={v => handlePostChange(post.id, 'excerpt', v)} type="textarea" rows={4} />
                         </div>
@@ -631,7 +672,7 @@ const ContentPagesTab = () => {
                         <Field label="Абзац 1" value={content.about.description1} onChange={v => updateContentPage('about', 'description1', v)} type="textarea" />
                         <Field label="Абзац 2" value={content.about.description2} onChange={v => updateContentPage('about', 'description2', v)} type="textarea" />
                     </div>
-                    <FileUpload label="Главное фото" value={content.about.image1} onChange={v => updateContentPage('about', 'image1', v)} />
+                    <FileUpload label="Главное фото" value={content.about.image1} onChange={v => updateContentPage('about', 'image1', v)} folder="pages" />
                 </div>
                 <div className="mt-4 border-t border-gray-100 pt-4">
                     <h4 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Статистика</h4>
@@ -661,8 +702,8 @@ const ContentPagesTab = () => {
                     <div className="md:col-span-2">
                         <Field label="Описание" value={content.b2b.description} onChange={v => updateContentPage('b2b', 'description', v)} type="textarea" />
                     </div>
-                    <FileUpload label="Фото 1" value={content.b2b.image1} onChange={v => updateContentPage('b2b', 'image1', v)} />
-                    <FileUpload label="Фото 2" value={content.b2b.image2} onChange={v => updateContentPage('b2b', 'image2', v)} />
+                    <FileUpload label="Фото 1" value={content.b2b.image1} onChange={v => updateContentPage('b2b', 'image1', v)} folder="pages" />
+                    <FileUpload label="Фото 2" value={content.b2b.image2} onChange={v => updateContentPage('b2b', 'image2', v)} folder="pages" />
                 </div>
                 <div className="mt-4 border-t border-gray-100 pt-4 grid grid-cols-1 md:grid-cols-2 gap-x-6">
                     <Field label="Заголовок формы" value={content.b2b.formTitle} onChange={v => updateContentPage('b2b', 'formTitle', v)} />
@@ -680,7 +721,7 @@ const ContentPagesTab = () => {
                         <Field label="Цитата" value={content.contactPage.quote} onChange={v => updateContentPage('contactPage', 'quote', v)} type="textarea" />
                     </div>
                     <div className="md:col-span-2">
-                        <FileUpload label="Фото" value={content.contactPage.image1} onChange={v => updateContentPage('contactPage', 'image1', v)} />
+                        <FileUpload label="Фото" value={content.contactPage.image1} onChange={v => updateContentPage('contactPage', 'image1', v)} folder="pages" />
                     </div>
                 </div>
                 <div className="mt-4 border-t border-gray-100 pt-4 grid grid-cols-1 md:grid-cols-2 gap-x-6">
