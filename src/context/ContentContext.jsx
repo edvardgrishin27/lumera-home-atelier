@@ -8,7 +8,7 @@ const defaultContent = {
         heroTitle1: 'LIVING',
         heroTitle2: 'ART',
         heroTitle3: 'FORMS',
-        heroImage: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=2669', // Bright, airy premium space
+        heroImage: 'https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/home-hero.jpg',
         heroDescription: 'Мы находим и доставляем предметы коллекционного дизайна, которые меняют восприятие пространства.',
         quoteText: 'Мебель не должна доминировать над пространством. Она должна создавать тишину, в которой слышен голос вашей жизни.',
         hitsTitle: 'Хиты продаж',
@@ -21,7 +21,7 @@ const defaultContent = {
         subtitle: 'Коллекционный дизайн как образ жизни',
         description1: 'Мы не просто продаем мебель. Мы курируем эстетику вашего пространства. Lumera была основана с идеей объединить вневременной дизайн и безупречное качество.',
         description2: 'Каждый предмет в нашей коллекции проходит строгий отбор. Мы работаем напрямую с фабриками, которые разделяют наши ценности: уважение к материалу, любовь к форме и внимание к деталям.',
-        image1: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=2600', // Premium light minimal interior
+        image1: 'https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/about.jpg',
         stats1Value: '12+',
         stats1Label: 'Лет опыта',
         stats2Value: '500+',
@@ -33,8 +33,8 @@ const defaultContent = {
         title: 'Бизнесу',
         subtitle: 'Архитекторам, Дизайнерам и Рестораторам',
         description: 'Особое направление Lumera — комплексные интерьерные решения для бизнеса. Мы комплектуем премиальные рестораны, бутик-отели, представительские офисы и любые коммерческие пространства, где важна атмосфера. Наша команда обеспечивает прямые поставки с ведущих европейских фабрик, эксклюзивные коммерческие условия и строгую логистику под ключ.',
-        image1: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=2600', // Premium luxury restaurant interior
-        image2: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2600', // Dark premium office
+        image1: 'https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/b2b-restaurant.jpg',
+        image2: 'https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/b2b-office.jpg',
         formTitle: 'Стать партнером',
         formSubtitle: 'Заполните форму, и ваш персональный менеджер свяжется с вами сегодня',
     },
@@ -50,7 +50,7 @@ const defaultContent = {
                 title: "Тренды 2026: Возвращение к тактильности",
                 date: "12 Февраля, 2026",
                 category: "Интерьер",
-                image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=2600",
+                image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/trendy-2026.jpg",
                 excerpt: "Как цифровизация заставляет нас искать спасение в натуральных фактурах: букле, необработанном шелке и брашированном дубе."
             },
             {
@@ -59,7 +59,7 @@ const defaultContent = {
                 title: "Философия пустоты. Меньше, но лучше.",
                 date: "05 Февраля, 2026",
                 category: "Лайфстайл",
-                image: "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&q=80&w=2600",
+                image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/filosofiya-pustoty.jpg",
                 excerpt: "Почему премиальные интерьеры отказываются от лишнего декора в пользу архитектурности форм и правильного света."
             },
             {
@@ -68,7 +68,7 @@ const defaultContent = {
                 title: "Коллекционный дизайн в ресторане",
                 date: "28 Января, 2026",
                 category: "HoReCa",
-                image: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=2600",
+                image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/kollekcionnyj-dizajn.jpg",
                 excerpt: "Инвестиции в эмоции: как мебель лимитированных тиражей становится центром притяжения гостей."
             },
             {
@@ -77,7 +77,7 @@ const defaultContent = {
                 title: "Эргономика лобби-баров",
                 date: "15 Января, 2026",
                 category: "Архитектура",
-                image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2600",
+                image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/b2b-office.jpg",
                 excerpt: "Создаем пространство для работы и отдыха, которое не уступает по статусу пятизвездочным отелям."
             }
         ]
@@ -85,7 +85,7 @@ const defaultContent = {
     contactPage: {
         title: 'Свяжитесь с нами',
         subtitle: 'Ждем вас в гости',
-        image1: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=2600',
+        image1: 'https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/contact.jpg',
         quote: '"Красота рождается в диалоге."',
         connectLabel: 'Связь',
         formTitle: 'Напишите нам',
@@ -119,23 +119,20 @@ export const ContentProvider = ({ children }) => {
             if (saved) {
                 let parsed = JSON.parse(saved);
 
-                // Migration: Force update premium AI images BACK to bright Unsplash images based on user feedback.
-                // If it contains /images/premium/, we replace it with default.
-                const revertImgUrl = (url) => url && url.includes('/images/premium/') ? null : url;
-
-                if (parsed.home && revertImgUrl(parsed.home.heroImage) === null) parsed.home.heroImage = defaultContent.home.heroImage;
-                if (parsed.about && revertImgUrl(parsed.about.image1) === null) parsed.about.image1 = defaultContent.about.image1;
-                if (parsed.b2b && revertImgUrl(parsed.b2b.image1) === null) parsed.b2b.image1 = defaultContent.b2b.image1;
-                if (parsed.b2b && revertImgUrl(parsed.b2b.image2) === null) parsed.b2b.image2 = defaultContent.b2b.image2;
-                // Migration: Replace old bright office with dark premium office
-                if (parsed.b2b && parsed.b2b.image2 && parsed.b2b.image2.includes('1497215728101')) parsed.b2b.image2 = defaultContent.b2b.image2;
+                // Migration: Move all images from Unsplash/premium to S3
+                const needsS3 = (url) => url && (url.includes('images.unsplash.com') || url.includes('/images/premium/'));
+                if (parsed.home && needsS3(parsed.home.heroImage)) parsed.home.heroImage = defaultContent.home.heroImage;
+                if (parsed.about && needsS3(parsed.about.image1)) parsed.about.image1 = defaultContent.about.image1;
+                if (parsed.b2b && needsS3(parsed.b2b.image1)) parsed.b2b.image1 = defaultContent.b2b.image1;
+                if (parsed.b2b && needsS3(parsed.b2b.image2)) parsed.b2b.image2 = defaultContent.b2b.image2;
                 // Migration: Update email from lumera.su to lumerahome.ru
                 if (parsed.settings && parsed.settings.email && parsed.settings.email.includes('lumera.su')) parsed.settings.email = defaultContent.settings.email;
-                // Migration: Add slug to blog posts if missing
+                // Migration: Add slug + migrate images to S3 for blog posts
                 if (parsed.blog?.posts) {
                     parsed.blog.posts = parsed.blog.posts.map(savedPost => {
                         const defaultPost = defaultContent.blog.posts.find(p => p.id === savedPost.id);
                         if (defaultPost && !savedPost.slug) savedPost.slug = defaultPost.slug;
+                        if (defaultPost && needsS3(savedPost.image)) savedPost.image = defaultPost.image;
                         return savedPost;
                     });
                 }
@@ -147,9 +144,14 @@ export const ContentProvider = ({ children }) => {
                 if (parsed.products) {
                     parsed.products = parsed.products.map(savedProd => {
                         const defaultProd = defaultProducts.find(p => p.id === savedProd.id);
-                        // Migration: Replace broken Unsplash images with working defaults
-                        const img = savedProd.image || '';
-                        if (defaultProd && img.includes('1634712282287')) savedProd.image = defaultProd.image;
+                        // Migration: Move images from Unsplash to S3
+                        if (defaultProd && needsS3(savedProd.image)) savedProd.image = defaultProd.image;
+                        if (defaultProd && savedProd.gallery) {
+                            savedProd.gallery = defaultProd.gallery || savedProd.gallery;
+                        }
+                        if (defaultProd && savedProd.video && savedProd.video.includes('pexels.com')) {
+                            savedProd.video = defaultProd.video;
+                        }
                         // Migration: Add slug field if missing
                         if (defaultProd && !savedProd.slug) savedProd.slug = defaultProd.slug;
                         return {

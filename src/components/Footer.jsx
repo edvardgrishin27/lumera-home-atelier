@@ -18,7 +18,7 @@ const Footer = () => {
                 <div className="md:col-span-4 self-end group">
                     <div className="aspect-[3/2] overflow-hidden rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
                         <img
-                            src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=2000"
+                            src="https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/home-hero.jpg"
                             alt="Interior Detail"
                             className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105"
                         />

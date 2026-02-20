@@ -1,3 +1,5 @@
+const S3 = 'https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera';
+
 export const products = [
     {
         id: 1,
@@ -5,7 +7,7 @@ export const products = [
         name: "Milano Sofa",
         category: "Sofas",
         price: 145000,
-        image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=2070",
+        image: `${S3}/products/milano-sofa.jpg`,
         description: "Этот диван — воплощение итальянского подхода к комфорту «дольче вита». Глубокая посадка, мягкие подушки и обивка из премиального бархата создают ощущение обволакивающего уюта. Геометрическая строгость линий уравновешивается тактильной мягкостью материалов.",
         specs: "Ширина: 240 см | Глубина: 95 см | Высота: 75 см",
         details: [
@@ -14,10 +16,10 @@ export const products = [
             { label: "Обивка", value: "Итальянский бархат (Martindale > 50,000)" }
         ],
         gallery: [
-            "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=2070",
-            "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=2070",
-            "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&q=80&w=2000",
-            "https://images.unsplash.com/photo-1560448205-4d9b3e6bb6db?auto=format&fit=crop&q=80&w=2000"
+            `${S3}/products/milano-sofa.jpg`,
+            `${S3}/products/milano-gallery-2.jpg`,
+            `${S3}/products/milano-gallery-3.jpg`,
+            `${S3}/products/milano-gallery-4.jpg`
         ],
         colors: [
             { name: "Пыльная роза", hex: "#C8A99A" },
@@ -31,7 +33,7 @@ export const products = [
             { label: "240×100", value: "240 × 100 × 75 см" },
             { label: "260×100", value: "260 × 100 × 75 см" }
         ],
-        video: "https://videos.pexels.com/video-files/7578546/7578546-uhd_2560_1440_30fps.mp4"
+        video: `${S3}/video/milano-sofa.mp4`
     },
     {
         id: 2,
@@ -39,7 +41,7 @@ export const products = [
         name: "Zenit Armchair",
         category: "Armchairs",
         price: 85000,
-        image: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&q=80&w=1974",
+        image: `${S3}/products/zenit-armchair.jpg`,
         description: "Минималистичное кресло с каркасом из массива дуба и обивкой букле.",
         specs: "Ширина: 80 см | Глубина: 85 см | Высота: 70 см"
     },
@@ -49,7 +51,7 @@ export const products = [
         name: "Marble Blocks",
         category: "Tables",
         price: 120000,
-        image: "https://images.unsplash.com/photo-1638127369513-18e87b426e31?auto=format&fit=crop&q=80&w=2000",
+        image: `${S3}/products/marble-blocks.jpg`,
         description: "Журнальный стол из каррарского мрамора с геометрическим основанием.",
         specs: "Диаметр: 100 см | Высота: 35 см"
     },
@@ -59,7 +61,7 @@ export const products = [
         name: "Oak Wave Chair",
         category: "Chairs",
         price: 45000,
-        image: "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&q=80&w=1000",
+        image: `${S3}/products/oak-wave-chair.jpg`,
         description: "Обеденный стул из массива дуба с изогнутой спинкой.",
         specs: "Ширина: 50 см | Высота: 80 см"
     },
@@ -69,7 +71,7 @@ export const products = [
         name: "Cloud Sectional",
         category: "Sofas",
         price: 280000,
-        image: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=2070",
+        image: `${S3}/products/milano-gallery-2.jpg`,
         description: "Модульный диван для максимального комфорта.",
         specs: "Ширина: 320 см | Глубина: 120 см"
     },
@@ -79,7 +81,7 @@ export const products = [
         name: "Travertine Table",
         category: "Tables",
         price: 65000,
-        image: "https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?auto=format&fit=crop&q=80&w=1000",
+        image: `${S3}/products/travertine-table.jpg`,
         description: "Приставной столик из натурального травертина.",
         specs: "Диаметр: 45 см | Высота: 50 см"
     }

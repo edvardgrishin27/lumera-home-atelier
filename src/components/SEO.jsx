@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 const SITE_NAME = 'Lumera Home Atelier';
 const BASE_URL = 'https://lumerahome.ru';
-const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&q=80&w=1200';
+const DEFAULT_IMAGE = 'https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/filosofiya-pustoty.jpg';
 
 function setMeta(name, content, attr = 'name') {
     if (!content) return;
