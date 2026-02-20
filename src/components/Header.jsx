@@ -5,13 +5,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Scroll to top helper — works with Lenis
-const scrollToTop = () => {
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    // Also dispatch for Lenis to pick up
-    window.dispatchEvent(new Event('scrollToTop'));
+// Smooth scroll to top — dispatches event for Lenis to animate elegantly
+const scrollToTopSmooth = () => {
+    window.dispatchEvent(new CustomEvent('scrollToTop', { detail: { smooth: true } }));
 };
 
 const Header = () => {
@@ -24,11 +20,11 @@ const Header = () => {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // Handle nav link click — if already on this page, scroll to top
+    // Handle nav link click — if already on this page, smooth scroll to top
     const handleNavClick = (e, path) => {
         if (location.pathname === path) {
             e.preventDefault();
-            scrollToTop();
+            scrollToTopSmooth();
         }
     };
 

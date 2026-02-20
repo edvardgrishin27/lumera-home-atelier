@@ -57,9 +57,18 @@ function App() {
         window.scrollTo(0, 0);
 
         // Listen for scrollToTop events from Header nav clicks
-        const handleScrollToTop = () => {
+        const handleScrollToTop = (event) => {
             if (lenisRef.current) {
-                lenisRef.current.scrollTo(0, { immediate: true });
+                const isSmooth = event?.detail?.smooth;
+                if (isSmooth) {
+                    // Premium smooth scroll — elegant animation when clicking current page link
+                    lenisRef.current.scrollTo(0, {
+                        duration: 1.8,
+                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                    });
+                } else {
+                    lenisRef.current.scrollTo(0, { immediate: true });
+                }
             }
         };
         window.addEventListener('scrollToTop', handleScrollToTop);
