@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
+import SEO from '../components/SEO';
 
 const Blog = () => {
     const containerRef = useRef(null);
@@ -37,6 +38,11 @@ const Blog = () => {
 
     return (
         <div ref={containerRef} className="pt-40 pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background w-full overflow-hidden">
+            <SEO
+                title="Блог"
+                description="Статьи о дизайне интерьера, трендах мебели, HoReCa и архитектуре от Lumera Home Atelier."
+                url="/blog"
+            />
             <div className="max-w-[1600px] mx-auto content-layer mb-32">
                 <div className="mb-20 text-center reveal">
                     <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6 block">{blog.subtitle}</span>
@@ -47,7 +53,7 @@ const Blog = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24">
                     {posts.map((post, idx) => (
-                        <Link to={`/blog/${post.id}`} key={post.id} className={`reveal group cursor-pointer block ${idx % 2 !== 0 ? 'md:mt-32' : ''}`}>
+                        <Link to={`/blog/${post.slug}`} key={post.id} className={`reveal group cursor-pointer block ${idx % 2 !== 0 ? 'md:mt-32' : ''}`}>
                             <div className="aspect-[4/3] bg-surface overflow-hidden relative mb-8 rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
                                 <img
                                     src={post.image}

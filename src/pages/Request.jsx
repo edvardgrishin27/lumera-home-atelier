@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { submitForm } from '../utils/submitForm';
+import SEO from '../components/SEO';
 
 const Request = () => {
     const containerRef = useRef(null);
@@ -35,6 +36,11 @@ const Request = () => {
 
     return (
         <div ref={containerRef} className="min-h-screen bg-background flex flex-col items-center justify-center px-4 md:px-0 py-32">
+            <SEO
+                title="Оставить заявку"
+                description="Оставьте заявку на консультацию по подбору мебели. Мы свяжемся с вами в течение 15 минут."
+                url="/request"
+            />
             <div className="max-w-xl w-full content-layer bg-surface p-12 md:p-16 rounded-3xl shadow-floating relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-background via-primary to-background opacity-20"></div>
 

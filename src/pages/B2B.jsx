@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
 import { submitForm } from '../utils/submitForm';
+import SEO from '../components/SEO';
 
 const B2B = () => {
     const containerRef = useRef(null);
@@ -39,6 +40,11 @@ const B2B = () => {
 
     return (
         <div ref={containerRef} className="bg-background min-h-screen w-full relative pt-40 px-6 md:px-20 pb-20">
+            <SEO
+                title="Для бизнеса"
+                description="Мебель для отелей, ресторанов, офисов и коворкингов. Индивидуальные проекты, оптовые поставки из Китая."
+                url="/b2b"
+            />
 
             {/* Hero Text */}
             <div className="max-w-4xl mb-32 content-layer relative">

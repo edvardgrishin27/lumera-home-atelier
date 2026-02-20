@@ -2,14 +2,15 @@ import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useContent } from '../context/ContentContext';
+import SEO from '../components/SEO';
 
 const BlogPost = () => {
-    const { id } = useParams();
+    const { slug } = useParams();
     const navigate = useNavigate();
     const { content } = useContent();
     const containerRef = useRef(null);
 
-    const post = content.blog.posts?.find(p => p.id === parseInt(id));
+    const post = content.blog.posts?.find(p => p.slug === slug);
 
     useEffect(() => {
         if (!post) return;
@@ -39,6 +40,23 @@ const BlogPost = () => {
     // or just display what we have beautifully.
     return (
         <div ref={containerRef} className="pt-32 pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background w-full">
+            <SEO
+                title={post.title}
+                description={post.excerpt}
+                image={post.image}
+                url={`/blog/${post.slug}`}
+                type="article"
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "BlogPosting",
+                    "headline": post.title,
+                    "description": post.excerpt,
+                    "image": post.image,
+                    "datePublished": post.date,
+                    "author": { "@type": "Organization", "name": "Lumera Home Atelier" },
+                    "publisher": { "@type": "Organization", "name": "Lumera Home Atelier" }
+                }}
+            />
             <div className="max-w-4xl mx-auto content-layer">
 
                 <button

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
+import SEO from '../components/SEO';
 
 const Home = () => {
     const containerRef = useRef(null);
@@ -60,6 +61,18 @@ const Home = () => {
 
     return (
         <div ref={containerRef} className="w-full bg-background overflow-hidden">
+            <SEO
+                title="Премиальная мебель из Китая под заказ"
+                description="Lumera Home Atelier — премиальная мебель из Китая для дома и бизнеса. Диваны, кресла, столы и декор от ведущих фабрик."
+                url="/"
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "WebSite",
+                    "name": "Lumera Home Atelier",
+                    "url": "https://lumerahome.ru",
+                    "description": "Премиальная мебель из Китая под заказ для дома и бизнеса"
+                }}
+            />
 
             {/* Hero Section */}
             <section className="hero-container content-layer relative h-[100vh] w-full bg-background flex flex-col justify-center px-8 md:px-20 pt-20">
@@ -102,7 +115,7 @@ const Home = () => {
                     {hitProducts.map((product, idx) => (
                         <Link
                             key={idx}
-                            to={`/product/${product.id}`}
+                            to={`/product/${product.slug}`}
                             className="hit-card opacity-0 translate-y-10 group cursor-pointer block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl transition-all duration-500 ease-spring hover:-translate-y-2"
                         >
                             {/* Image Container with Layered Shadow */}

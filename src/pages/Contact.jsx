@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useContent } from '../context/ContentContext';
 import { submitForm } from '../utils/submitForm';
+import SEO from '../components/SEO';
 
 const Contact = () => {
     const containerRef = useRef(null);
@@ -38,6 +39,20 @@ const Contact = () => {
 
     return (
         <div ref={containerRef} className="min-h-screen bg-background w-full relative pt-32 lg:pt-0">
+            <SEO
+                title="Контакты"
+                description="Свяжитесь с Lumera Home Atelier — телефон, email, адрес шоурума в Москве. Оставьте заявку на консультацию."
+                url="/contact"
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "LocalBusiness",
+                    "name": "Lumera Home Atelier",
+                    "telephone": "8 (499) 877-16-78",
+                    "email": "info@lumerahome.ru",
+                    "url": "https://lumerahome.ru",
+                    "address": { "@type": "PostalAddress", "addressLocality": "Москва", "addressCountry": "RU" }
+                }}
+            />
             <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen content-layer relative">
 
                 {/* Visual Left Side */}

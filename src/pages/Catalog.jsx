@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useContent } from '../context/ContentContext';
+import SEO from '../components/SEO';
 
 const Catalog = () => {
     const [filter, setFilter] = useState('All');
@@ -27,6 +28,23 @@ const Catalog = () => {
 
     return (
         <div ref={containerRef} className="pt-32 pb-20 px-6 md:px-12 min-h-screen bg-background">
+            <SEO
+                title="Каталог мебели"
+                description="Каталог премиальной мебели Lumera Home Atelier — диваны, кресла, столы, стулья и декор из Китая под заказ."
+                url="/catalog"
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "ItemList",
+                    "name": "Каталог мебели Lumera",
+                    "numberOfItems": products.length,
+                    "itemListElement": products.map((p, i) => ({
+                        "@type": "ListItem",
+                        "position": i + 1,
+                        "url": `https://lumerahome.ru/product/${p.slug}`,
+                        "name": p.name
+                    }))
+                }}
+            />
             <div className="max-w-[1800px] mx-auto content-layer">
                 <header className="mb-20 flex flex-col items-center">
                     <h1 className="text-6xl md:text-8xl font-serif font-thin mb-12 text-primary tracking-tight">Коллекция</h1>
@@ -48,7 +66,7 @@ const Catalog = () => {
                     {filteredProducts.map((product) => (
                         <Link
                             key={product.id}
-                            to={`/product/${product.id}`}
+                            to={`/product/${product.slug}`}
                             className="product-card group block opacity-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-3xl transition-all duration-500 ease-spring hover:-translate-y-2"
                         >
                             {/* Card Image - with 2026 Layered Shadow & Cinematic Overlay */}

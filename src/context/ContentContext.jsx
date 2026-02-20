@@ -46,6 +46,7 @@ const defaultContent = {
         posts: [
             {
                 id: 1,
+                slug: "trendy-2026-vozvrashhenie-k-taktilnosti",
                 title: "Тренды 2026: Возвращение к тактильности",
                 date: "12 Февраля, 2026",
                 category: "Интерьер",
@@ -54,6 +55,7 @@ const defaultContent = {
             },
             {
                 id: 2,
+                slug: "filosofiya-pustoty",
                 title: "Философия пустоты. Меньше, но лучше.",
                 date: "05 Февраля, 2026",
                 category: "Лайфстайл",
@@ -62,6 +64,7 @@ const defaultContent = {
             },
             {
                 id: 3,
+                slug: "kollekcionnyj-dizajn-v-restorane",
                 title: "Коллекционный дизайн в ресторане",
                 date: "28 Января, 2026",
                 category: "HoReCa",
@@ -70,6 +73,7 @@ const defaultContent = {
             },
             {
                 id: 4,
+                slug: "ergonomika-lobbi-barov",
                 title: "Эргономика лобби-баров",
                 date: "15 Января, 2026",
                 category: "Архитектура",
@@ -127,6 +131,14 @@ export const ContentProvider = ({ children }) => {
                 if (parsed.b2b && parsed.b2b.image2 && parsed.b2b.image2.includes('1497215728101')) parsed.b2b.image2 = defaultContent.b2b.image2;
                 // Migration: Update email from lumera.su to lumerahome.ru
                 if (parsed.settings && parsed.settings.email && parsed.settings.email.includes('lumera.su')) parsed.settings.email = defaultContent.settings.email;
+                // Migration: Add slug to blog posts if missing
+                if (parsed.blog?.posts) {
+                    parsed.blog.posts = parsed.blog.posts.map(savedPost => {
+                        const defaultPost = defaultContent.blog.posts.find(p => p.id === savedPost.id);
+                        if (defaultPost && !savedPost.slug) savedPost.slug = defaultPost.slug;
+                        return savedPost;
+                    });
+                }
                 if (parsed.contactPage) {
                     // Always use the latest contact image
                     parsed.contactPage.image1 = defaultContent.contactPage.image1;
@@ -138,6 +150,8 @@ export const ContentProvider = ({ children }) => {
                         // Migration: Replace broken Unsplash images with working defaults
                         const img = savedProd.image || '';
                         if (defaultProd && img.includes('1634712282287')) savedProd.image = defaultProd.image;
+                        // Migration: Add slug field if missing
+                        if (defaultProd && !savedProd.slug) savedProd.slug = defaultProd.slug;
                         return {
                             ...savedProd,
                             colors: savedProd.colors?.length ? savedProd.colors : (defaultProd?.colors || []),

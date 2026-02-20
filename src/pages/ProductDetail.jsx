@@ -3,12 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
+import SEO from '../components/SEO';
 
 const ProductDetail = () => {
-    const { id } = useParams();
+    const { slug } = useParams();
     const { content } = useContent();
     const products = content.products;
-    const product = products.find(p => p.id === parseInt(id)) || products[0];
+    const product = products.find(p => p.slug === slug) || products[0];
     const containerRef = useRef(null);
     const [activeImage, setActiveImage] = useState(0);
     const [selectedColor, setSelectedColor] = useState(0);
@@ -54,6 +55,28 @@ const ProductDetail = () => {
 
     return (
         <div ref={containerRef} className="bg-background min-h-screen">
+            <SEO
+                title={product.name}
+                description={product.description}
+                image={product.image}
+                url={`/product/${product.slug}`}
+                type="product"
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "Product",
+                    "name": product.name,
+                    "description": product.description,
+                    "image": product.image,
+                    "url": `https://lumerahome.ru/product/${product.slug}`,
+                    "brand": { "@type": "Brand", "name": "Lumera Home Atelier" },
+                    "offers": {
+                        "@type": "Offer",
+                        "price": product.price,
+                        "priceCurrency": "RUB",
+                        "availability": "https://schema.org/InStock"
+                    }
+                }}
+            />
 
             {/* Top Section: Refined 2026 Premium Style */}
             <div className="pt-32 pb-20 px-6 md:px-12 max-w-[1600px] mx-auto content-layer">

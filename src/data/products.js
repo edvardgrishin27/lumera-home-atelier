@@ -1,6 +1,7 @@
 export const products = [
     {
         id: 1,
+        slug: "milano-sofa",
         name: "Milano Sofa",
         category: "Sofas",
         price: 145000,
@@ -34,6 +35,7 @@ export const products = [
     },
     {
         id: 2,
+        slug: "zenit-armchair",
         name: "Zenit Armchair",
         category: "Armchairs",
         price: 85000,
@@ -43,6 +45,7 @@ export const products = [
     },
     {
         id: 3,
+        slug: "marble-blocks",
         name: "Marble Blocks",
         category: "Tables",
         price: 120000,
@@ -52,6 +55,7 @@ export const products = [
     },
     {
         id: 4,
+        slug: "oak-wave-chair",
         name: "Oak Wave Chair",
         category: "Chairs",
         price: 45000,
@@ -61,6 +65,7 @@ export const products = [
     },
     {
         id: 5,
+        slug: "cloud-sectional",
         name: "Cloud Sectional",
         category: "Sofas",
         price: 280000,
@@ -70,6 +75,7 @@ export const products = [
     },
     {
         id: 6,
+        slug: "travertine-table",
         name: "Travertine Table",
         category: "Tables",
         price: 65000,

@@ -1,7 +1,8 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lumera.ru/sitemap.xml
+Sitemap: https://lumerahome.ru/sitemap.xml
 
 Disallow: /admin
 Disallow: /login
+Disallow: /panel

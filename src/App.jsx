@@ -102,11 +102,11 @@ function App() {
                 <Routes location={location} key={location.pathname}>
                     <Route path="/" element={<Home />} />
                     <Route path="/catalog" element={<Catalog />} />
-                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route path="/product/:slug" element={<ProductDetail />} />
                     <Route path="/b2b" element={<B2B />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/blog" element={<Blog />} />
-                    <Route path="/blog/:id" element={<BlogPost />} />
+                    <Route path="/blog/:slug" element={<BlogPost />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/request" element={<Request />} />
 

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
+import SEO from '../components/SEO';
 
 const About = () => {
     const containerRef = useRef(null);
@@ -33,6 +34,11 @@ const About = () => {
 
     return (
         <div ref={containerRef} className="pt-40 px-6 md:px-20 min-h-screen bg-background w-full overflow-hidden">
+            <SEO
+                title="О нас"
+                description="Lumera Home Atelier — ателье премиальной мебели из Китая. Индивидуальный подход, авторские коллекции, доставка по России."
+                url="/about"
+            />
             <div className="max-w-[1600px] mx-auto content-layer mb-32">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
 
