@@ -53,7 +53,7 @@ const About = () => {
                         <div className="reveal">
                             <div className="aspect-[4/3] bg-surface overflow-hidden relative mb-8 rounded-2xl shadow-elevated transition-shadow duration-500 hover:shadow-hover-glow cursor-crosshair">
                                 <img src={ab.image1} className="w-full h-full object-cover parallax-media scale-110" alt="Atelier Interior" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent mix-blend-multiply" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                             </div>
                             <h2 className="text-3xl font-serif mb-4 text-primary">Философия</h2>
                             <p className="text-sm text-secondary leading-relaxed max-w-xl">

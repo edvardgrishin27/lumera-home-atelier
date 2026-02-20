@@ -54,7 +54,7 @@ const Blog = () => {
                                     alt={post.title}
                                     className="w-full h-full object-cover parallax-img transition-transform duration-1000 ease-spring group-hover:scale-105 origin-center"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                             </div>
 
                             <div className="flex justify-between items-center mb-4">

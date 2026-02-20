@@ -41,13 +41,13 @@ const B2B = () => {
                 <div className="reveal-item group">
                     <div className="aspect-[4/5] bg-surface overflow-hidden relative mb-8 rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
                         <img src={b.image1} className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105" alt="Restaurant Interior" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     </div>
                 </div>
                 <div className="md:pt-40 reveal-item group">
                     <div className="aspect-[4/5] bg-surface overflow-hidden relative mb-8 rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
                         <img src={b.image2} className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105" alt="Office Interior" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-multiply" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     </div>
                 </div>
             </div>
