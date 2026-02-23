@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { products as defaultProducts } from '../data/products';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { products as defaultProductsList } from '../data/products';
+import * as api from '../utils/api';
 
-// Default content for editable sections
+// Default content (used as fallback when API is unavailable)
 const defaultContent = {
-    // Home Page
     home: {
         heroTitle1: 'LIVING',
         heroTitle2: 'ART',
@@ -15,7 +15,6 @@ const defaultContent = {
         hitsLink: 'Перейти в каталог',
         productView: 'Подробнее',
     },
-    // Content Pages
     about: {
         title: 'О нас',
         subtitle: 'Коллекционный дизайн как образ жизни',
@@ -44,43 +43,11 @@ const defaultContent = {
         mainTitle: 'Заметки\nоб эстетике',
         readMoreBtn: 'Читать статью',
         posts: [
-            {
-                id: 1,
-                slug: "trendy-2026-vozvrashhenie-k-taktilnosti",
-                title: "Тренды 2026: Возвращение к тактильности",
-                date: "12 Февраля, 2026",
-                category: "Интерьер",
-                image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/trendy-2026.jpg",
-                excerpt: "Как цифровизация заставляет нас искать спасение в натуральных фактурах: букле, необработанном шелке и брашированном дубе."
-            },
-            {
-                id: 2,
-                slug: "filosofiya-pustoty",
-                title: "Философия пустоты. Меньше, но лучше.",
-                date: "05 Февраля, 2026",
-                category: "Лайфстайл",
-                image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/filosofiya-pustoty.jpg",
-                excerpt: "Почему премиальные интерьеры отказываются от лишнего декора в пользу архитектурности форм и правильного света."
-            },
-            {
-                id: 3,
-                slug: "kollekcionnyj-dizajn-v-restorane",
-                title: "Коллекционный дизайн в ресторане",
-                date: "28 Января, 2026",
-                category: "HoReCa",
-                image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/kollekcionnyj-dizajn.jpg",
-                excerpt: "Инвестиции в эмоции: как мебель лимитированных тиражей становится центром притяжения гостей."
-            },
-            {
-                id: 4,
-                slug: "ergonomika-lobbi-barov",
-                title: "Эргономика лобби-баров",
-                date: "15 Января, 2026",
-                category: "Архитектура",
-                image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/b2b-office.jpg",
-                excerpt: "Создаем пространство для работы и отдыха, которое не уступает по статусу пятизвездочным отелям."
-            }
-        ]
+            { id: 1, slug: "trendy-2026-vozvrashhenie-k-taktilnosti", title: "Тренды 2026: Возвращение к тактильности", date: "12 Февраля, 2026", category: "Интерьер", image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/trendy-2026.jpg", excerpt: "Как цифровизация заставляет нас искать спасение в натуральных фактурах: букле, необработанном шелке и брашированном дубе." },
+            { id: 2, slug: "filosofiya-pustoty", title: "Философия пустоты. Меньше, но лучше.", date: "05 Февраля, 2026", category: "Лайфстайл", image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/filosofiya-pustoty.jpg", excerpt: "Почему премиальные интерьеры отказываются от лишнего декора в пользу архитектурности форм и правильного света." },
+            { id: 3, slug: "kollekcionnyj-dizajn-v-restorane", title: "Коллекционный дизайн в ресторане", date: "28 Января, 2026", category: "HoReCa", image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/kollekcionnyj-dizajn.jpg", excerpt: "Инвестиции в эмоции: как мебель лимитированных тиражей становится центром притяжения гостей." },
+            { id: 4, slug: "ergonomika-lobbi-barov", title: "Эргономика лобби-баров", date: "15 Января, 2026", category: "Архитектура", image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/b2b-office.jpg", excerpt: "Создаем пространство для работы и отдыха, которое не уступает по статусу пятизвездочным отелям." },
+        ],
     },
     contactPage: {
         title: 'Свяжитесь с нами',
@@ -93,7 +60,6 @@ const defaultContent = {
         formPhone: 'Телефон',
         formSubmit: 'Отправить',
     },
-    // Site Settings
     settings: {
         phone: '8 (499) 877-16-78',
         email: 'info@lumerahome.ru',
@@ -104,9 +70,10 @@ const defaultContent = {
         footerAddressLabel: 'Флагманский салон',
         footerAddress: 'г. Москва, ул. Примерная, 10',
     },
-    // Products (full array)
-    products: defaultProducts,
+    products: defaultProductsList,
 };
+
+const CACHE_KEY = 'lumera_content';
 
 const ContentContext = createContext();
 
@@ -114,131 +81,161 @@ export const useContent = () => useContext(ContentContext);
 
 export const ContentProvider = ({ children }) => {
     const [content, setContent] = useState(() => {
+        // Initial render: use localStorage cache or defaults
         try {
-            const saved = localStorage.getItem('lumera_content');
-            if (saved) {
-                let parsed = JSON.parse(saved);
-
-                // Migration: Move all images from Unsplash/premium to S3
-                const needsS3 = (url) => url && (url.includes('images.unsplash.com') || url.includes('/images/premium/'));
-                if (parsed.home && needsS3(parsed.home.heroImage)) parsed.home.heroImage = defaultContent.home.heroImage;
-                if (parsed.about && needsS3(parsed.about.image1)) parsed.about.image1 = defaultContent.about.image1;
-                if (parsed.b2b && needsS3(parsed.b2b.image1)) parsed.b2b.image1 = defaultContent.b2b.image1;
-                if (parsed.b2b && needsS3(parsed.b2b.image2)) parsed.b2b.image2 = defaultContent.b2b.image2;
-                // Migration: Update email from lumera.su to lumerahome.ru
-                if (parsed.settings && parsed.settings.email && parsed.settings.email.includes('lumera.su')) parsed.settings.email = defaultContent.settings.email;
-                // Migration: Add slug + migrate images to S3 for blog posts
-                if (parsed.blog?.posts) {
-                    parsed.blog.posts = parsed.blog.posts.map(savedPost => {
-                        const defaultPost = defaultContent.blog.posts.find(p => p.id === savedPost.id);
-                        if (defaultPost && !savedPost.slug) savedPost.slug = defaultPost.slug;
-                        if (defaultPost && needsS3(savedPost.image)) savedPost.image = defaultPost.image;
-                        return savedPost;
-                    });
-                }
-                if (parsed.contactPage) {
-                    // Always use the latest contact image
-                    parsed.contactPage.image1 = defaultContent.contactPage.image1;
-                }
-                // Merge colors and sizes from defaultProducts into saved products (in case cache is outdated)
-                if (parsed.products) {
-                    parsed.products = parsed.products.map(savedProd => {
-                        const defaultProd = defaultProducts.find(p => p.id === savedProd.id);
-                        // Migration: Move images from Unsplash to S3
-                        if (defaultProd && needsS3(savedProd.image)) savedProd.image = defaultProd.image;
-                        if (defaultProd && savedProd.gallery) {
-                            savedProd.gallery = defaultProd.gallery || savedProd.gallery;
-                        }
-                        if (defaultProd && savedProd.video && savedProd.video.includes('pexels.com')) {
-                            savedProd.video = defaultProd.video;
-                        }
-                        // Migration: Add slug field if missing
-                        if (defaultProd && !savedProd.slug) savedProd.slug = defaultProd.slug;
-                        return {
-                            ...savedProd,
-                            colors: savedProd.colors?.length ? savedProd.colors : (defaultProd?.colors || []),
-                            sizes: savedProd.sizes?.length ? savedProd.sizes : (defaultProd?.sizes || []),
-                        };
-                    });
-                }
-
-                return { ...defaultContent, ...parsed };
-            }
+            const saved = localStorage.getItem(CACHE_KEY);
+            if (saved) return { ...defaultContent, ...JSON.parse(saved) };
         } catch (e) {
-            console.error('Failed to load saved content', e);
+            console.error('[content] Failed to load localStorage cache', e);
         }
         return defaultContent;
     });
 
-    // Save to localStorage whenever content changes
+    const [loading, setLoading] = useState(true);
+    const fetchedRef = useRef(false);
+
+    // Fetch from API on mount
+    useEffect(() => {
+        if (fetchedRef.current) return;
+        fetchedRef.current = true;
+
+        api.fetchContent()
+            .then((data) => {
+                const merged = { ...defaultContent, ...data };
+                setContent(merged);
+                try { localStorage.setItem(CACHE_KEY, JSON.stringify(merged)); } catch {}
+                console.log('[content] Loaded from API');
+            })
+            .catch((err) => {
+                console.warn('[content] API unavailable, using cache/defaults:', err.message);
+            })
+            .finally(() => setLoading(false));
+    }, []);
+
+    // Save to localStorage whenever content changes (cache for offline)
     useEffect(() => {
         try {
-            localStorage.setItem('lumera_content', JSON.stringify(content));
+            localStorage.setItem(CACHE_KEY, JSON.stringify(content));
         } catch (e) {
-            console.error('Failed to save content', e);
+            console.error('[content] Failed to save cache', e);
         }
     }, [content]);
 
-    const updateHome = (field, value) => {
+    // ─── Section update (optimistic UI + API call) ───
+    const updateHome = useCallback((field, value) => {
+        setContent(prev => {
+            const updated = { ...prev, home: { ...prev.home, [field]: value } };
+            api.updateSection('home', updated.home).catch(err =>
+                console.error('[content] Failed to save home:', err.message)
+            );
+            return updated;
+        });
+    }, []);
+
+    const updateSettings = useCallback((field, value) => {
+        setContent(prev => {
+            const updated = { ...prev, settings: { ...prev.settings, [field]: value } };
+            api.updateSection('settings', updated.settings).catch(err =>
+                console.error('[content] Failed to save settings:', err.message)
+            );
+            return updated;
+        });
+    }, []);
+
+    const updateContentPage = useCallback((pageName, field, value) => {
+        setContent(prev => {
+            const updated = { ...prev, [pageName]: { ...prev[pageName], [field]: value } };
+            api.updateSection(pageName, updated[pageName]).catch(err =>
+                console.error(`[content] Failed to save ${pageName}:`, err.message)
+            );
+            return updated;
+        });
+    }, []);
+
+    // ─── Product operations (optimistic UI + API call) ───
+    const updateProduct = useCallback((productId, updates) => {
+        setContent(prev => {
+            const product = prev.products.find(p => p.id === productId);
+            if (!product) return prev;
+
+            const merged = { ...product, ...updates };
+            const { id, ...data } = merged;
+            api.updateProduct(productId, { slug: merged.slug, ...data }).catch(err =>
+                console.error('[content] Failed to update product:', err.message)
+            );
+
+            return {
+                ...prev,
+                products: prev.products.map(p => p.id === productId ? merged : p),
+            };
+        });
+    }, []);
+
+    const addProduct = useCallback((product) => {
+        // Generate a temporary ID for optimistic UI
+        const tempId = Date.now();
+        const newProduct = { ...product, id: tempId };
+
         setContent(prev => ({
             ...prev,
-            home: { ...prev.home, [field]: value }
+            products: [...prev.products, newProduct],
         }));
-    };
 
-    const updateSettings = (field, value) => {
-        setContent(prev => ({
-            ...prev,
-            settings: { ...prev.settings, [field]: value }
-        }));
-    };
+        // Call API and update with real ID
+        const { id, ...data } = newProduct;
+        api.createProduct({ slug: product.slug, ...data })
+            .then((res) => {
+                setContent(prev => ({
+                    ...prev,
+                    products: prev.products.map(p =>
+                        p.id === tempId ? { ...p, id: res.id } : p
+                    ),
+                }));
+            })
+            .catch(err => {
+                console.error('[content] Failed to create product:', err.message);
+                // Rollback
+                setContent(prev => ({
+                    ...prev,
+                    products: prev.products.filter(p => p.id !== tempId),
+                }));
+            });
+    }, []);
 
-    const updateContentPage = (pageName, field, value) => {
-        setContent(prev => ({
-            ...prev,
-            [pageName]: { ...prev[pageName], [field]: value }
-        }));
-    };
+    const deleteProduct = useCallback((productId) => {
+        setContent(prev => {
+            api.deleteProduct(productId).catch(err =>
+                console.error('[content] Failed to delete product:', err.message)
+            );
+            return {
+                ...prev,
+                products: prev.products.filter(p => p.id !== productId),
+            };
+        });
+    }, []);
 
-    const updateProduct = (productId, updates) => {
-        setContent(prev => ({
-            ...prev,
-            products: prev.products.map(p =>
-                p.id === productId ? { ...p, ...updates } : p
-            )
-        }));
-    };
+    const reorderProducts = useCallback((newOrder) => {
+        setContent(prev => {
+            const ids = newOrder.map(p => p.id);
+            api.reorderProducts(ids).catch(err =>
+                console.error('[content] Failed to reorder products:', err.message)
+            );
+            return { ...prev, products: newOrder };
+        });
+    }, []);
 
-    const addProduct = (product) => {
-        const newId = Math.max(...content.products.map(p => p.id), 0) + 1;
-        setContent(prev => ({
-            ...prev,
-            products: [...prev.products, { ...product, id: newId }]
-        }));
-    };
-
-    const deleteProduct = (productId) => {
-        setContent(prev => ({
-            ...prev,
-            products: prev.products.filter(p => p.id !== productId)
-        }));
-    };
-
-    const reorderProducts = (newOrder) => {
-        setContent(prev => ({
-            ...prev,
-            products: newOrder
-        }));
-    };
-
-    const resetToDefaults = () => {
+    const resetToDefaults = useCallback(() => {
         setContent(defaultContent);
-        localStorage.removeItem('lumera_content');
-    };
+        localStorage.removeItem(CACHE_KEY);
+        api.resetContent().catch(err =>
+            console.error('[content] Failed to reset on server:', err.message)
+        );
+    }, []);
 
     return (
         <ContentContext.Provider value={{
             content,
+            loading,
             updateHome,
             updateSettings,
             updateContentPage,
@@ -246,7 +243,7 @@ export const ContentProvider = ({ children }) => {
             addProduct,
             deleteProduct,
             reorderProducts,
-            resetToDefaults
+            resetToDefaults,
         }}>
             {children}
         </ContentContext.Provider>
