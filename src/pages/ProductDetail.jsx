@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
 import SEO from '../components/SEO';
+import OrderModal from '../components/OrderModal';
 
 const ProductDetail = () => {
     const { slug } = useParams();
@@ -14,6 +15,7 @@ const ProductDetail = () => {
     const [activeImage, setActiveImage] = useState(0);
     const [selectedColor, setSelectedColor] = useState(0);
     const [selectedSize, setSelectedSize] = useState(0);
+    const [isOrderOpen, setIsOrderOpen] = useState(false);
 
     // Color & Size options (demo data)
     const colors = product?.colors || [];
@@ -211,9 +213,12 @@ const ProductDetail = () => {
                                 )}
 
                                 {/* Premium CTA Button */}
-                                <Link to="/request" className="w-full bg-accent text-white py-5 text-xs uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-all duration-500 ease-spring block text-center shadow-[0_4px_15px_rgba(196,162,101,0.25)] hover:shadow-[0_0_25px_rgba(196,162,101,0.55)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent">
+                                <button
+                                    onClick={() => setIsOrderOpen(true)}
+                                    className="w-full bg-accent text-white py-5 text-xs uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-transform duration-500 ease-spring text-center shadow-[0_4px_15px_rgba(196,162,101,0.25)] hover:shadow-[0_0_25px_rgba(196,162,101,0.55)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
+                                >
                                     Оформить заказ
-                                </Link>
+                                </button>
 
                                 <p className="text-[10px] text-center text-secondary uppercase tracking-[0.2em]">
                                     Индивидуальное изготовление от 45 дней
@@ -267,6 +272,13 @@ const ProductDetail = () => {
                 </div>
             </div>
 
+            <OrderModal
+                isOpen={isOrderOpen}
+                onClose={() => setIsOrderOpen(false)}
+                product={product}
+                selectedColor={selectedColor}
+                selectedSize={selectedSize}
+            />
         </div>
     );
 };
