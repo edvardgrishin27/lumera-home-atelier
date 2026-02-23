@@ -42,17 +42,12 @@ function App() {
 
         lenisRef.current = lenis;
 
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-
-        requestAnimationFrame(raf);
-
         lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => {
+
+        const tickerCallback = (time) => {
             lenis.raf(time * 1000);
-        });
+        };
+        gsap.ticker.add(tickerCallback);
         gsap.ticker.lagSmoothing(0);
 
         window.scrollTo(0, 0);
@@ -76,9 +71,9 @@ function App() {
 
         return () => {
             window.removeEventListener('scrollToTop', handleScrollToTop);
+            gsap.ticker.remove(tickerCallback);
             lenis.destroy();
             lenisRef.current = null;
-            gsap.ticker.remove(lenis.raf);
         };
     }, []);
 
