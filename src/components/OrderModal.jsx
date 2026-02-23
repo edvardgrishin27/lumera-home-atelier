@@ -36,10 +36,6 @@ const OrderModal = ({ isOpen, onClose, product, selectedColor, selectedSize }) =
                 company: '',
                 message,
                 page: 'Заказ товара',
-                product: product.name || '',
-                link: productUrl,
-                size: sizeName,
-                color: colorName,
             });
             setStatus('success');
             setTimeout(() => {
