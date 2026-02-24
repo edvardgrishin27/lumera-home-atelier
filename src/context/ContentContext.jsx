@@ -79,7 +79,7 @@ const defaultContent = {
 
 const CACHE_KEY = 'lumera_content';
 const CACHE_VERSION_KEY = 'lumera_content_v';
-const CACHE_VERSION = 3; // bump to invalidate stale localStorage cache
+const CACHE_VERSION = 4; // bump to invalidate stale localStorage cache
 
 const ContentContext = createContext();
 
@@ -114,7 +114,21 @@ export const ContentProvider = ({ children }) => {
 
         api.fetchContent()
             .then((data) => {
+                // Deep merge: ensure default blog posts (with HTML content) are always present
                 const merged = { ...defaultContent, ...data };
+
+                // Merge blog posts: keep API posts, add any defaults missing from API
+                if (defaultContent.blog?.posts) {
+                    const apiPosts = data.blog?.posts || [];
+                    const apiSlugs = new Set(apiPosts.map(p => p.slug));
+                    const missingDefaults = defaultContent.blog.posts.filter(p => !apiSlugs.has(p.slug));
+                    merged.blog = {
+                        ...defaultContent.blog,
+                        ...(data.blog || {}),
+                        posts: [...apiPosts, ...missingDefaults],
+                    };
+                }
+
                 setContent(merged);
                 try { localStorage.setItem(CACHE_KEY, JSON.stringify(merged)); } catch {}
                 console.log('[content] Loaded from API');
