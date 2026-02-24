@@ -39,9 +39,13 @@ const Blog = () => {
     return (
         <div ref={containerRef} className="pt-40 pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background w-full overflow-hidden">
             <SEO
-                title="Блог"
-                description="Статьи о дизайне интерьера, трендах мебели, HoReCa и архитектуре от Lumera Home Atelier."
+                title="Блог о дизайне интерьера и мебели"
+                description="Статьи о дизайне интерьера, трендах мебели, HoReCa и архитектуре от Lumera Home Atelier. Экспертные советы по обустройству."
                 url="/blog"
+                breadcrumbs={[
+                    { name: 'Главная', url: '/' },
+                    { name: 'Блог' },
+                ]}
             />
             <div className="max-w-[1600px] mx-auto content-layer mb-32">
                 <div className="mb-20 text-center reveal">

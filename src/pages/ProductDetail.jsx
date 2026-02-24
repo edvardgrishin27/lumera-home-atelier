@@ -58,24 +58,35 @@ const ProductDetail = () => {
     return (
         <div ref={containerRef} className="bg-background min-h-screen">
             <SEO
-                title={product.name}
-                description={product.description}
+                title={`${product.name} — купить в Lumera Home Atelier`}
+                description={`${product.name} — ${product.description?.slice(0, 120)}. Цена: ${product.price?.toLocaleString()} ₽. Доставка по России.`}
                 image={product.image}
                 url={`/product/${product.slug}`}
                 type="product"
+                breadcrumbs={[
+                    { name: 'Главная', url: '/' },
+                    { name: 'Каталог', url: '/catalog' },
+                    { name: product.name },
+                ]}
                 jsonLd={{
                     "@context": "https://schema.org",
                     "@type": "Product",
                     "name": product.name,
                     "description": product.description,
-                    "image": product.image,
+                    "image": product.gallery || [product.image],
                     "url": `https://lumerahome.ru/product/${product.slug}`,
                     "brand": { "@type": "Brand", "name": "Lumera Home Atelier" },
+                    "category": product.category,
                     "offers": {
                         "@type": "Offer",
                         "price": product.price,
                         "priceCurrency": "RUB",
-                        "availability": "https://schema.org/InStock"
+                        "availability": "https://schema.org/InStock",
+                        "seller": {
+                            "@type": "Organization",
+                            "name": "Lumera Home Atelier"
+                        },
+                        "url": `https://lumerahome.ru/product/${product.slug}`
                     }
                 }}
             />

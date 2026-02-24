@@ -62,16 +62,38 @@ const Home = () => {
     return (
         <div ref={containerRef} className="w-full bg-background overflow-hidden">
             <SEO
-                title="Премиальная мебель из Китая под заказ"
-                description="Lumera Home Atelier — премиальная мебель из Китая для дома и бизнеса. Диваны, кресла, столы и декор от ведущих фабрик."
+                title="Премиальная мебель из Китая под заказ — доставка по России"
+                description="Lumera Home Atelier — премиальная дизайнерская мебель из Китая для дома и бизнеса. Диваны, кресла, столы от ведущих фабрик. Доставка по России."
                 url="/"
-                jsonLd={{
-                    "@context": "https://schema.org",
-                    "@type": "WebSite",
-                    "name": "Lumera Home Atelier",
-                    "url": "https://lumerahome.ru",
-                    "description": "Премиальная мебель из Китая под заказ для дома и бизнеса"
-                }}
+                jsonLd={[
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "WebSite",
+                        "name": "Lumera Home Atelier",
+                        "url": "https://lumerahome.ru",
+                        "description": "Премиальная мебель из Китая под заказ для дома и бизнеса",
+                        "potentialAction": {
+                            "@type": "SearchAction",
+                            "target": "https://lumerahome.ru/catalog?q={search_term_string}",
+                            "query-input": "required name=search_term_string"
+                        }
+                    },
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "FurnitureStore",
+                        "name": "Lumera Home Atelier",
+                        "url": "https://lumerahome.ru",
+                        "telephone": "8 (499) 877-16-78",
+                        "email": "info@lumerahome.ru",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressLocality": "Москва",
+                            "addressCountry": "RU"
+                        },
+                        "priceRange": "₽₽₽",
+                        "sameAs": ["https://t.me/lumera"]
+                    }
+                ]}
             />
 
             {/* Hero Section */}

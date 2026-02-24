@@ -46,6 +46,11 @@ const BlogPost = () => {
                 image={post.image}
                 url={`/blog/${post.slug}`}
                 type="article"
+                breadcrumbs={[
+                    { name: 'Главная', url: '/' },
+                    { name: 'Блог', url: '/blog' },
+                    { name: post.title },
+                ]}
                 jsonLd={{
                     "@context": "https://schema.org",
                     "@type": "BlogPosting",
@@ -54,7 +59,15 @@ const BlogPost = () => {
                     "image": post.image,
                     "datePublished": post.date,
                     "author": { "@type": "Organization", "name": "Lumera Home Atelier" },
-                    "publisher": { "@type": "Organization", "name": "Lumera Home Atelier" }
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "Lumera Home Atelier",
+                        "url": "https://lumerahome.ru"
+                    },
+                    "mainEntityOfPage": {
+                        "@type": "WebPage",
+                        "@id": `https://lumerahome.ru/blog/${post.slug}`
+                    }
                 }}
             />
             <div className="max-w-4xl mx-auto content-layer">
