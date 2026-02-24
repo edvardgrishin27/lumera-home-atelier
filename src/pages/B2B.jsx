@@ -41,9 +41,13 @@ const B2B = () => {
     return (
         <div ref={containerRef} className="bg-background min-h-screen w-full relative pt-40 px-6 md:px-20 pb-20">
             <SEO
-                title="Для бизнеса"
-                description="Мебель для отелей, ресторанов, офисов и коворкингов. Индивидуальные проекты, оптовые поставки из Китая."
+                title="Мебель для бизнеса — отели, рестораны, офисы"
+                description="Мебель для отелей, ресторанов, офисов и коворкингов от Lumera Home Atelier. Оптовые поставки из Китая, индивидуальные проекты."
                 url="/b2b"
+                breadcrumbs={[
+                    { name: 'Главная', url: '/' },
+                    { name: 'Для бизнеса' },
+                ]}
             />
 
             {/* Hero Text */}

@@ -35,9 +35,13 @@ const About = () => {
     return (
         <div ref={containerRef} className="pt-40 px-6 md:px-20 min-h-screen bg-background w-full overflow-hidden">
             <SEO
-                title="О нас"
+                title="О компании — ателье премиальной мебели из Китая"
                 description="Lumera Home Atelier — ателье премиальной мебели из Китая. Индивидуальный подход, авторские коллекции, доставка по России."
                 url="/about"
+                breadcrumbs={[
+                    { name: 'Главная', url: '/' },
+                    { name: 'О нас' },
+                ]}
             />
             <div className="max-w-[1600px] mx-auto content-layer mb-32">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">

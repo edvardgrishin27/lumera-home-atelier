@@ -40,9 +40,13 @@ const Contact = () => {
     return (
         <div ref={containerRef} className="min-h-screen bg-background w-full relative pt-32 lg:pt-0">
             <SEO
-                title="Контакты"
-                description="Свяжитесь с Lumera Home Atelier — телефон, email, адрес шоурума в Москве. Оставьте заявку на консультацию."
+                title="Контакты — телефон, адрес, заявка на консультацию"
+                description="Свяжитесь с Lumera Home Atelier — телефон 8 (499) 877-16-78, email, адрес шоурума в Москве. Оставьте заявку на консультацию."
                 url="/contact"
+                breadcrumbs={[
+                    { name: 'Главная', url: '/' },
+                    { name: 'Контакты' },
+                ]}
                 jsonLd={{
                     "@context": "https://schema.org",
                     "@type": "LocalBusiness",
@@ -50,7 +54,12 @@ const Contact = () => {
                     "telephone": "8 (499) 877-16-78",
                     "email": "info@lumerahome.ru",
                     "url": "https://lumerahome.ru",
-                    "address": { "@type": "PostalAddress", "addressLocality": "Москва", "addressCountry": "RU" }
+                    "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": "Москва",
+                        "addressCountry": "RU"
+                    },
+                    "priceRange": "₽₽₽"
                 }}
             />
             <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen content-layer relative">

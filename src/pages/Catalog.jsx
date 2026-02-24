@@ -29,9 +29,13 @@ const Catalog = () => {
     return (
         <div ref={containerRef} className="pt-32 pb-20 px-6 md:px-12 min-h-screen bg-background">
             <SEO
-                title="Каталог мебели"
-                description="Каталог премиальной мебели Lumera Home Atelier — диваны, кресла, столы, стулья и декор из Китая под заказ."
+                title="Каталог мебели — купить премиальную мебель из Китая"
+                description="Каталог премиальной мебели Lumera Home Atelier — диваны, кресла, столы, стулья из Китая под заказ. Доставка по России."
                 url="/catalog"
+                breadcrumbs={[
+                    { name: 'Главная', url: '/' },
+                    { name: 'Каталог' },
+                ]}
                 jsonLd={{
                     "@context": "https://schema.org",
                     "@type": "ItemList",

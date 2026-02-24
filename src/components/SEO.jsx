@@ -26,7 +26,19 @@ function setLink(rel, href) {
     el.setAttribute('href', href);
 }
 
-const SEO = ({ title, description, image, url, type = 'website', jsonLd }) => {
+/**
+ * SEO component — manages meta tags, OG, Twitter Cards, canonical, and JSON-LD.
+ *
+ * Props:
+ * - title: Page title (appended with | SITE_NAME)
+ * - description: Meta description
+ * - image: OG/Twitter image URL
+ * - url: Canonical path (e.g. '/catalog')
+ * - type: OG type (default 'website')
+ * - jsonLd: Single JSON-LD object or array of JSON-LD objects
+ * - breadcrumbs: Array of { name, url } for BreadcrumbList schema
+ */
+const SEO = ({ title, description, image, url, type = 'website', jsonLd, breadcrumbs }) => {
     useEffect(() => {
         const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
         const fullUrl = url ? `${BASE_URL}${url}` : BASE_URL;
@@ -56,28 +68,53 @@ const SEO = ({ title, description, image, url, type = 'website', jsonLd }) => {
         // Canonical
         setLink('canonical', fullUrl);
 
-        // JSON-LD
-        let scriptEl = document.querySelector('script[data-seo-jsonld]');
+        // JSON-LD — support single object or array of schemas
+        // Remove old JSON-LD scripts
+        document.querySelectorAll('script[data-seo-jsonld]').forEach(el => el.remove());
+
+        // Collect all schemas
+        const schemas = [];
+
+        // Primary JSON-LD
         if (jsonLd) {
-            if (!scriptEl) {
-                scriptEl = document.createElement('script');
-                scriptEl.type = 'application/ld+json';
-                scriptEl.setAttribute('data-seo-jsonld', '');
-                document.head.appendChild(scriptEl);
+            if (Array.isArray(jsonLd)) {
+                schemas.push(...jsonLd);
+            } else {
+                schemas.push(jsonLd);
             }
-            scriptEl.textContent = JSON.stringify(jsonLd);
-        } else if (scriptEl) {
-            scriptEl.remove();
         }
+
+        // Breadcrumbs JSON-LD
+        if (breadcrumbs && breadcrumbs.length > 0) {
+            schemas.push({
+                '@context': 'https://schema.org',
+                '@type': 'BreadcrumbList',
+                'itemListElement': breadcrumbs.map((item, index) => ({
+                    '@type': 'ListItem',
+                    'position': index + 1,
+                    'name': item.name,
+                    'item': item.url ? `${BASE_URL}${item.url}` : undefined,
+                })),
+            });
+        }
+
+        // Insert all schemas
+        schemas.forEach((schema, i) => {
+            const scriptEl = document.createElement('script');
+            scriptEl.type = 'application/ld+json';
+            scriptEl.setAttribute('data-seo-jsonld', String(i));
+            scriptEl.textContent = JSON.stringify(schema);
+            document.head.appendChild(scriptEl);
+        });
 
         return () => {
             // Cleanup JSON-LD on unmount
-            const el = document.querySelector('script[data-seo-jsonld]');
-            if (el) el.remove();
+            document.querySelectorAll('script[data-seo-jsonld]').forEach(el => el.remove());
         };
-    }, [title, description, image, url, type, jsonLd]);
+    }, [title, description, image, url, type, jsonLd, breadcrumbs]);
 
     return null;
 };
 
+export { SITE_NAME, BASE_URL, DEFAULT_IMAGE };
 export default SEO;
