@@ -85,6 +85,11 @@ function App() {
         window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
+
+        // Yandex.Metrika SPA page hit tracking
+        if (typeof window.ym === 'function') {
+            window.ym(106984679, 'hit', window.location.href);
+        }
     }, [location.pathname]);
 
     // Hide Header/Footer/Cursor on admin panel pages
