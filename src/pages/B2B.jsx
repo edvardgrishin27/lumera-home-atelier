@@ -41,13 +41,34 @@ const B2B = () => {
     return (
         <div ref={containerRef} className="bg-background min-h-screen w-full relative pt-40 px-6 md:px-20 pb-20">
             <SEO
-                title="Мебель для бизнеса — отели, рестораны, офисы"
-                description="Мебель для отелей, ресторанов, офисов и коворкингов от Lumera Home Atelier. Оптовые поставки из Китая, индивидуальные проекты."
+                title="Мебель для отелей и ресторанов оптом из Китая — B2B"
+                description="Мебель оптом из Китая для отелей, ресторанов, офисов и коворкингов. Мебель для HoReCa от Lumera Home Atelier — индивидуальные проекты, доставка по РФ."
                 url="/b2b"
                 breadcrumbs={[
                     { name: 'Главная', url: '/' },
                     { name: 'Для бизнеса' },
                 ]}
+                jsonLd={{
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    "mainEntity": [
+                        {
+                            "@type": "Question",
+                            "name": "Какой минимальный объём заказа мебели для бизнеса?",
+                            "acceptedAnswer": { "@type": "Answer", "text": "Минимальный заказ — от 5 единиц одной позиции или комплексный проект от 500 000 ₽. Для архитекторов и дизайнеров действуют специальные условия." }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Какие сроки поставки мебели для HoReCa?",
+                            "acceptedAnswer": { "@type": "Answer", "text": "Стандартные сроки производства и доставки — от 45 до 90 дней в зависимости от сложности проекта. Для срочных заказов возможна ускоренная доставка." }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Работаете ли вы с дизайнерами интерьеров?",
+                            "acceptedAnswer": { "@type": "Answer", "text": "Да, мы предлагаем партнёрскую программу для дизайнеров и архитекторов с персональными скидками, приоритетным обслуживанием и выделенным менеджером." }
+                        }
+                    ]
+                }}
             />
 
             {/* Hero Text */}
@@ -68,13 +89,13 @@ const B2B = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-40 mb-40 content-layer">
                 <div className="reveal-item group">
                     <div className="aspect-[4/5] bg-surface overflow-hidden relative mb-8 rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
-                        <img src={b.image1} className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105" alt="Restaurant Interior" loading="lazy" decoding="async" width="800" height="1000" />
+                        <img src={b.image1} className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105" alt="Мебель для ресторанов из Китая — интерьер с дизайнерской мебелью Lumera" loading="lazy" decoding="async" width="800" height="1000" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     </div>
                 </div>
                 <div className="md:pt-40 reveal-item group">
                     <div className="aspect-[4/5] bg-surface overflow-hidden relative mb-8 rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
-                        <img src={b.image2} className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105" alt="Office Interior" loading="lazy" decoding="async" width="800" height="1000" />
+                        <img src={b.image2} className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105" alt="Мебель для офисов и коворкингов — дизайнерские решения Lumera Home Atelier" loading="lazy" decoding="async" width="800" height="1000" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     </div>
                 </div>

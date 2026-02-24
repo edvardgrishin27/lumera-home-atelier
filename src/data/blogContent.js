@@ -1,58 +1,12 @@
-const S3 = 'https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera';
+/**
+ * Default blog post HTML content for fallback when API is unavailable.
+ * Keyed by post slug for easy lookup.
+ * This content is authored by the site admin (trusted CMS content),
+ * NOT user-generated input. It is safe for direct HTML rendering.
+ */
 
-export const defaultSections = {
-    home: {
-        heroTitle1: 'LIVING',
-        heroTitle2: 'ART',
-        heroTitle3: 'FORMS',
-        heroImage: `${S3}/pages/home-hero.jpg`,
-        heroDescription: 'Мы находим и доставляем предметы коллекционного дизайна, которые меняют восприятие пространства.',
-        quoteText: 'Мебель не должна доминировать над пространством. Она должна создавать тишину, в которой слышен голос вашей жизни.',
-        hitsTitle: 'Хиты продаж',
-        hitsLink: 'Перейти в каталог',
-        productView: 'Подробнее',
-    },
-    about: {
-        title: 'О нас',
-        subtitle: 'Коллекционный дизайн как образ жизни',
-        description1: 'Мы не просто продаем мебель. Мы курируем эстетику вашего пространства. Lumera была основана с идеей объединить вневременной дизайн и безупречное качество.',
-        description2: 'Каждый предмет в нашей коллекции проходит строгий отбор. Мы работаем напрямую с фабриками, которые разделяют наши ценности: уважение к материалу, любовь к форме и внимание к деталям.',
-        image1: `${S3}/pages/about.jpg`,
-        stats1Value: '12+',
-        stats1Label: 'Лет опыта',
-        stats2Value: '500+',
-        stats2Label: 'Проектов',
-        stats3Value: 'Эксклюзив',
-        stats3Label: 'Бренды',
-    },
-    b2b: {
-        title: 'Бизнесу',
-        subtitle: 'Архитекторам, Дизайнерам и Рестораторам',
-        description: 'Особое направление Lumera — комплексные интерьерные решения для бизнеса. Мы комплектуем премиальные рестораны, бутик-отели, представительские офисы и любые коммерческие пространства, где важна атмосфера. Наша команда обеспечивает прямые поставки с ведущих европейских фабрик, эксклюзивные коммерческие условия и строгую логистику под ключ.',
-        image1: `${S3}/pages/b2b-restaurant.jpg`,
-        image2: `${S3}/pages/b2b-office.jpg`,
-        formTitle: 'Стать партнером',
-        formSubtitle: 'Заполните форму, и ваш персональный менеджер свяжется с вами сегодня',
-    },
-    blog: {
-        title: 'Блог',
-        subtitle: 'Журнал',
-        mainTitle: 'Заметки\nоб эстетике',
-        readMoreBtn: 'Читать статью',
-        posts: [
-            { id: 1, slug: 'trendy-2026-vozvrashhenie-k-taktilnosti', title: 'Тренды 2026: Возвращение к тактильности', date: '12 Февраля, 2026', category: 'Интерьер', image: `${S3}/blog/trendy-2026.jpg`, excerpt: 'Как цифровизация заставляет нас искать спасение в натуральных фактурах: букле, необработанном шелке и брашированном дубе.' },
-            { id: 2, slug: 'filosofiya-pustoty', title: 'Философия пустоты. Меньше, но лучше.', date: '05 Февраля, 2026', category: 'Лайфстайл', image: `${S3}/blog/filosofiya-pustoty.jpg`, excerpt: 'Почему премиальные интерьеры отказываются от лишнего декора в пользу архитектурности форм и правильного света.' },
-            { id: 3, slug: 'kollekcionnyj-dizajn-v-restorane', title: 'Коллекционный дизайн в ресторане', date: '28 Января, 2026', category: 'HoReCa', image: `${S3}/blog/kollekcionnyj-dizajn.jpg`, excerpt: 'Инвестиции в эмоции: как мебель лимитированных тиражей становится центром притяжения гостей.' },
-            { id: 4, slug: 'ergonomika-lobbi-barov', title: 'Эргономика лобби-баров', date: '15 Января, 2026', category: 'Архитектура', image: `${S3}/pages/b2b-office.jpg`, excerpt: 'Создаем пространство для работы и отдыха, которое не уступает по статусу пятизвездочным отелям.' },
-            {
-                id: 5,
-                slug: 'kak-vybrat-divan-polnoe-rukovodstvo',
-                title: 'Как выбрать диван: полное руководство по размерам, наполнителю и обивке',
-                date: '20 Февраля, 2026',
-                category: 'Гид по выбору',
-                image: `${S3}/products/milano-sofa.jpg`,
-                excerpt: 'Как выбрать диван для гостиной или спальни — размеры, типы наполнителей, обивка, механизмы трансформации. Подробный гид от экспертов Lumera Home Atelier.',
-                content: `<p class="first-letter:text-7xl first-letter:font-serif first-letter:text-accent first-letter:mr-3 first-letter:float-left">Выбор дивана — одно из самых ответственных решений при обустройстве дома. Диван задает настроение всей гостиной, определяет уровень комфорта и служит вам долгие годы. В этом руководстве мы разберем все ключевые параметры, которые помогут сделать правильный выбор.</p>
+export const blogContent = {
+    'kak-vybrat-divan-polnoe-rukovodstvo': `<p class="first-letter:text-7xl first-letter:font-serif first-letter:text-accent first-letter:mr-3 first-letter:float-left">Выбор дивана — одно из самых ответственных решений при обустройстве дома. Диван задает настроение всей гостиной, определяет уровень комфорта и служит вам долгие годы. В этом руководстве мы разберем все ключевые параметры, которые помогут сделать правильный выбор.</p>
 
 <h2>Размеры дивана: как не ошибиться</h2>
 
@@ -133,17 +87,9 @@ export const defaultSections = {
 <li>Какой стиль интерьера: классический, современный, минимализм?</li>
 </ol>
 
-<p>Если вы ответили на эти вопросы — вы уже на 80% готовы к покупке. Остальные 20% — это примерка и тактильные ощущения, которые можно получить в нашем шоуруме или заказать бесплатные образцы тканей.</p>`
-            },
-            {
-                id: 6,
-                slug: 'kak-vybrat-krovat-razmer-matras-material',
-                title: 'Как выбрать кровать: размеры, тип матраса и материалы каркаса',
-                date: '18 Февраля, 2026',
-                category: 'Гид по выбору',
-                image: `${S3}/products/milano-gallery-3.jpg`,
-                excerpt: 'Полное руководство по выбору кровати — стандартные размеры, какой матрас выбрать, из чего должен быть каркас. Советы от дизайнеров Lumera Home Atelier.',
-                content: `<p class="first-letter:text-7xl first-letter:font-serif first-letter:text-accent first-letter:mr-3 first-letter:float-left">Кровать — центральный элемент спальни, от которого зависит качество вашего сна и самочувствие. Неправильно подобранная кровать может стать причиной хронической усталости и проблем со спиной. Разберем все параметры, которые важно учесть.</p>
+<p>Если вы ответили на эти вопросы — вы уже на 80% готовы к покупке. Остальные 20% — это примерка и тактильные ощущения, которые можно получить в нашем шоуруме или заказать бесплатные образцы тканей.</p>`,
+
+    'kak-vybrat-krovat-razmer-matras-material': `<p class="first-letter:text-7xl first-letter:font-serif first-letter:text-accent first-letter:mr-3 first-letter:float-left">Кровать — центральный элемент спальни, от которого зависит качество вашего сна и самочувствие. Неправильно подобранная кровать может стать причиной хронической усталости и проблем со спиной. Разберем все параметры, которые важно учесть.</p>
 
 <h2>Стандартные размеры кроватей</h2>
 
@@ -222,17 +168,9 @@ export const defaultSections = {
 <li>Определите стиль: минимализм, классика, современный</li>
 <li>Выберите материал каркаса и обивку изголовья</li>
 <li>Учтите высоту кровати — стандартная высота с матрасом: 50–55 см от пола</li>
-</ol>`
-            },
-            {
-                id: 7,
-                slug: 'razmery-divanov-tablitsa-standarty',
-                title: 'Размеры диванов: стандартные габариты, таблица и как выбрать по комнате',
-                date: '22 Февраля, 2026',
-                category: 'Гид по выбору',
-                image: `${S3}/products/milano-gallery-4.jpg`,
-                excerpt: 'Все стандартные размеры диванов в одной таблице — прямые, угловые, модульные. Как рассчитать размер дивана для вашей комнаты. Советы от Lumera.',
-                content: `<p class="first-letter:text-7xl first-letter:font-serif first-letter:text-accent first-letter:mr-3 first-letter:float-left">Размер дивана — первое, что нужно определить перед покупкой. Слишком большой диван «задавит» комнату, слишком маленький будет выглядеть непропорционально и не обеспечит комфорт. Разберем все стандартные размеры и научимся рассчитывать оптимальные габариты.</p>
+</ol>`,
+
+    'razmery-divanov-tablitsa-standarty': `<p class="first-letter:text-7xl first-letter:font-serif first-letter:text-accent first-letter:mr-3 first-letter:float-left">Размер дивана — первое, что нужно определить перед покупкой. Слишком большой диван «задавит» комнату, слишком маленький будет выглядеть непропорционально и не обеспечит комфорт. Разберем все стандартные размеры и научимся рассчитывать оптимальные габариты.</p>
 
 <h2>Стандартные размеры прямых диванов</h2>
 
@@ -308,38 +246,5 @@ export const defaultSections = {
 <li><strong>Высокие</strong> (45–50+ см) — рекомендуются для пожилых людей, людей с проблемами суставов</li>
 </ul>
 
-<p>Идеальная высота сидения — когда ноги стоят на полу, а колени согнуты под углом примерно 90 градусов.</p>`
-            },
-        ],
-    },
-    contactPage: {
-        title: 'Свяжитесь с нами',
-        subtitle: 'Ждем вас в гости',
-        image1: `${S3}/pages/contact.jpg`,
-        quote: '"Красота рождается в диалоге."',
-        connectLabel: 'Связь',
-        formTitle: 'Напишите нам',
-        formName: 'Имя',
-        formPhone: 'Телефон',
-        formSubmit: 'Отправить',
-    },
-    settings: {
-        phone: '8 (499) 877-16-78',
-        email: 'info@lumerahome.ru',
-        scheduleMSK: 'Пн-Пт 10:00 - 20:00, Сб-Вс 11:00 - 19:00',
-        scheduleSPB: 'Пн-Вс 11:00 - 19:00',
-        whatsapp: 'https://whatsapp.com',
-        telegram: 'https://t.me/lumera',
-        footerAddressLabel: 'Флагманский салон',
-        footerAddress: 'г. Москва, ул. Примерная, 10',
-    },
+<p>Идеальная высота сидения — когда ноги стоят на полу, а колени согнуты под углом примерно 90 градусов.</p>`,
 };
-
-export const defaultProducts = [
-    { id: 1, slug: 'milano-sofa', name: 'Milano Sofa', category: 'Sofas', price: 145000, image: `${S3}/products/milano-sofa.jpg`, description: 'Этот диван — воплощение итальянского подхода к комфорту «дольче вита». Глубокая посадка, мягкие подушки и обивка из премиального бархата создают ощущение обволакивающего уюта. Геометрическая строгость линий уравновешивается тактильной мягкостью материалов.', specs: 'Ширина: 240 см | Глубина: 95 см | Высота: 75 см', details: [{ label: 'Материал каркаса', value: 'Массив дуба, фанера' }, { label: 'Наполнитель', value: 'Гусиный пух, Memory Foam' }, { label: 'Обивка', value: 'Итальянский бархат (Martindale > 50,000)' }], gallery: [`${S3}/products/milano-sofa.jpg`, `${S3}/products/milano-gallery-2.jpg`, `${S3}/products/milano-gallery-3.jpg`, `${S3}/products/milano-gallery-4.jpg`], colors: [{ name: 'Пыльная роза', hex: '#C8A99A' }, { name: 'Тёмный графит', hex: '#3A3A3A' }, { name: 'Слоновая кость', hex: '#F5F0E8' }, { name: 'Оливковый', hex: '#7A8C6E' }], sizes: [{ label: '200×90', value: '200 × 90 × 75 см' }, { label: '220×95', value: '220 × 95 × 75 см' }, { label: '240×100', value: '240 × 100 × 75 см' }, { label: '260×100', value: '260 × 100 × 75 см' }], video: `${S3}/video/milano-sofa.mp4` },
-    { id: 2, slug: 'zenit-armchair', name: 'Zenit Armchair', category: 'Armchairs', price: 85000, image: `${S3}/products/zenit-armchair.jpg`, description: 'Минималистичное кресло с каркасом из массива дуба и обивкой букле.', specs: 'Ширина: 80 см | Глубина: 85 см | Высота: 70 см' },
-    { id: 3, slug: 'marble-blocks', name: 'Marble Blocks', category: 'Tables', price: 120000, image: `${S3}/products/marble-blocks.jpg`, description: 'Журнальный стол из каррарского мрамора с геометрическим основанием.', specs: 'Диаметр: 100 см | Высота: 35 см' },
-    { id: 4, slug: 'oak-wave-chair', name: 'Oak Wave Chair', category: 'Chairs', price: 45000, image: `${S3}/products/oak-wave-chair.jpg`, description: 'Обеденный стул из массива дуба с изогнутой спинкой.', specs: 'Ширина: 50 см | Высота: 80 см' },
-    { id: 5, slug: 'cloud-sectional', name: 'Cloud Sectional', category: 'Sofas', price: 280000, image: `${S3}/products/milano-gallery-2.jpg`, description: 'Модульный диван для максимального комфорта.', specs: 'Ширина: 320 см | Глубина: 120 см' },
-    { id: 6, slug: 'travertine-table', name: 'Travertine Table', category: 'Tables', price: 65000, image: `${S3}/products/travertine-table.jpg`, description: 'Приставной столик из натурального травертина.', specs: 'Диаметр: 45 см | Высота: 50 см' },
-];

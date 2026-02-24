@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { products as defaultProductsList } from '../data/products';
+import { blogContent } from '../data/blogContent';
 import * as api from '../utils/api';
 
 // Default content (used as fallback when API is unavailable)
@@ -47,6 +48,9 @@ const defaultContent = {
             { id: 2, slug: "filosofiya-pustoty", title: "Философия пустоты. Меньше, но лучше.", date: "05 Февраля, 2026", category: "Лайфстайл", image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/filosofiya-pustoty.jpg", excerpt: "Почему премиальные интерьеры отказываются от лишнего декора в пользу архитектурности форм и правильного света." },
             { id: 3, slug: "kollekcionnyj-dizajn-v-restorane", title: "Коллекционный дизайн в ресторане", date: "28 Января, 2026", category: "HoReCa", image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/blog/kollekcionnyj-dizajn.jpg", excerpt: "Инвестиции в эмоции: как мебель лимитированных тиражей становится центром притяжения гостей." },
             { id: 4, slug: "ergonomika-lobbi-barov", title: "Эргономика лобби-баров", date: "15 Января, 2026", category: "Архитектура", image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/b2b-office.jpg", excerpt: "Создаем пространство для работы и отдыха, которое не уступает по статусу пятизвездочным отелям." },
+            { id: 5, slug: "kak-vybrat-divan-polnoe-rukovodstvo", title: "Как выбрать диван: полное руководство по размерам, наполнителю и обивке", date: "20 Февраля, 2026", category: "Гид по выбору", image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/products/milano-sofa.jpg", excerpt: "Как выбрать диван для гостиной или спальни — размеры, типы наполнителей, обивка, механизмы трансформации. Подробный гид от экспертов Lumera Home Atelier.", content: blogContent['kak-vybrat-divan-polnoe-rukovodstvo'] },
+            { id: 6, slug: "kak-vybrat-krovat-razmer-matras-material", title: "Как выбрать кровать: размеры, тип матраса и материалы каркаса", date: "18 Февраля, 2026", category: "Гид по выбору", image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/products/milano-gallery-3.jpg", excerpt: "Полное руководство по выбору кровати — стандартные размеры, какой матрас выбрать, из чего должен быть каркас. Советы от дизайнеров Lumera Home Atelier.", content: blogContent['kak-vybrat-krovat-razmer-matras-material'] },
+            { id: 7, slug: "razmery-divanov-tablitsa-standarty", title: "Размеры диванов: стандартные габариты, таблица и как выбрать по комнате", date: "22 Февраля, 2026", category: "Гид по выбору", image: "https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/products/milano-gallery-4.jpg", excerpt: "Все стандартные размеры диванов в одной таблице — прямые, угловые, модульные. Как рассчитать размер дивана для вашей комнаты. Советы от Lumera.", content: blogContent['razmery-divanov-tablitsa-standarty'] },
         ],
     },
     contactPage: {
@@ -74,6 +78,8 @@ const defaultContent = {
 };
 
 const CACHE_KEY = 'lumera_content';
+const CACHE_VERSION_KEY = 'lumera_content_v';
+const CACHE_VERSION = 3; // bump to invalidate stale localStorage cache
 
 const ContentContext = createContext();
 
@@ -83,6 +89,13 @@ export const ContentProvider = ({ children }) => {
     const [content, setContent] = useState(() => {
         // Initial render: use localStorage cache or defaults
         try {
+            const ver = localStorage.getItem(CACHE_VERSION_KEY);
+            if (parseInt(ver) !== CACHE_VERSION) {
+                // Cache is stale — clear and use fresh defaults
+                localStorage.removeItem(CACHE_KEY);
+                localStorage.setItem(CACHE_VERSION_KEY, String(CACHE_VERSION));
+                return defaultContent;
+            }
             const saved = localStorage.getItem(CACHE_KEY);
             if (saved) return { ...defaultContent, ...JSON.parse(saved) };
         } catch (e) {

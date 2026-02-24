@@ -37,8 +37,8 @@ const Request = () => {
     return (
         <div ref={containerRef} className="min-h-screen bg-background flex flex-col items-center justify-center px-4 md:px-0 py-32">
             <SEO
-                title="Оставить заявку — консультация по подбору мебели"
-                description="Оставьте заявку на бесплатную консультацию по подбору мебели от Lumera Home Atelier. Свяжемся в течение 15 минут."
+                title="Заявка на подбор мебели из Китая — бесплатная консультация"
+                description="Оставьте заявку на подбор мебели из Китая — бесплатная консультация от Lumera Home Atelier. Ответим в течение 15 минут. Индивидуальный подбор."
                 url="/request"
                 breadcrumbs={[
                     { name: 'Главная', url: '/' },

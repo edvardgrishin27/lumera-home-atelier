@@ -62,8 +62,8 @@ const Home = () => {
     return (
         <div ref={containerRef} className="w-full bg-background overflow-hidden">
             <SEO
-                title="Премиальная мебель из Китая под заказ — доставка по России"
-                description="Lumera Home Atelier — премиальная дизайнерская мебель из Китая для дома и бизнеса. Диваны, кресла, столы от ведущих фабрик. Доставка по России."
+                title="Мебель из Китая под заказ — дизайнерские диваны, кресла, столы"
+                description="Lumera Home Atelier — премиальная мебель из Китая с доставкой по России. Дизайнерские диваны, кресла, столы, кровати от ведущих фабрик. Каталог с ценами."
                 url="/"
                 jsonLd={[
                     {
@@ -71,7 +71,7 @@ const Home = () => {
                         "@type": "WebSite",
                         "name": "Lumera Home Atelier",
                         "url": "https://lumerahome.ru",
-                        "description": "Премиальная мебель из Китая под заказ для дома и бизнеса",
+                        "description": "Дизайнерская мебель из Китая под заказ — диваны, кресла, столы, кровати с доставкой по России",
                         "potentialAction": {
                             "@type": "SearchAction",
                             "target": "https://lumerahome.ru/catalog?q={search_term_string}",
@@ -106,7 +106,7 @@ const Home = () => {
                     </h1>
                 </div>
                 <div className="absolute top-0 right-0 w-full md:w-[60%] h-full z-0 overflow-hidden">
-                    <img ref={heroImgRef} src={home.heroImage} alt="Hero Interior" className="w-full h-[120%] object-cover -mt-[10%]" loading="eager" fetchPriority="high" decoding="async" width="1200" height="800" />
+                    <img ref={heroImgRef} src={home.heroImage} alt="Дизайнерская мебель из Китая — интерьер гостиной Lumera Home Atelier" className="w-full h-[120%] object-cover -mt-[10%]" loading="eager" fetchPriority="high" decoding="async" width="1200" height="800" />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent z-10" />
                     <div className="absolute inset-0 bg-black/5 md:bg-transparent z-10 mix-blend-multiply" />
                 </div>

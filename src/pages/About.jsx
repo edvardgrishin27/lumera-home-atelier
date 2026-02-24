@@ -35,8 +35,8 @@ const About = () => {
     return (
         <div ref={containerRef} className="pt-40 px-6 md:px-20 min-h-screen bg-background w-full overflow-hidden">
             <SEO
-                title="О компании — ателье премиальной мебели из Китая"
-                description="Lumera Home Atelier — ателье премиальной мебели из Китая. Индивидуальный подход, авторские коллекции, доставка по России."
+                title="О компании Lumera Home Atelier — мебель из Китая на заказ"
+                description="Lumera Home Atelier — ателье дизайнерской мебели из Китая. Мебель на заказ по индивидуальным проектам, авторские коллекции, доставка по России."
                 url="/about"
                 breadcrumbs={[
                     { name: 'Главная', url: '/' },
@@ -62,7 +62,7 @@ const About = () => {
                         {/* Section 1 */}
                         <div className="reveal">
                             <div className="aspect-[4/3] bg-surface overflow-hidden relative mb-8 rounded-2xl shadow-elevated transition-shadow duration-500 hover:shadow-hover-glow cursor-crosshair">
-                                <img src={ab.image1} className="w-full h-full object-cover parallax-media scale-110" alt="Atelier Interior" loading="lazy" decoding="async" width="800" height="600" />
+                                <img src={ab.image1} className="w-full h-full object-cover parallax-media scale-110" alt="Ателье Lumera Home Atelier — мастерская дизайнерской мебели" loading="lazy" decoding="async" width="800" height="600" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                             </div>
                             <h2 className="text-3xl font-serif mb-4 text-primary">Философия</h2>

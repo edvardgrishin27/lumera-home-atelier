@@ -39,8 +39,8 @@ const Blog = () => {
     return (
         <div ref={containerRef} className="pt-40 pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background w-full overflow-hidden">
             <SEO
-                title="Блог о дизайне интерьера и мебели"
-                description="Статьи о дизайне интерьера, трендах мебели, HoReCa и архитектуре от Lumera Home Atelier. Экспертные советы по обустройству."
+                title="Блог о мебели — как выбрать диван, кровать, тренды интерьера"
+                description="Экспертные статьи: как выбрать диван, кровать, кресло. Тренды дизайна интерьера, обзоры материалов, рейтинги мебели. Блог Lumera Home Atelier."
                 url="/blog"
                 breadcrumbs={[
                     { name: 'Главная', url: '/' },

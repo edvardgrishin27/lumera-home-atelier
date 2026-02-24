@@ -31,11 +31,16 @@ const ROUTES = [
     '/b2b',
     '/about',
     '/blog',
+    '/blog/trendy-2026-vozvrashhenie-k-taktilnosti',
     '/blog/filosofiya-pustoty',
-    '/blog/kak-vybrat-divan',
-    '/blog/trendy-interiera-2025',
+    '/blog/kollekcionnyj-dizajn-v-restorane',
+    '/blog/ergonomika-lobbi-barov',
+    '/blog/kak-vybrat-divan-polnoe-rukovodstvo',
+    '/blog/kak-vybrat-krovat-razmer-matras-material',
+    '/blog/razmery-divanov-tablitsa-standarty',
     '/contact',
     '/request',
+    '/delivery',
 ];
 
 async function prerender() {
@@ -121,8 +126,8 @@ async function prerender() {
 
             try {
                 await page.goto(url, {
-                    waitUntil: 'networkidle0',
-                    timeout: 30000,
+                    waitUntil: 'networkidle2',
+                    timeout: 60000,
                 });
 
                 // Wait for React to fully render

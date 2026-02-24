@@ -41,8 +41,8 @@ const BlogPost = () => {
     return (
         <div ref={containerRef} className="pt-32 pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background w-full">
             <SEO
-                title={post.title}
-                description={post.excerpt}
+                title={`${post.title} — статья в блоге Lumera`}
+                description={`${post.excerpt?.slice(0, 140)}... Читайте в блоге Lumera Home Atelier.`}
                 image={post.image}
                 url={`/blog/${post.slug}`}
                 type="article"
@@ -101,25 +101,33 @@ const BlogPost = () => {
                     />
                 </div>
 
-                <div className="prose prose-lg prose-p:font-serif prose-p:text-primary/80 prose-p:leading-relaxed max-w-none text-xl reveal">
-                    <p className="first-letter:text-7xl first-letter:font-serif first-letter:text-accent first-letter:mr-3 first-letter:float-left">
-                        {post.excerpt}
-                    </p>
-                    <p className="mt-8">
-                        В современных интерьерах, где каждый квадратный метр рассматривается как инвестиция в качество жизни, подход к выбору мебели кардинально меняется. Мы отходим от концепции "просто купить диван" и приходим к осознанному коллекционированию эмоций и форм.
-                    </p>
-                    <p className="mt-4">
-                        Материалы играют здесь первую скрипку. То, к чему мы прикасаемся каждый день, формирует наше внутреннее состояние. Именно поэтому фабрики, с которыми мы сотрудничаем, уделяют столько внимания тактильности: брашированный дуб, который хранит тепло рук мастера, нежнейшая кожа анилинового крашения, натуральный камень с его неповторимым рисунком вен.
-                    </p>
+                {/* Blog content: uses post.content (trusted HTML from admin CMS) if available, otherwise shows default placeholder */}
+                {post.content ? (
+                    <div
+                        className="blog-content max-w-none reveal"
+                        dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
+                ) : (
+                    <div className="prose prose-lg prose-p:font-serif prose-p:text-primary/80 prose-p:leading-relaxed max-w-none text-xl reveal">
+                        <p className="first-letter:text-7xl first-letter:font-serif first-letter:text-accent first-letter:mr-3 first-letter:float-left">
+                            {post.excerpt}
+                        </p>
+                        <p className="mt-8">
+                            В современных интерьерах, где каждый квадратный метр рассматривается как инвестиция в качество жизни, подход к выбору мебели кардинально меняется. Мы отходим от концепции &laquo;просто купить диван&raquo; и приходим к осознанному коллекционированию эмоций и форм.
+                        </p>
+                        <p className="mt-4">
+                            Материалы играют здесь первую скрипку. То, к чему мы прикасаемся каждый день, формирует наше внутреннее состояние. Именно поэтому фабрики, с которыми мы сотрудничаем, уделяют столько внимания тактильности: брашированный дуб, который хранит тепло рук мастера, нежнейшая кожа анилинового крашения, натуральный камень с его неповторимым рисунком вен.
+                        </p>
 
-                    <div className="my-12 p-8 border-l-2 border-accent bg-surface/50 rounded-r-2xl italic font-serif text-2xl text-primary text-center">
-                        "Истинная роскошь сегодня — это не избыток, а безупречность в деталях и право на визуальную тишину."
+                        <div className="my-12 p-8 border-l-2 border-accent bg-surface/50 rounded-r-2xl italic font-serif text-2xl text-primary text-center">
+                            &laquo;Истинная роскошь сегодня — это не избыток, а безупречность в деталях и право на визуальную тишину.&raquo;
+                        </div>
+
+                        <p>
+                            Современный коллекционный дизайн не кричит о своем статусе. Он проявляется в идеальных пропорциях, в сложных, многослойных оттенках и в том, как предмет взаимодействует со светом в течение дня. Это искусство, которое живет вместе с вами.
+                        </p>
                     </div>
-
-                    <p>
-                        Современный коллекционный дизайн не кричит о своем статусе. Он проявляется в идеальных пропорциях, в сложных, многослойных оттенках и в том, как предмет взаимодействует со светом в течение дня. Это искусство, которое живет вместе с вами.
-                    </p>
-                </div>
+                )}
 
             </div>
         </div>

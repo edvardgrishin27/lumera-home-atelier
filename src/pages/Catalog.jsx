@@ -29,8 +29,8 @@ const Catalog = () => {
     return (
         <div ref={containerRef} className="pt-32 pb-20 px-6 md:px-12 min-h-screen bg-background">
             <SEO
-                title="Каталог мебели — купить премиальную мебель из Китая"
-                description="Каталог премиальной мебели Lumera Home Atelier — диваны, кресла, столы, стулья из Китая под заказ. Доставка по России."
+                title="Каталог мебели из Китая — цены, фото | Купить с доставкой"
+                description="Каталог мебели из Китая с ценами и фото — диваны, кресла, столы, кровати под заказ. Доставка по Москве и России. Каталог Lumera Home Atelier."
                 url="/catalog"
                 breadcrumbs={[
                     { name: 'Главная', url: '/' },

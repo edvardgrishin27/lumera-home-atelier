@@ -23,6 +23,7 @@ const STATIC_PAGES = [
     { url: '/blog',    priority: '0.8', changefreq: 'weekly' },
     { url: '/contact', priority: '0.6', changefreq: 'monthly' },
     { url: '/request', priority: '0.5', changefreq: 'monthly' },
+    { url: '/delivery', priority: '0.7', changefreq: 'monthly' },
 ];
 
 // Product slugs (sync with src/data/products.js)
@@ -35,11 +36,15 @@ const PRODUCT_SLUGS = [
     'travertine-table',
 ];
 
-// Blog slugs (sync with blog content)
+// Blog slugs (sync with blog content in api/defaults.js)
 const BLOG_SLUGS = [
+    'trendy-2026-vozvrashhenie-k-taktilnosti',
     'filosofiya-pustoty',
-    'kak-vybrat-divan',
-    'trendy-interiera-2025',
+    'kollekcionnyj-dizajn-v-restorane',
+    'ergonomika-lobbi-barov',
+    'kak-vybrat-divan-polnoe-rukovodstvo',
+    'kak-vybrat-krovat-razmer-matras-material',
+    'razmery-divanov-tablitsa-standarty',
 ];
 
 function generateSitemap() {

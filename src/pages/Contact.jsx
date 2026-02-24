@@ -40,8 +40,8 @@ const Contact = () => {
     return (
         <div ref={containerRef} className="min-h-screen bg-background w-full relative pt-32 lg:pt-0">
             <SEO
-                title="Контакты — телефон, адрес, заявка на консультацию"
-                description="Свяжитесь с Lumera Home Atelier — телефон 8 (499) 877-16-78, email, адрес шоурума в Москве. Оставьте заявку на консультацию."
+                title="Контакты Lumera Home Atelier — телефон, адрес в Москве"
+                description="Контакты Lumera Home Atelier: телефон 8 (499) 877-16-78, email info@lumerahome.ru. Москва. Бесплатная консультация по подбору мебели из Китая."
                 url="/contact"
                 breadcrumbs={[
                     { name: 'Главная', url: '/' },
@@ -68,7 +68,7 @@ const Contact = () => {
                 <div className="hidden lg:block relative overflow-hidden bg-surface group cursor-crosshair">
                     <img
                         src={cPage.image1}
-                        alt="Contact Studio"
+                        alt="Шоурум Lumera Home Atelier — дизайнерская мебель из Китая"
                         className="w-full h-full object-cover reveal transform scale-105 transition-transform duration-1000 ease-spring group-hover:scale-110"
                         loading="lazy"
                         decoding="async"

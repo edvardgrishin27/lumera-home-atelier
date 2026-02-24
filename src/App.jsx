@@ -20,6 +20,7 @@ const BlogPost = lazy(() => import('./pages/BlogPost'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Request = lazy(() => import('./pages/Request'));
 const Login = lazy(() => import('./pages/Login'));
+const Delivery = lazy(() => import('./pages/Delivery'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 gsap.registerPlugin(ScrollTrigger);
@@ -111,6 +112,7 @@ function App() {
                         <Route path="/blog/:slug" element={<BlogPost />} />
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/request" element={<Request />} />
+                        <Route path="/delivery" element={<Delivery />} />
 
                         {/* Hidden admin panel — accessible only via secret UUID */}
                         <Route path="/panel/:uuid/login" element={<Login />} />

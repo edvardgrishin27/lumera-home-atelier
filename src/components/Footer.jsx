@@ -19,7 +19,7 @@ const Footer = () => {
                     <div className="aspect-[3/2] overflow-hidden rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
                         <img
                             src="https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/home-hero.jpg"
-                            alt="Interior Detail"
+                            alt="Премиальный интерьер с мебелью Lumera Home Atelier"
                             className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105"
                         />
                     </div>
@@ -63,10 +63,13 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Column 3: Documents */}
+                    {/* Column 3: Documents & Info */}
                     <div>
-                        <h3 className="text-primary/40 text-xs uppercase tracking-widest mb-6">Документы</h3>
+                        <h3 className="text-primary/40 text-xs uppercase tracking-widest mb-6">Информация</h3>
                         <div className="space-y-4 flex flex-col items-start">
+                            <Link to="/delivery" className="hover:text-accent transition-colors border-b border-transparent hover:border-accent">
+                                Доставка и оплата
+                            </Link>
                             <Link to="/offer" className="hover:text-accent transition-colors border-b border-transparent hover:border-accent">
                                 Публичная оферта
                             </Link>

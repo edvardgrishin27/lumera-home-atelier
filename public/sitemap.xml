@@ -43,6 +43,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://lumerahome.ru/delivery</loc>
+    <lastmod>2026-02-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://lumerahome.ru/product/milano-sofa</loc>
     <lastmod>2026-02-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -79,19 +85,43 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://lumerahome.ru/blog/trendy-2026-vozvrashhenie-k-taktilnosti</loc>
+    <lastmod>2026-02-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://lumerahome.ru/blog/filosofiya-pustoty</loc>
     <lastmod>2026-02-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://lumerahome.ru/blog/kak-vybrat-divan</loc>
+    <loc>https://lumerahome.ru/blog/kollekcionnyj-dizajn-v-restorane</loc>
     <lastmod>2026-02-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://lumerahome.ru/blog/trendy-interiera-2025</loc>
+    <loc>https://lumerahome.ru/blog/ergonomika-lobbi-barov</loc>
+    <lastmod>2026-02-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lumerahome.ru/blog/kak-vybrat-divan-polnoe-rukovodstvo</loc>
+    <lastmod>2026-02-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lumerahome.ru/blog/kak-vybrat-krovat-razmer-matras-material</loc>
+    <lastmod>2026-02-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lumerahome.ru/blog/razmery-divanov-tablitsa-standarty</loc>
     <lastmod>2026-02-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

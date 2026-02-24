@@ -58,8 +58,8 @@ const ProductDetail = () => {
     return (
         <div ref={containerRef} className="bg-background min-h-screen">
             <SEO
-                title={`${product.name} — купить в Lumera Home Atelier`}
-                description={`${product.name} — ${product.description?.slice(0, 120)}. Цена: ${product.price?.toLocaleString()} ₽. Доставка по России.`}
+                title={`${product.name} — купить из Китая с доставкой | ${product.price?.toLocaleString()} ₽`}
+                description={`${product.name} — купить в Lumera Home Atelier за ${product.price?.toLocaleString()} ₽. ${product.category === 'Sofas' ? 'Дизайнерский диван' : product.category === 'Armchairs' ? 'Дизайнерское кресло' : product.category === 'Tables' ? 'Дизайнерский стол' : 'Мебель'} из Китая под заказ. Доставка по России от 45 дней.`}
                 image={product.image}
                 url={`/product/${product.slug}`}
                 type="product"
@@ -139,7 +139,7 @@ const ProductDetail = () => {
                                             </div>
                                         </div>
                                     ) : (
-                                        <img src={media} className="w-full h-full object-cover" alt={`Миниатюра галереи ${idx + 1}`} loading="lazy" decoding="async" width="250" height="250" />
+                                        <img src={media} className="w-full h-full object-cover" alt={`${product.name} — фото ${idx + 1}`} loading="lazy" decoding="async" width="250" height="250" />
                                     )}
                                 </button>
                             ))}
@@ -268,7 +268,7 @@ const ProductDetail = () => {
                     )}
 
                     <div className="aspect-[3/4] overflow-hidden reveal">
-                        <img src={gallery[1] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt="Detail 1" loading="lazy" decoding="async" width="800" height="1067" />
+                        <img src={gallery[1] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt={`${product.name} — вид сбоку`} loading="lazy" decoding="async" width="800" height="1067" />
                     </div>
 
                     <div className="aspect-[3/4] bg-background p-12 flex flex-col justify-center items-center text-center reveal">
@@ -277,7 +277,7 @@ const ProductDetail = () => {
                     </div>
 
                     <div className="aspect-square md:aspect-[4/3] overflow-hidden md:col-span-2 reveal">
-                        <img src={gallery[2] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt="Detail 2" loading="lazy" decoding="async" width="1200" height="900" />
+                        <img src={gallery[2] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt={`${product.name} — детали и текстура`} loading="lazy" decoding="async" width="1200" height="900" />
                     </div>
 
                 </div>
