@@ -29,23 +29,24 @@ const Home = () => {
             // Intro Animation
             const tl = gsap.timeline();
             tl.from('.hero-word', {
-                y: 150,
+                y: 80,
                 opacity: 0,
-                duration: 1.5,
-                stagger: 0.1,
+                duration: 1.4,
+                stagger: 0.12,
                 ease: 'power4.out',
-                delay: 0.2
+                delay: 0.3
             })
                 .from('.hero-desc', {
                     opacity: 0,
-                    y: 20,
+                    y: 30,
                     duration: 1,
+                    stagger: 0.1,
                     ease: 'power2.out'
-                }, '-=1');
+                }, '-=0.8');
 
-            // Parallax
+            // Parallax on hero image (subtle, within rounded container)
             gsap.to(heroImgRef.current, {
-                yPercent: 30,
+                yPercent: 15,
                 ease: 'none',
                 scrollTrigger: {
                     trigger: '.hero-container',
@@ -172,25 +173,93 @@ const Home = () => {
                 ]}
             />
 
-            {/* Hero Section */}
-            <section className="hero-container content-layer relative h-[100vh] w-full bg-background flex flex-col justify-center px-8 md:px-20 pt-32 md:pt-40">
-                <div className="z-10 mix-blend-exclusion text-white md:mix-blend-normal md:text-primary relative max-w-[90vw] pointer-events-none">
-                    <h1 className="text-[13vw] leading-[0.85] font-serif font-thin tracking-tightest overflow-hidden">
-                        <span className="block hero-word">{home.heroTitle1}</span>
-                        <span className="block hero-word ml-[10vw] italic text-accent">{home.heroTitle2}</span>
-                        <span className="block hero-word">{home.heroTitle3}</span>
-                    </h1>
-                </div>
-                <div className="absolute top-0 right-0 w-full md:w-[60%] h-full z-0 overflow-hidden">
-                    <img ref={heroImgRef} src={home.heroImage} alt="Дизайнерская мебель из Китая — интерьер гостиной Lumera Home Atelier" className="w-full h-[120%] object-cover -mt-[10%]" loading="eager" fetchPriority="high" decoding="async" width="1200" height="800" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent z-10" />
-                    <div className="absolute inset-0 bg-black/5 md:bg-transparent z-10 mix-blend-multiply" />
-                </div>
+            {/* Hero Section — OKANA-inspired layout */}
+            <section className="hero-container content-layer relative w-full bg-background px-3 md:px-5 pt-[88px] md:pt-[96px] pb-3 md:pb-5">
+                {/* Rounded hero container with background image */}
+                <div className="relative w-full h-[calc(100vh-100px)] md:h-[calc(100vh-116px)] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden">
+                    {/* Background Image */}
+                    <div className="absolute inset-0 z-0">
+                        <img
+                            ref={heroImgRef}
+                            src={home.heroImage}
+                            alt="Дизайнерская мебель из Китая — интерьер гостиной Lumera Home Atelier"
+                            className="w-full h-[115%] object-cover"
+                            loading="eager"
+                            fetchPriority="high"
+                            decoding="async"
+                            width="1200"
+                            height="800"
+                        />
+                    </div>
 
-                {/* Description Text */}
-                <div className="relative z-20 hero-desc max-w-sm mt-12 md:mt-24">
-                    <div className="text-xl md:text-2xl font-serif leading-relaxed opacity-70 mix-blend-difference text-white md:mix-blend-normal md:text-primary">
-                        {home.heroDescription}
+                    {/* Overlay gradient — dark at bottom for text readability, lighter at top to show image */}
+                    <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/70 via-black/20 to-black/5" />
+                    <div className="absolute bottom-0 left-0 right-0 h-[55%] z-[1] bg-gradient-to-t from-black/40 to-transparent" />
+
+                    {/* Content Layer */}
+                    <div className="relative z-10 flex flex-col justify-end h-[calc(100vh-100px)] md:h-[calc(100vh-116px)] p-6 md:p-10 lg:p-12">
+                        {/* Top area — small label */}
+                        <div className="absolute top-6 left-6 md:top-10 md:left-10 lg:top-12 lg:left-12">
+                            <span className="hero-word inline-block text-white/60 text-[10px] md:text-xs uppercase tracking-[0.3em] font-sans">
+                                Lumera Home Atelier
+                            </span>
+                        </div>
+
+                        {/* Main content at bottom */}
+                        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10 lg:gap-16">
+                            {/* Left side — heading + description + CTA */}
+                            <div className="max-w-3xl">
+                                <h1 className="overflow-hidden mb-4 md:mb-5">
+                                    <span className="block hero-word text-white text-[10vw] md:text-[5vw] lg:text-[4vw] font-serif font-light leading-[1.05] tracking-tight">
+                                        {home.heroTitle1} <span className="italic text-accent">{home.heroTitle2}</span> {home.heroTitle3}
+                                    </span>
+                                </h1>
+                                <div className="hero-desc flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+                                    <p className="text-white/70 text-sm md:text-base font-sans leading-relaxed max-w-md">
+                                        {home.heroDescription}
+                                    </p>
+                                    <Link
+                                        to="/catalog"
+                                        className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-7 py-3.5 rounded-full text-xs md:text-sm font-sans uppercase tracking-[0.15em] transition-all duration-300 ease-spring hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-black shadow-[0_8px_30px_rgba(196,162,101,0.35)] whitespace-nowrap shrink-0"
+                                    >
+                                        Смотреть каталог
+                                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                                            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                        </svg>
+                                    </Link>
+                                </div>
+                            </div>
+
+                            {/* Right side — Stats panel */}
+                            <div className="hero-desc flex flex-row lg:flex-col gap-4 lg:gap-5 bg-white/10 backdrop-blur-xl rounded-2xl p-5 md:p-6 border border-white/[0.08] shrink-0">
+                                <div className="text-center lg:text-left">
+                                    <span className="block text-2xl md:text-3xl font-serif font-light text-white leading-none">
+                                        {home.heroStat1Value || '500+'}
+                                    </span>
+                                    <span className="block text-[9px] md:text-[10px] text-white/50 uppercase tracking-[0.15em] mt-1.5 font-sans">
+                                        {home.heroStat1Label || 'Предметов мебели'}
+                                    </span>
+                                </div>
+                                <div className="w-px lg:w-full h-auto lg:h-px bg-white/10" />
+                                <div className="text-center lg:text-left">
+                                    <span className="block text-2xl md:text-3xl font-serif font-light text-white leading-none">
+                                        {home.heroStat2Value || '200+'}
+                                    </span>
+                                    <span className="block text-[9px] md:text-[10px] text-white/50 uppercase tracking-[0.15em] mt-1.5 font-sans">
+                                        {home.heroStat2Label || 'Дизайн-проектов'}
+                                    </span>
+                                </div>
+                                <div className="w-px lg:w-full h-auto lg:h-px bg-white/10" />
+                                <div className="text-center lg:text-left">
+                                    <span className="block text-2xl md:text-3xl font-serif font-light text-white leading-none">
+                                        {home.heroStat3Value || '98%'}
+                                    </span>
+                                    <span className="block text-[9px] md:text-[10px] text-white/50 uppercase tracking-[0.15em] mt-1.5 font-sans">
+                                        {home.heroStat3Label || 'Довольных клиентов'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
