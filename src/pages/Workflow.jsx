@@ -138,16 +138,16 @@ const Workflow = () => {
 
             {/* CTA Section */}
             <section className="wf-cta px-6 md:px-20 pb-32">
-                <div className="max-w-4xl mx-auto bg-[#0e0e0e] rounded-3xl p-10 md:p-16 text-center relative overflow-hidden">
+                <div className="max-w-4xl mx-auto bg-surface rounded-3xl p-10 md:p-16 text-center relative overflow-hidden">
                     {/* Grain texture */}
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
                         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
                     }} />
                     <div className="relative z-10">
-                        <h2 className="text-3xl md:text-5xl font-serif font-light text-white mb-6 leading-tight">
+                        <h2 className="text-3xl md:text-5xl font-serif font-light text-primary mb-6 leading-tight">
                             {wf.ctaTitle || 'Готовы начать?'}
                         </h2>
-                        <p className="text-white/50 font-sans text-sm md:text-base mb-10 max-w-lg mx-auto leading-relaxed">
+                        <p className="text-secondary font-sans text-sm md:text-base mb-10 max-w-lg mx-auto leading-relaxed">
                             {wf.ctaDescription || 'Оставьте заявку, и мы свяжемся с вами для бесплатной консультации. Поможем подобрать мебель под ваш интерьер и бюджет.'}
                         </p>
                         <Link

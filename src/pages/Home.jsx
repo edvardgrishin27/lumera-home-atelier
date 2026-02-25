@@ -327,7 +327,7 @@ const Home = () => {
                 TESTIMONIALS SECTION — Dark surface, 3 review cards
             ═══════════════════════════════════════════════════════════════ */}
             {reviews.length > 0 && (
-                <section className="relative z-10 py-5 md:py-16 bg-[#0e0e0e] overflow-hidden">
+                <section className="relative z-10 py-5 md:py-16 bg-surface overflow-hidden">
                     {/* Subtle grain texture overlay */}
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
                         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
@@ -336,7 +336,7 @@ const Home = () => {
                     <div className="px-4 md:px-20 relative">
                         {/* Header Row */}
                         <div className="flex flex-row justify-between items-center md:items-end gap-2 md:gap-8 mb-4 md:mb-16 section-reveal">
-                            <h2 className="text-3xl md:text-7xl font-serif font-thin text-white/95 tracking-tightest leading-[0.9]">
+                            <h2 className="text-3xl md:text-7xl font-serif font-thin text-primary/95 tracking-tightest leading-[0.9]">
                                 {home.reviewsTitle || 'Отзывы клиентов'}
                             </h2>
 
@@ -344,10 +344,10 @@ const Home = () => {
                                 to="/reviews"
                                 className="flex items-center gap-3 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1 md:p-2 md:pr-4 transition-opacity duration-300 hover:opacity-100 opacity-70 shrink-0"
                             >
-                                <span className="hidden md:inline text-xs uppercase tracking-[0.2em] text-white/50 group-hover:text-white/80 transition-colors duration-300">
+                                <span className="hidden md:inline text-xs uppercase tracking-[0.2em] text-secondary group-hover:text-primary/80 transition-colors duration-300">
                                     {home.reviewsLink || 'Все отзывы'}
                                 </span>
-                                <div className="w-8 h-8 md:w-10 md:h-10 border border-white/20 rounded-full flex items-center justify-center group-hover:bg-accent group-hover:text-white group-hover:border-accent transition-colors duration-300 ease-spring text-white/60 text-sm">
+                                <div className="w-8 h-8 md:w-10 md:h-10 border border-primary/20 rounded-full flex items-center justify-center group-hover:bg-accent group-hover:text-white group-hover:border-accent transition-colors duration-300 ease-spring text-primary/60 text-sm">
                                     →
                                 </div>
                             </Link>
@@ -358,7 +358,7 @@ const Home = () => {
                             {reviews.map((review) => (
                                 <article
                                     key={review.id}
-                                    className="review-card group relative border border-white/[0.08] rounded-2xl p-5 md:p-10 flex flex-col justify-between min-h-[240px] md:min-h-[340px] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.14] transition-colors duration-500"
+                                    className="review-card group relative border border-primary/[0.08] rounded-2xl p-5 md:p-10 flex flex-col justify-between min-h-[240px] md:min-h-[340px] bg-primary/[0.02] hover:bg-primary/[0.04] hover:border-primary/[0.14] transition-colors duration-500"
                                 >
                                     {/* Stars */}
                                     <div>
@@ -371,19 +371,19 @@ const Home = () => {
                                         </div>
 
                                         {/* Review Text */}
-                                        <p className="font-serif text-sm md:text-xl leading-relaxed text-white/70 italic">
+                                        <p className="font-serif text-sm md:text-xl leading-relaxed text-primary/70 italic">
                                             &ldquo;{review.text}&rdquo;
                                         </p>
                                     </div>
 
                                     {/* Author */}
-                                    <div className="flex items-center gap-3 md:gap-4 mt-5 md:mt-10 pt-4 md:pt-8 border-t border-white/[0.06]">
+                                    <div className="flex items-center gap-3 md:gap-4 mt-5 md:mt-10 pt-4 md:pt-8 border-t border-primary/[0.06]">
                                         <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent text-sm font-sans font-medium shrink-0">
                                             {review.name.charAt(0)}
                                         </div>
                                         <div>
-                                            <span className="block text-sm text-white/90 font-sans">{review.name}</span>
-                                            <span className="block text-xs text-white/35 font-sans mt-0.5">{review.date}</span>
+                                            <span className="block text-sm text-primary/90 font-sans">{review.name}</span>
+                                            <span className="block text-xs text-primary/35 font-sans mt-0.5">{review.date}</span>
                                         </div>
                                     </div>
                                 </article>
@@ -397,7 +397,7 @@ const Home = () => {
                 WHY CHOOSE US SECTION — Dark continuation, 4-column grid
             ═══════════════════════════════════════════════════════════════ */}
             {whyItems.length > 0 && (
-                <section className="relative z-10 py-5 md:py-16 bg-[#0e0e0e] overflow-hidden border-t border-white/[0.04]">
+                <section className="relative z-10 py-5 md:py-16 bg-surface overflow-hidden border-t border-primary/[0.04]">
                     {/* Subtle grain texture overlay */}
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
                         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
@@ -406,7 +406,7 @@ const Home = () => {
                     <div className="px-4 md:px-20 relative">
                         {/* Section Title */}
                         <div className="mb-5 md:mb-20 section-reveal">
-                            <h2 className="text-3xl md:text-7xl font-serif font-thin text-white/95 tracking-tightest leading-[0.9]">
+                            <h2 className="text-3xl md:text-7xl font-serif font-thin text-primary/95 tracking-tightest leading-[0.9]">
                                 {home.whyTitle || 'Почему Lumera'}
                             </h2>
                         </div>
@@ -421,12 +421,12 @@ const Home = () => {
                                     </span>
 
                                     {/* Title */}
-                                    <h3 className="text-xl md:text-2xl font-serif font-light text-white/95 mb-5 leading-snug">
+                                    <h3 className="text-xl md:text-2xl font-serif font-light text-primary/95 mb-5 leading-snug">
                                         {item.title}
                                     </h3>
 
                                     {/* Description */}
-                                    <p className="text-sm font-sans text-white/45 leading-relaxed max-w-xs">
+                                    <p className="text-sm font-sans text-primary/45 leading-relaxed max-w-xs">
                                         {item.description}
                                     </p>
                                 </div>
