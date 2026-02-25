@@ -1,8 +1,66 @@
 const API_BASE = '/api';
+const SESSION_KEY = 'lumera_session';
 
-function getAuthHeaders() {
-    const secret = import.meta.env.VITE_API_SECRET;
-    return secret ? { Authorization: `Bearer ${secret}` } : {};
+// ─── Auth helpers ───
+
+export function getAuthHeaders() {
+    try {
+        const session = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+        return session.token ? { Authorization: `Bearer ${session.token}` } : {};
+    } catch {
+        return {};
+    }
+}
+
+function handleUnauthorized(res) {
+    if (res.status === 401) {
+        // Session expired or invalid — clear and redirect to login
+        localStorage.removeItem(SESSION_KEY);
+        const uuid = import.meta.env.VITE_ADMIN_UUID;
+        if (uuid && window.location.pathname.includes('/panel/')) {
+            window.location.href = `/panel/${uuid}/login`;
+        }
+    }
+}
+
+// ─── Auth: Login / Logout / Verify ───
+
+export async function loginAdmin(password, totpCode) {
+    const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password, totpCode }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+        const err = new Error(data.message || 'Ошибка авторизации');
+        err.data = data;
+        err.status = res.status;
+        throw err;
+    }
+    return data;
+}
+
+export async function logoutAdmin() {
+    try {
+        await fetch(`${API_BASE}/auth/logout`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+        });
+    } catch { /* ignore */ }
+    localStorage.removeItem(SESSION_KEY);
+}
+
+export async function verifySession() {
+    try {
+        const res = await fetch(`${API_BASE}/auth/verify`, {
+            headers: getAuthHeaders(),
+        });
+        const data = await res.json();
+        return data.valid === true;
+    } catch {
+        return false;
+    }
 }
 
 // ─── Public ───
@@ -33,6 +91,7 @@ export async function updateSection(key, data) {
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(data),
     });
+    handleUnauthorized(res);
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `Failed to update section: ${res.status}`);
@@ -48,6 +107,7 @@ export async function createProduct(product) {
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(product),
     });
+    handleUnauthorized(res);
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `Failed to create product: ${res.status}`);
@@ -61,6 +121,7 @@ export async function updateProduct(id, product) {
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(product),
     });
+    handleUnauthorized(res);
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `Failed to update product: ${res.status}`);
@@ -73,6 +134,7 @@ export async function deleteProduct(id) {
         method: 'DELETE',
         headers: getAuthHeaders(),
     });
+    handleUnauthorized(res);
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `Failed to delete product: ${res.status}`);
@@ -86,6 +148,7 @@ export async function reorderProducts(order) {
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ order }),
     });
+    handleUnauthorized(res);
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `Failed to reorder: ${res.status}`);
@@ -98,6 +161,7 @@ export async function resetContent() {
         method: 'POST',
         headers: getAuthHeaders(),
     });
+    handleUnauthorized(res);
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `Failed to reset: ${res.status}`);

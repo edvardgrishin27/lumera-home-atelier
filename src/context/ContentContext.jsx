@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { products as defaultProductsList } from '../data/products';
 import { blogContent } from '../data/blogContent';
 import * as api from '../utils/api';
+import { useToast } from '../components/Toast';
 
 // Default content (used as fallback when API is unavailable)
 const defaultContent = {
@@ -127,13 +128,16 @@ const defaultContent = {
 
 const CACHE_KEY = 'lumera_content';
 const CACHE_VERSION_KEY = 'lumera_content_v';
-const CACHE_VERSION = 5; // bump to invalidate stale localStorage cache
+const CACHE_VERSION = 6; // bump to invalidate stale localStorage cache
 
 const ContentContext = createContext();
 
 export const useContent = () => useContext(ContentContext);
 
 export const ContentProvider = ({ children }) => {
+    let toast;
+    try { toast = useToast(); } catch { toast = { success: () => {}, error: () => {}, info: () => {} }; }
+
     const [content, setContent] = useState(() => {
         // Initial render: use localStorage cache or defaults
         try {
@@ -204,38 +208,47 @@ export const ContentProvider = ({ children }) => {
         }
     }, [content]);
 
-    // ─── Section update (optimistic UI + API call) ───
+    // ─── Debounced save timer for rapid edits (e.g. typing in text fields) ───
+    const saveTimers = useRef({});
+
+    const debouncedSave = useCallback((key, saveFn, delay = 800) => {
+        if (saveTimers.current[key]) clearTimeout(saveTimers.current[key]);
+        saveTimers.current[key] = setTimeout(() => {
+            saveFn()
+                .then(() => toast.success('Сохранено'))
+                .catch(err => {
+                    console.error(`[content] Failed to save ${key}:`, err.message);
+                    toast.error('Ошибка сохранения');
+                });
+        }, delay);
+    }, [toast]);
+
+    // ─── Section update (optimistic UI + debounced API call) ───
     const updateHome = useCallback((field, value) => {
         setContent(prev => {
             const updated = { ...prev, home: { ...prev.home, [field]: value } };
-            api.updateSection('home', updated.home).catch(err =>
-                console.error('[content] Failed to save home:', err.message)
-            );
+            debouncedSave('home', () => api.updateSection('home', updated.home));
             return updated;
         });
-    }, []);
+    }, [debouncedSave]);
 
     const updateSettings = useCallback((field, value) => {
         setContent(prev => {
             const updated = { ...prev, settings: { ...prev.settings, [field]: value } };
-            api.updateSection('settings', updated.settings).catch(err =>
-                console.error('[content] Failed to save settings:', err.message)
-            );
+            debouncedSave('settings', () => api.updateSection('settings', updated.settings));
             return updated;
         });
-    }, []);
+    }, [debouncedSave]);
 
     const updateContentPage = useCallback((pageName, field, value) => {
         setContent(prev => {
             const updated = { ...prev, [pageName]: { ...prev[pageName], [field]: value } };
-            api.updateSection(pageName, updated[pageName]).catch(err =>
-                console.error(`[content] Failed to save ${pageName}:`, err.message)
-            );
+            debouncedSave(pageName, () => api.updateSection(pageName, updated[pageName]));
             return updated;
         });
-    }, []);
+    }, [debouncedSave]);
 
-    // ─── Product operations (optimistic UI + API call) ───
+    // ─── Product operations (optimistic UI + API call + toast + rollback) ───
     const updateProduct = useCallback((productId, updates) => {
         setContent(prev => {
             const product = prev.products.find(p => p.id === productId);
@@ -243,8 +256,8 @@ export const ContentProvider = ({ children }) => {
 
             const merged = { ...product, ...updates };
             const { id, ...data } = merged;
-            api.updateProduct(productId, { slug: merged.slug, ...data }).catch(err =>
-                console.error('[content] Failed to update product:', err.message)
+            debouncedSave(`product-${productId}`, () =>
+                api.updateProduct(productId, { slug: merged.slug, ...data })
             );
 
             return {
@@ -252,10 +265,9 @@ export const ContentProvider = ({ children }) => {
                 products: prev.products.map(p => p.id === productId ? merged : p),
             };
         });
-    }, []);
+    }, [debouncedSave]);
 
     const addProduct = useCallback((product) => {
-        // Generate a temporary ID for optimistic UI
         const tempId = Date.now();
         const newProduct = { ...product, id: tempId };
 
@@ -264,7 +276,6 @@ export const ContentProvider = ({ children }) => {
             products: [...prev.products, newProduct],
         }));
 
-        // Call API and update with real ID
         const { id, ...data } = newProduct;
         api.createProduct({ slug: product.slug, ...data })
             .then((res) => {
@@ -274,46 +285,65 @@ export const ContentProvider = ({ children }) => {
                         p.id === tempId ? { ...p, id: res.id } : p
                     ),
                 }));
+                toast.success('Товар добавлен');
             })
             .catch(err => {
                 console.error('[content] Failed to create product:', err.message);
-                // Rollback
+                toast.error('Ошибка создания товара');
                 setContent(prev => ({
                     ...prev,
                     products: prev.products.filter(p => p.id !== tempId),
                 }));
             });
-    }, []);
+    }, [toast]);
 
     const deleteProduct = useCallback((productId) => {
+        // Save previous state for rollback
         setContent(prev => {
-            api.deleteProduct(productId).catch(err =>
-                console.error('[content] Failed to delete product:', err.message)
-            );
-            return {
-                ...prev,
-                products: prev.products.filter(p => p.id !== productId),
-            };
+            const prevProducts = prev.products;
+            const updated = { ...prev, products: prev.products.filter(p => p.id !== productId) };
+
+            api.deleteProduct(productId)
+                .then(() => toast.success('Товар удалён'))
+                .catch(err => {
+                    console.error('[content] Failed to delete product:', err.message);
+                    toast.error('Ошибка удаления');
+                    // Rollback
+                    setContent(p => ({ ...p, products: prevProducts }));
+                });
+
+            return updated;
         });
-    }, []);
+    }, [toast]);
 
     const reorderProducts = useCallback((newOrder) => {
         setContent(prev => {
+            const prevProducts = prev.products;
             const ids = newOrder.map(p => p.id);
-            api.reorderProducts(ids).catch(err =>
-                console.error('[content] Failed to reorder products:', err.message)
-            );
+
+            api.reorderProducts(ids)
+                .then(() => toast.success('Порядок сохранён'))
+                .catch(err => {
+                    console.error('[content] Failed to reorder products:', err.message);
+                    toast.error('Ошибка сортировки');
+                    // Rollback
+                    setContent(p => ({ ...p, products: prevProducts }));
+                });
+
             return { ...prev, products: newOrder };
         });
-    }, []);
+    }, [toast]);
 
     const resetToDefaults = useCallback(() => {
         setContent(defaultContent);
         localStorage.removeItem(CACHE_KEY);
-        api.resetContent().catch(err =>
-            console.error('[content] Failed to reset on server:', err.message)
-        );
-    }, []);
+        api.resetContent()
+            .then(() => toast.success('Сброшено к настройкам по умолчанию'))
+            .catch(err => {
+                console.error('[content] Failed to reset on server:', err.message);
+                toast.error('Ошибка сброса');
+            });
+    }, [toast]);
 
     return (
         <ContentContext.Provider value={{

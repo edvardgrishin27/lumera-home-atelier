@@ -3,7 +3,7 @@
  * Оптимизирует изображения (WebP, max 2000px) и загружает на S3 через presigned URL
  */
 
-const API_SECRET = import.meta.env.VITE_API_SECRET;
+import { getAuthHeaders } from './api';
 
 /**
  * Оптимизация изображения: ресайз до maxDim, конвертация в WebP
@@ -73,7 +73,7 @@ export async function uploadFile(file, folder = 'pages') {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API_SECRET}`,
+            ...getAuthHeaders(),
         },
         body: JSON.stringify({
             filename: optimized.name,

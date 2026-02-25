@@ -2,6 +2,8 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { createHash, randomBytes } from 'crypto';
+import * as OTPAuth from 'otpauth';
 import pool from './db.js';
 import { seed } from './seed.js';
 import { defaultSections, defaultProducts } from './defaults.js';
@@ -10,10 +12,13 @@ const app = new Hono();
 
 // ─── Config ───
 const PORT = parseInt(process.env.PORT || '3001');
-const API_SECRET = process.env.API_SECRET;
+const API_SECRET = process.env.API_SECRET; // fallback for backward compat
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
+const TOTP_SECRET = process.env.TOTP_SECRET;
 const S3_BUCKET = process.env.S3_BUCKET || '0a6d6471-klikai-screenshots';
 const S3_PREFIX = 'lumera';
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
 const s3 = new S3Client({
     endpoint: process.env.S3_ENDPOINT || 'https://s3.twcstorage.ru',
@@ -56,34 +61,99 @@ function invalidateCache() {
     cache.productsAt = 0;
 }
 
-// ─── Rate limiter (in-memory) ───
-const rateLimits = new Map();
-
-function rateLimit(ip, limit, windowMs = 60000) {
-    const now = Date.now();
-    const key = `${ip}`;
-    let entry = rateLimits.get(key);
-
-    if (!entry || now - entry.start > windowMs) {
-        entry = { start: now, count: 1 };
-        rateLimits.set(key, entry);
-        return true;
+// ─── DB Rate Limiter ───
+async function checkRateLimit(ip, endpoint, limit, windowMs = 60000) {
+    try {
+        const windowStart = new Date(Math.floor(Date.now() / windowMs) * windowMs);
+        const result = await pool.query(
+            `INSERT INTO rate_limits (ip, endpoint, window_start, count)
+             VALUES ($1, $2, $3, 1)
+             ON CONFLICT (ip, endpoint, window_start)
+             DO UPDATE SET count = rate_limits.count + 1
+             RETURNING count`,
+            [ip, endpoint, windowStart]
+        );
+        return result.rows[0].count <= limit;
+    } catch (err) {
+        console.error('[rateLimit] DB error, allowing request:', err.message);
+        return true; // fail open — don't block users on DB errors
     }
-
-    entry.count++;
-    if (entry.count > limit) {
-        return false;
-    }
-    return true;
 }
 
 // Cleanup old rate limit entries every 5 minutes
+setInterval(async () => {
+    try {
+        await pool.query("DELETE FROM rate_limits WHERE window_start < NOW() - interval '5 minutes'");
+    } catch { /* ignore cleanup errors */ }
+}, 300000);
+
+// Cleanup expired sessions every 30 minutes
+setInterval(async () => {
+    try {
+        const result = await pool.query('DELETE FROM admin_sessions WHERE expires_at < NOW()');
+        if (result.rowCount > 0) {
+            console.log(`[sessions] Cleaned up ${result.rowCount} expired sessions`);
+        }
+    } catch { /* ignore cleanup errors */ }
+}, 1800000);
+
+// ─── Login rate limiter (in-memory, for brute-force protection) ───
+const loginAttempts = new Map();
+
+function checkLoginRate(ip) {
+    const now = Date.now();
+    const entry = loginAttempts.get(ip);
+
+    if (!entry) return { allowed: true, remaining: 5 };
+
+    // Lockout expired?
+    if (entry.lockedUntil && now >= entry.lockedUntil) {
+        loginAttempts.delete(ip);
+        return { allowed: true, remaining: 5 };
+    }
+
+    // Currently locked?
+    if (entry.lockedUntil && now < entry.lockedUntil) {
+        const mins = Math.ceil((entry.lockedUntil - now) / 60000);
+        return { allowed: false, remaining: 0, lockedMinutes: mins };
+    }
+
+    return { allowed: true, remaining: Math.max(0, 5 - entry.count) };
+}
+
+function recordLoginFailure(ip) {
+    const now = Date.now();
+    let entry = loginAttempts.get(ip);
+
+    if (!entry) {
+        entry = { count: 0, start: now };
+    }
+
+    entry.count++;
+
+    if (entry.count >= 5) {
+        entry.lockedUntil = now + 15 * 60 * 1000; // 15 min lockout
+    }
+
+    loginAttempts.set(ip, entry);
+    return entry;
+}
+
+function resetLoginAttempts(ip) {
+    loginAttempts.delete(ip);
+}
+
+// Cleanup login attempts every 20 minutes
 setInterval(() => {
     const now = Date.now();
-    for (const [key, entry] of rateLimits) {
-        if (now - entry.start > 120000) rateLimits.delete(key);
+    for (const [ip, entry] of loginAttempts) {
+        if (entry.lockedUntil && now >= entry.lockedUntil) {
+            loginAttempts.delete(ip);
+        } else if (now - entry.start > 1800000) { // 30 min stale
+            loginAttempts.delete(ip);
+        }
     }
-}, 300000);
+}, 1200000);
 
 // ─── XSS sanitization ───
 function sanitizeString(str) {
@@ -107,33 +177,53 @@ function sanitizeObject(obj) {
     return result;
 }
 
-// ─── Middlewares ───
-function authMiddleware(c, next) {
-    if (!API_SECRET) {
-        return c.json({ error: 'Server not configured' }, 500);
-    }
+// ─── Auth Middleware (session-based + fallback to API_SECRET) ───
+async function authMiddleware(c, next) {
     const auth = c.req.header('Authorization');
-    if (!auth || auth !== `Bearer ${API_SECRET}`) {
+    if (!auth || !auth.startsWith('Bearer ')) {
         return c.json({ error: 'Unauthorized' }, 401);
     }
-    return next();
+
+    const token = auth.slice(7); // Remove "Bearer "
+
+    // 1. Check session in DB
+    try {
+        const result = await pool.query(
+            'SELECT token FROM admin_sessions WHERE token = $1 AND expires_at > NOW()',
+            [token]
+        );
+        if (result.rows.length > 0) {
+            return next();
+        }
+    } catch (err) {
+        console.error('[auth] Session check error:', err.message);
+    }
+
+    // 2. Fallback: check static API_SECRET (backward compat during transition)
+    if (API_SECRET && token === API_SECRET) {
+        return next();
+    }
+
+    return c.json({ error: 'Unauthorized' }, 401);
 }
 
 function getIP(c) {
     return c.req.header('X-Real-IP') || c.req.header('X-Forwarded-For')?.split(',')[0]?.trim() || 'unknown';
 }
 
-function publicRateLimit(c, next) {
+async function publicRateLimit(c, next) {
     const ip = getIP(c);
-    if (!rateLimit(ip, 100)) {
+    const allowed = await checkRateLimit(ip, 'public', 100);
+    if (!allowed) {
         return c.json({ error: 'Too many requests' }, 429);
     }
     return next();
 }
 
-function adminRateLimit(c, next) {
+async function adminRateLimit(c, next) {
     const ip = getIP(c);
-    if (!rateLimit(ip, 30)) {
+    const allowed = await checkRateLimit(ip, 'admin', 30);
+    if (!allowed) {
         return c.json({ error: 'Too many requests' }, 429);
     }
     return next();
@@ -164,6 +254,157 @@ function validateProduct(data) {
     }
     return errors;
 }
+
+// ═══════════════════════════════════════════
+// AUTH ENDPOINTS
+// ═══════════════════════════════════════════
+
+// ─── POST /api/auth/login ───
+app.post('/api/auth/login', async (c) => {
+    const ip = getIP(c);
+
+    // Check login rate limit
+    const rateCheck = checkLoginRate(ip);
+    if (!rateCheck.allowed) {
+        return c.json({
+            error: 'locked',
+            message: `Слишком много попыток. Подождите ${rateCheck.lockedMinutes} мин.`,
+            lockedMinutes: rateCheck.lockedMinutes,
+        }, 429);
+    }
+
+    // Check server has auth config
+    if (!ADMIN_PASSWORD_HASH || !TOTP_SECRET) {
+        console.error('[auth] ADMIN_PASSWORD_HASH or TOTP_SECRET not configured');
+        return c.json({ error: 'server_error', message: 'Сервер не настроен для аутентификации' }, 500);
+    }
+
+    try {
+        const body = await c.req.json();
+        const { password, totpCode } = body;
+
+        if (!password || typeof password !== 'string') {
+            return c.json({ error: 'invalid_input', message: 'Пароль обязателен' }, 400);
+        }
+
+        // Artificial delay to slow brute force
+        await new Promise(r => setTimeout(r, 300 + Math.random() * 200));
+
+        // 1. Hash password and compare
+        const inputHash = createHash('sha256').update(password).digest('hex');
+
+        if (inputHash !== ADMIN_PASSWORD_HASH) {
+            const entry = recordLoginFailure(ip);
+            const remaining = Math.max(0, 5 - entry.count);
+
+            if (entry.lockedUntil) {
+                return c.json({
+                    error: 'locked',
+                    message: 'Аккаунт заблокирован на 15 минут',
+                    lockedMinutes: 15,
+                }, 429);
+            }
+
+            return c.json({
+                error: 'invalid_password',
+                message: `Неверный пароль (осталось ${remaining} ${remaining === 1 ? 'попытка' : remaining < 5 ? 'попытки' : 'попыток'})`,
+                remaining,
+            }, 401);
+        }
+
+        // 2. Validate TOTP code
+        if (!totpCode || typeof totpCode !== 'string') {
+            return c.json({ error: 'invalid_input', message: 'TOTP-код обязателен' }, 400);
+        }
+
+        const totp = new OTPAuth.TOTP({
+            issuer: 'Lumera',
+            label: 'Admin',
+            algorithm: 'SHA1',
+            digits: 6,
+            period: 30,
+            secret: OTPAuth.Secret.fromBase32(TOTP_SECRET),
+        });
+
+        const delta = totp.validate({ token: totpCode.replace(/\s/g, ''), window: 1 });
+
+        if (delta === null) {
+            const entry = recordLoginFailure(ip);
+            const remaining = Math.max(0, 5 - entry.count);
+
+            if (entry.lockedUntil) {
+                return c.json({
+                    error: 'locked',
+                    message: 'Аккаунт заблокирован на 15 минут',
+                    lockedMinutes: 15,
+                }, 429);
+            }
+
+            return c.json({
+                error: 'invalid_totp',
+                message: 'Неверный код. Попробуйте ещё.',
+                remaining,
+            }, 401);
+        }
+
+        // 3. Success! Create session
+        resetLoginAttempts(ip);
+
+        const token = randomBytes(32).toString('hex'); // 64-char hex
+        const expiresAt = new Date(Date.now() + SESSION_DURATION);
+
+        await pool.query(
+            'INSERT INTO admin_sessions (token, ip, expires_at) VALUES ($1, $2, $3)',
+            [token, ip, expiresAt]
+        );
+
+        console.log(`[auth] Login success from ${ip}`);
+
+        return c.json({
+            ok: true,
+            token,
+            expiresAt: expiresAt.toISOString(),
+        });
+    } catch (err) {
+        console.error('[auth:login] Error:', err.message);
+        return c.json({ error: 'server_error', message: 'Ошибка сервера' }, 500);
+    }
+});
+
+// ─── POST /api/auth/logout ───
+app.post('/api/auth/logout', async (c) => {
+    const auth = c.req.header('Authorization');
+    if (auth && auth.startsWith('Bearer ')) {
+        const token = auth.slice(7);
+        try {
+            await pool.query('DELETE FROM admin_sessions WHERE token = $1', [token]);
+            console.log('[auth] Logout');
+        } catch (err) {
+            console.error('[auth:logout] Error:', err.message);
+        }
+    }
+    return c.json({ ok: true });
+});
+
+// ─── GET /api/auth/verify ───
+app.get('/api/auth/verify', async (c) => {
+    const auth = c.req.header('Authorization');
+    if (!auth || !auth.startsWith('Bearer ')) {
+        return c.json({ valid: false });
+    }
+
+    const token = auth.slice(7);
+
+    try {
+        const result = await pool.query(
+            'SELECT token FROM admin_sessions WHERE token = $1 AND expires_at > NOW()',
+            [token]
+        );
+        return c.json({ valid: result.rows.length > 0 });
+    } catch {
+        return c.json({ valid: false });
+    }
+});
 
 // ═══════════════════════════════════════════
 // PUBLIC ENDPOINTS
@@ -548,6 +789,17 @@ async function start() {
 
         // Seed if empty
         await seed();
+
+        // Log auth status
+        if (ADMIN_PASSWORD_HASH && TOTP_SECRET) {
+            console.log('[auth] Server-side authentication configured ✓');
+        } else {
+            console.warn('[auth] ⚠ ADMIN_PASSWORD_HASH or TOTP_SECRET not set — login endpoint disabled');
+        }
+
+        if (API_SECRET) {
+            console.log('[auth] API_SECRET fallback available (backward compat)');
+        }
 
         // Start HTTP server
         serve({ fetch: app.fetch, port: PORT }, () => {

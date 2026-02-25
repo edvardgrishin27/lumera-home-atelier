@@ -3,10 +3,7 @@ services:
     build:
       context: .
       args:
-        VITE_ADMIN_PASSWORD_HASH: ${VITE_ADMIN_PASSWORD_HASH}
         VITE_ADMIN_UUID: ${VITE_ADMIN_UUID}
-        VITE_TOTP_SECRET: ${VITE_TOTP_SECRET}
-        VITE_API_SECRET: ${API_SECRET}
     ports:
       - "127.0.0.1:8080:80"
     restart: always
@@ -48,6 +45,8 @@ services:
       - S3_SECRET_KEY=${S3_SECRET_KEY}
       - S3_REGION=ru-1
       - API_SECRET=${API_SECRET}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
+      - TOTP_SECRET=${TOTP_SECRET}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
       interval: 30s

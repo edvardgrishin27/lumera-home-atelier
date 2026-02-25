@@ -1,67 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import * as OTPAuth from 'otpauth';
+import { loginAdmin } from '../utils/api';
 
-// ─── Security Utilities ───
+// ─── Session Management ───
 
-const hashPassword = async (password) => {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hash = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hash))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-};
-
-// Rate limiting: max 5 attempts, 15 min lockout
-const RATE_LIMIT_KEY = 'lumera_rl';
-const MAX_ATTEMPTS = 5;
-const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
-
-const getRateLimit = () => {
-    try {
-        const data = JSON.parse(localStorage.getItem(RATE_LIMIT_KEY) || '{}');
-        return { attempts: data.a || 0, lockedUntil: data.l || 0 };
-    } catch {
-        return { attempts: 0, lockedUntil: 0 };
-    }
-};
-
-const incrementAttempts = () => {
-    const rl = getRateLimit();
-    const newAttempts = rl.attempts + 1;
-    const lockout = newAttempts >= MAX_ATTEMPTS ? Date.now() + LOCKOUT_MS : 0;
-    localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify({ a: newAttempts, l: lockout }));
-    return { attempts: newAttempts, lockedUntil: lockout };
-};
-
-const resetAttempts = () => {
-    localStorage.removeItem(RATE_LIMIT_KEY);
-};
-
-const isLocked = () => {
-    const rl = getRateLimit();
-    if (rl.lockedUntil && Date.now() < rl.lockedUntil) {
-        return Math.ceil((rl.lockedUntil - Date.now()) / 60000);
-    }
-    if (rl.lockedUntil && Date.now() >= rl.lockedUntil) {
-        resetAttempts();
-    }
-    return 0;
-};
-
-// Session: 24-hour expiration
 const SESSION_KEY = 'lumera_session';
-const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
-const createSession = () => {
-    const session = {
-        token: crypto.getRandomValues(new Uint8Array(32)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), ''),
-        expires: Date.now() + SESSION_DURATION,
-        created: Date.now()
-    };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    return session;
+const saveSession = (token, expiresAt) => {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+        token,
+        expires: new Date(expiresAt).getTime(),
+        created: Date.now(),
+    }));
 };
 
 export const isSessionValid = () => {
@@ -89,22 +39,10 @@ const Login = () => {
     const [lockMinutes, setLockMinutes] = useState(0);
     const navigate = useNavigate();
     const totpInputRef = useRef(null);
-    const lockTimerRef = useRef(null);
 
     // Validate UUID — if wrong, show 404-like page
     const validUuid = import.meta.env.VITE_ADMIN_UUID;
     const isValidAccess = uuid === validUuid;
-
-    // Check lock status periodically
-    useEffect(() => {
-        const checkLock = () => {
-            const mins = isLocked();
-            setLockMinutes(mins);
-        };
-        checkLock();
-        lockTimerRef.current = setInterval(checkLock, 10000);
-        return () => clearInterval(lockTimerRef.current);
-    }, []);
 
     // If already authenticated, redirect to admin
     useEffect(() => {
@@ -124,47 +62,14 @@ const Login = () => {
         );
     }
 
-    const handlePasswordSubmit = async (e) => {
+    const handlePasswordSubmit = (e) => {
         e.preventDefault();
+        if (!password) return;
 
-        // Check rate limit
-        const mins = isLocked();
-        if (mins > 0) {
-            setError(`Слишком много попыток. Подождите ${mins} мин.`);
-            setLockMinutes(mins);
-            return;
-        }
-
-        setIsLoading(true);
+        // Move to TOTP step — password stays in state until final submit
+        setStep('totp');
         setError('');
-
-        try {
-            // Artificial delay to slow brute force
-            await new Promise(r => setTimeout(r, 800 + Math.random() * 400));
-
-            const inputHash = await hashPassword(password);
-            const storedHash = import.meta.env.VITE_ADMIN_PASSWORD_HASH;
-
-            if (inputHash === storedHash) {
-                // Password correct — move to TOTP step
-                setStep('totp');
-                setError('');
-                setTimeout(() => totpInputRef.current?.focus(), 100);
-            } else {
-                const rl = incrementAttempts();
-                const remaining = MAX_ATTEMPTS - rl.attempts;
-                if (rl.lockedUntil) {
-                    setError('Аккаунт заблокирован на 15 минут');
-                    setLockMinutes(15);
-                } else {
-                    setError(`Неверный пароль (${remaining} ${remaining === 1 ? 'попытка' : remaining < 5 ? 'попытки' : 'попыток'})`);
-                }
-            }
-        } catch {
-            setError('Ошибка авторизации');
-        } finally {
-            setIsLoading(false);
-        }
+        setTimeout(() => totpInputRef.current?.focus(), 100);
     };
 
     const handleTotpSubmit = async (e) => {
@@ -173,40 +78,31 @@ const Login = () => {
         setError('');
 
         try {
-            await new Promise(r => setTimeout(r, 300));
+            // Send both password + TOTP to server for validation
+            const data = await loginAdmin(password, totpCode);
 
-            const totp = new OTPAuth.TOTP({
-                issuer: 'Lumera',
-                label: 'Admin',
-                algorithm: 'SHA1',
-                digits: 6,
-                period: 30,
-                secret: OTPAuth.Secret.fromBase32(import.meta.env.VITE_TOTP_SECRET),
-            });
+            // Success! Save session token and redirect
+            saveSession(data.token, data.expiresAt);
+            navigate(`/panel/${uuid}/admin`, { replace: true });
+        } catch (err) {
+            const errData = err.data || {};
 
-            // Validate with ±1 window (allows 30s before/after)
-            const delta = totp.validate({ token: totpCode.replace(/\s/g, ''), window: 1 });
-
-            if (delta !== null) {
-                // Success! Create session and redirect
-                resetAttempts();
-                createSession();
-                navigate(`/panel/${uuid}/admin`, { replace: true });
+            if (errData.error === 'locked') {
+                setLockMinutes(errData.lockedMinutes || 15);
+                setStep('password');
+                setPassword('');
+                setTotpCode('');
+            } else if (errData.error === 'invalid_password') {
+                // Wrong password — go back to password step
+                setStep('password');
+                setTotpCode('');
+                setError(errData.message || 'Неверный пароль');
+            } else if (errData.error === 'invalid_totp') {
+                setTotpCode('');
+                setError(errData.message || 'Неверный код');
             } else {
-                const rl = incrementAttempts();
-                if (rl.lockedUntil) {
-                    setError('Аккаунт заблокирован на 15 минут');
-                    setStep('password');
-                    setPassword('');
-                    setTotpCode('');
-                    setLockMinutes(15);
-                } else {
-                    setError('Неверный код. Попробуйте ещё.');
-                    setTotpCode('');
-                }
+                setError(err.message || 'Ошибка авторизации');
             }
-        } catch {
-            setError('Ошибка проверки кода');
         } finally {
             setIsLoading(false);
         }
@@ -272,7 +168,7 @@ const Login = () => {
                             disabled={isLoading || !password}
                             className="w-full bg-accent text-white py-4 rounded-full text-xs uppercase tracking-widest hover:bg-accent/80 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_15px_rgba(196,162,101,0.25)] hover:shadow-[0_0_25px_rgba(196,162,101,0.55)]"
                         >
-                            {isLoading ? 'Проверка...' : 'Далее \u2192'}
+                            {isLoading ? 'Проверка...' : 'Далее →'}
                         </button>
                     </form>
                 ) : (
@@ -315,7 +211,7 @@ const Login = () => {
                             onClick={() => { setStep('password'); setError(''); setTotpCode(''); }}
                             className="w-full text-xs text-secondary hover:text-primary transition-colors uppercase tracking-widest py-2"
                         >
-                            \u2190 Назад
+                            ← Назад
                         </button>
                     </form>
                 )}

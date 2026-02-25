@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
+import { ToastProvider } from './components/Toast'
 import { ContentProvider } from './context/ContentContext'
 import ErrorBoundary from './components/ErrorBoundary'
 import App from './App'
@@ -10,9 +11,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <ErrorBoundary>
             <BrowserRouter>
-                <ContentProvider>
-                    <App />
-                </ContentProvider>
+                <ToastProvider>
+                    <ContentProvider>
+                        <App />
+                    </ContentProvider>
+                </ToastProvider>
             </BrowserRouter>
         </ErrorBoundary>
     </React.StrictMode>
