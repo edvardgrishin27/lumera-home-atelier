@@ -212,7 +212,7 @@ const About = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="pt-16 md:pt-40 px-6 md:px-20 pb-24 md:pb-0 min-h-screen bg-background w-full overflow-hidden">
+        <div ref={containerRef} className="pt-16 md:pt-40 px-5 md:px-20 pb-8 md:pb-0 min-h-screen bg-background w-full overflow-hidden">
             <SEO
                 title="О компании Lumera Home Atelier — мебель из Китая на заказ"
                 description="Lumera Home Atelier — ателье дизайнерской мебели из Китая. Мебель на заказ по индивидуальным проектам, авторские коллекции, доставка по России."
@@ -316,18 +316,18 @@ const About = () => {
                         </div>
 
                         {/* Статистика */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 border-t border-primary/10 pt-8 md:pt-16 reveal">
+                        <div className="grid grid-cols-3 gap-4 md:gap-8 border-t border-primary/10 pt-6 md:pt-16 reveal">
                             <div>
-                                <span className="block text-4xl md:text-5xl font-serif text-primary mb-2">{ab.stats1Value}</span>
-                                <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">{ab.stats1Label}</span>
+                                <span className="block text-2xl md:text-5xl font-serif text-primary mb-1">{ab.stats1Value}</span>
+                                <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats1Label}</span>
                             </div>
                             <div>
-                                <span className="block text-4xl md:text-5xl font-serif text-primary mb-2">{ab.stats2Value}</span>
-                                <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">{ab.stats2Label}</span>
+                                <span className="block text-2xl md:text-5xl font-serif text-primary mb-1">{ab.stats2Value}</span>
+                                <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats2Label}</span>
                             </div>
                             <div>
-                                <span className="block text-4xl md:text-5xl font-serif text-primary mb-2">{ab.stats3Value}</span>
-                                <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">{ab.stats3Label}</span>
+                                <span className="block text-2xl md:text-5xl font-serif text-primary mb-1">{ab.stats3Value}</span>
+                                <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats3Label}</span>
                             </div>
                         </div>
 
