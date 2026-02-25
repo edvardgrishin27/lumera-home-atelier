@@ -173,7 +173,7 @@ const Home = () => {
             />
 
             {/* Hero Section */}
-            <section className="hero-container content-layer relative h-[100vh] w-full bg-background flex flex-col justify-center px-8 md:px-20 pt-20">
+            <section className="hero-container content-layer relative h-[100vh] w-full bg-background flex flex-col justify-center px-8 md:px-20 pt-32 md:pt-40">
                 <div className="z-10 mix-blend-exclusion text-white md:mix-blend-normal md:text-primary relative max-w-[90vw] pointer-events-none">
                     <h1 className="text-[13vw] leading-[0.85] font-serif font-thin tracking-tightest overflow-hidden">
                         <span className="block hero-word">{home.heroTitle1}</span>
