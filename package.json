@@ -10,7 +10,11 @@
     "build:seo": "vite build && node scripts/generate-sitemap.mjs && node scripts/prerender.mjs",
     "sitemap": "node scripts/generate-sitemap.mjs",
     "prerender": "node scripts/prerender.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "seo:audit": "node scripts/seo-audit.mjs",
+    "seo:index": "node scripts/check-indexation.mjs",
+    "seo:index:live": "node scripts/check-indexation.mjs --live",
+    "blog:add": "node scripts/add-blog-post.mjs"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",

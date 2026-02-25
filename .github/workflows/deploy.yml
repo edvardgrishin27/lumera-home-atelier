@@ -24,6 +24,9 @@ jobs:
       - name: Generate sitemap
         run: node scripts/generate-sitemap.mjs
 
+      - name: SEO Audit
+        run: node scripts/seo-audit.mjs
+
       - name: Build project
         run: npm run build
         env:
@@ -63,3 +66,41 @@ jobs:
           S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
           API_SECRET: ${{ secrets.API_SECRET }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+  lighthouse:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+
+      - name: Wait for deploy to propagate
+        run: sleep 30
+
+      - name: Run Lighthouse on key pages
+        run: |
+          lhci autorun \
+            --collect.url=https://lumerahome.ru \
+            --collect.url=https://lumerahome.ru/catalog \
+            --collect.url=https://lumerahome.ru/blog \
+            --collect.url=https://lumerahome.ru/blog/kak-vybrat-divan-polnoe-rukovodstvo \
+            --collect.numberOfRuns=1 \
+            --collect.settings.chromeFlags="--no-sandbox --headless" \
+            --upload.target=temporary-public-storage || true
+
+      - name: Show Lighthouse scores
+        if: always()
+        run: |
+          echo "Lighthouse audit complete. Check upload URL above for detailed report."
+          if [ -d ".lighthouseci" ]; then
+            ls -la .lighthouseci/lhr-*.json 2>/dev/null && echo "Reports generated successfully." || echo "No reports found."
+          fi
