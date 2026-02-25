@@ -1,10 +1,203 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
 import SEO from '../components/SEO';
 import OrderModal from '../components/OrderModal';
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* ─── Fullscreen Lightbox with smooth animation ─── */
+const Lightbox = ({ images, activeIndex, onClose, onPrev, onNext, productName }) => {
+    const [touchStart, setTouchStart] = useState(null);
+    const [animState, setAnimState] = useState('entering'); // entering | open | leaving
+    const [imgTransition, setImgTransition] = useState(false);
+
+    // Entrance animation
+    useEffect(() => {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => setAnimState('open'));
+        });
+    }, []);
+
+    // Close with animation
+    const handleClose = useCallback(() => {
+        setAnimState('leaving');
+        setTimeout(onClose, 400);
+    }, [onClose]);
+
+    // Image transition on index change
+    useEffect(() => {
+        setImgTransition(true);
+        const t = setTimeout(() => setImgTransition(false), 50);
+        return () => clearTimeout(t);
+    }, [activeIndex]);
+
+    useEffect(() => {
+        const handleKey = (e) => {
+            if (e.key === 'Escape') handleClose();
+            if (e.key === 'ArrowLeft') onPrev();
+            if (e.key === 'ArrowRight') onNext();
+        };
+        window.addEventListener('keydown', handleKey);
+        document.body.style.overflow = 'hidden';
+        return () => {
+            window.removeEventListener('keydown', handleKey);
+            document.body.style.overflow = '';
+        };
+    }, [handleClose, onPrev, onNext]);
+
+    const handleTouchStart = (e) => setTouchStart(e.touches[0].clientX);
+    const handleTouchEnd = (e) => {
+        if (touchStart === null) return;
+        const diff = touchStart - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) {
+            diff > 0 ? onNext() : onPrev();
+        }
+        setTouchStart(null);
+    };
+
+    const isVideo = (url) => url && url.match(/\.(mp4|webm|ogg)$/i);
+    const isOpen = animState === 'open';
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+            {/* Backdrop — smooth fade */}
+            <div
+                className={`absolute inset-0 bg-black/95 backdrop-blur-md transition-opacity duration-400 ease-out ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+                style={{ transitionDuration: '400ms' }}
+                onClick={handleClose}
+            />
+
+            {/* Close button */}
+            <button
+                onClick={handleClose}
+                aria-label="Закрыть просмотр"
+                className={`absolute top-6 right-6 z-[102] w-12 h-12 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
+                style={{ transitionDelay: isOpen ? '200ms' : '0ms' }}
+            >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            {/* Counter */}
+            <div className={`absolute top-7 left-1/2 -translate-x-1/2 z-[102] text-white/60 text-xs font-sans tracking-[0.2em] uppercase transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
+                style={{ transitionDelay: isOpen ? '250ms' : '0ms' }}>
+                {activeIndex + 1} / {images.length}
+            </div>
+
+            {/* Prev Arrow */}
+            {images.length > 1 && (
+                <button
+                    onClick={(e) => { e.stopPropagation(); onPrev(); }}
+                    aria-label="Предыдущее фото"
+                    className={`absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-[102] w-12 h-12 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
+                    style={{ transitionDelay: isOpen ? '300ms' : '0ms' }}
+                >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+            )}
+
+            {/* Next Arrow */}
+            {images.length > 1 && (
+                <button
+                    onClick={(e) => { e.stopPropagation(); onNext(); }}
+                    aria-label="Следующее фото"
+                    className={`absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-[102] w-12 h-12 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
+                    style={{ transitionDelay: isOpen ? '300ms' : '0ms' }}
+                >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+            )}
+
+            {/* Image — smooth scale + fade entrance */}
+            <div
+                className={`relative z-[101] w-full h-full flex items-center justify-center p-16 md:p-24 transition-all duration-500 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
+                style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                onClick={handleClose}
+            >
+                <div className={`transition-opacity duration-300 ${imgTransition ? 'opacity-0' : 'opacity-100'}`}>
+                    {isVideo(images[activeIndex]) ? (
+                        <video
+                            src={images[activeIndex]}
+                            className="max-w-full max-h-full object-contain rounded-lg"
+                            autoPlay muted loop playsInline
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    ) : (
+                        <img
+                            src={images[activeIndex]}
+                            alt={`${productName} — фото ${activeIndex + 1}`}
+                            className="max-w-full max-h-full object-contain rounded-lg select-none"
+                            draggable={false}
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    )}
+                </div>
+            </div>
+
+            {/* Dot indicators */}
+            {images.length > 1 && (
+                <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-[102] flex gap-2 transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                    style={{ transitionDelay: isOpen ? '350ms' : '0ms' }}>
+                    {images.map((_, i) => (
+                        <button
+                            key={i}
+                            aria-label={`Фото ${i + 1}`}
+                            onClick={(e) => { e.stopPropagation(); }}
+                            className={`w-2 h-2 rounded-full transition-all duration-300 ${i === activeIndex ? 'bg-white w-6' : 'bg-white/40 hover:bg-white/60'}`}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
+/* ─── Sticky Product Bar (appears BELOW the main header) ─── */
+const StickyProductBar = ({ product, visible, onOrder }) => (
+    <div
+        className={`fixed left-0 w-full z-[45] transition-all duration-500 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+        style={{ top: '68px' }}
+    >
+        {/* Top accent separator */}
+        <div className="h-px w-full bg-accent/30" />
+        <div className="bg-surface/95 backdrop-blur-md border-b border-primary/10 shadow-[0_4px_20px_rgba(0,0,0,0.08)] dark:bg-[rgba(38,38,38,0.98)] dark:border-[rgba(255,255,255,0.08)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.6)]">
+            <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-3.5 flex items-center justify-between gap-4">
+                {/* Left: product image + name + price */}
+                <div className="flex items-center gap-4 min-w-0">
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-12 h-12 rounded-xl object-cover flex-shrink-0 shadow-elevated"
+                        width="48"
+                        height="48"
+                    />
+                    <div className="min-w-0">
+                        <p className="text-sm font-serif text-primary truncate leading-tight">{product.name}</p>
+                        <p className="text-base font-serif text-accent font-medium">{product.price?.toLocaleString()} ₽</p>
+                    </div>
+                </div>
+
+                {/* Right: CTA */}
+                <button
+                    onClick={onOrder}
+                    className="flex-shrink-0 px-7 py-3 bg-accent text-white text-[10px] uppercase tracking-[0.15em] rounded-full hover:bg-accent/80 transition-transform duration-300 ease-out shadow-[0_4px_15px_rgba(196,162,101,0.25)] hover:shadow-[0_0_20px_rgba(196,162,101,0.5)] hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
+                >
+                    Оставить заявку
+                </button>
+            </div>
+        </div>
+    </div>
+);
 
 const ProductDetail = () => {
     const { slug } = useParams();
@@ -12,14 +205,34 @@ const ProductDetail = () => {
     const products = content.products;
     const product = products.find(p => p.slug === slug) || products[0];
     const containerRef = useRef(null);
+    const ctaRef = useRef(null);
     const [activeImage, setActiveImage] = useState(0);
     const [selectedColor, setSelectedColor] = useState(0);
     const [selectedSize, setSelectedSize] = useState(0);
     const [isOrderOpen, setIsOrderOpen] = useState(false);
+    const [showStickyBar, setShowStickyBar] = useState(false);
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [lightboxIndex, setLightboxIndex] = useState(0);
 
-    // Color & Size options (demo data)
     const colors = product?.colors || [];
     const sizes = product?.sizes || [];
+
+    const gallery = product?.gallery || [product?.image, product?.image, product?.image, product?.image];
+
+    const isVideo = (url) => url && url.match(/\.(mp4|webm|ogg)$/i);
+
+    // Lightbox handlers
+    const openLightbox = useCallback((idx) => {
+        setLightboxIndex(idx);
+        setLightboxOpen(true);
+    }, []);
+    const closeLightbox = useCallback(() => setLightboxOpen(false), []);
+    const prevLightbox = useCallback(() => {
+        setLightboxIndex((prev) => (prev === 0 ? gallery.length - 1 : prev - 1));
+    }, [gallery.length]);
+    const nextLightbox = useCallback(() => {
+        setLightboxIndex((prev) => (prev === gallery.length - 1 ? 0 : prev + 1));
+    }, [gallery.length]);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -49,11 +262,39 @@ const ProductDetail = () => {
         return () => ctx.revert();
     }, [slug]);
 
+    // Sticky bar: show only when CTA is fully scrolled above viewport
+    useEffect(() => {
+        if (!ctaRef.current) return;
+
+        let ticking = false;
+        const checkCTA = () => {
+            if (!ctaRef.current) return;
+            const rect = ctaRef.current.getBoundingClientRect();
+            // Show bar only when the bottom of CTA is above the header area (scrolled past)
+            const shouldShow = rect.bottom < 0;
+            setShowStickyBar(shouldShow);
+            ticking = false;
+        };
+
+        const onScroll = () => {
+            if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(checkCTA);
+            }
+        };
+
+        // Initial check after layout settles (don't show on load)
+        const timer = setTimeout(() => {
+            window.addEventListener('scroll', onScroll, { passive: true });
+        }, 600);
+
+        return () => {
+            clearTimeout(timer);
+            window.removeEventListener('scroll', onScroll);
+        };
+    }, [slug]);
+
     if (!product) return <div className="pt-40 text-center">Загрузка...</div>;
-
-    const gallery = product.gallery || [product.image, product.image, product.image, product.image];
-
-    const isVideo = (url) => url && url.match(/\.(mp4|webm|ogg)$/i);
 
     return (
         <div ref={containerRef} className="bg-background min-h-screen">
@@ -91,13 +332,23 @@ const ProductDetail = () => {
                 }}
             />
 
-            {/* Top Section: Refined 2026 Premium Style */}
-            <div className="pt-32 pb-20 px-6 md:px-12 max-w-[1600px] mx-auto content-layer">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+            {/* Sticky Product Bar */}
+            <StickyProductBar
+                product={product}
+                visible={showStickyBar}
+                onOrder={() => setIsOrderOpen(true)}
+            />
 
-                    {/* Left: Gallery with Cinematic Touches */}
-                    <div className="lg:col-span-8 reveal">
-                        <div className="aspect-[4/3] bg-surface mb-4 overflow-hidden relative group cursor-zoom-in rounded-2xl shadow-elevated">
+            {/* Top Section */}
+            <div className="pt-32 pb-8 px-6 md:px-12 max-w-[1600px] mx-auto content-layer">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+
+                    {/* Left: Gallery — more compact */}
+                    <div className="lg:col-span-7 reveal">
+                        <div
+                            className="aspect-[4/3] bg-surface mb-3 overflow-hidden relative group cursor-zoom-in rounded-2xl shadow-elevated"
+                            onClick={() => openLightbox(activeImage)}
+                        >
                             {isVideo(gallery[activeImage]) ? (
                                 <video
                                     src={gallery[activeImage]}
@@ -119,10 +370,17 @@ const ProductDetail = () => {
                                     height="750"
                                 />
                             )}
-                            {/* Subtle Cinematic Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                            {/* Hover overlay with zoom icon */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none flex items-end justify-center pb-6">
+                                <span className="text-white/80 text-[10px] uppercase tracking-[0.2em] flex items-center gap-2">
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" />
+                                    </svg>
+                                    Увеличить
+                                </span>
+                            </div>
                         </div>
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-4 gap-3">
                             {gallery.map((media, idx) => (
                                 <button
                                     key={idx}
@@ -133,7 +391,6 @@ const ProductDetail = () => {
                                     {isVideo(media) ? (
                                         <div className="w-full h-full relative">
                                             <video src={media} className="w-full h-full object-cover" muted playsInline />
-                                            {/* Play Icon Overlay for Thumbnails */}
                                             <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                                                 <svg className="w-8 h-8 text-white opacity-80" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                                             </div>
@@ -146,104 +403,104 @@ const ProductDetail = () => {
                         </div>
                     </div>
 
-                    {/* Right: Sticky Info with Tight Typography */}
-                    <div className="lg:col-span-4 relative">
+                    {/* Right: Sticky Info — reorganized order */}
+                    <div className="lg:col-span-5 relative">
                         <div className="sticky top-32 reveal">
-                            <div className="border-b border-primary/10 pb-8 mb-8">
-                                <h1 className="text-4xl md:text-5xl font-serif mb-4 leading-tight tracking-tightest text-primary">{product.name}</h1>
-                                <p className="text-xs uppercase tracking-[0.2em] text-secondary mb-6">{product.category}</p>
-                                <p className="text-2xl font-serif text-primary opacity-90">{product.price.toLocaleString()} ₽</p>
+                            {/* Title + Price */}
+                            <div className="border-b border-primary/10 pb-6 mb-6">
+                                <h1 className="text-4xl md:text-5xl font-serif mb-3 leading-tight tracking-tightest text-primary">{product.name}</h1>
+                                <p className="text-xs uppercase tracking-[0.2em] text-secondary mb-4">{product.category}</p>
+                                <p className="text-2xl font-serif text-accent">{product.price?.toLocaleString()} ₽</p>
                             </div>
 
-                            <div className="space-y-8">
-                                <p className="text-base leading-relaxed opacity-80 font-serif text-primary">
-                                    {product.description}
-                                </p>
-
-                                <div className="space-y-4 py-4 border-t border-b border-primary/10">
-                                    <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] text-secondary">
-                                        <span>Характеристики</span>
-                                        <span>См</span>
+                            {/* 1. Color Selector — moved up */}
+                            {colors.length > 0 && (
+                                <div className="space-y-3 pb-5 mb-5 border-b border-primary/5">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">Цвет</span>
+                                        <span className="text-sm font-serif text-primary opacity-70">
+                                            {colors[selectedColor]?.name}
+                                        </span>
                                     </div>
-                                    <p className="font-serif text-primary">{product.specs}</p>
+                                    <div className="flex gap-4">
+                                        {colors.map((color, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => setSelectedColor(i)}
+                                                aria-label={`Выбрать цвет ${color.name}`}
+                                                className={`w-10 h-10 rounded-full transition-all duration-500 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent ${selectedColor === i ? 'ring-2 ring-offset-4 ring-primary scale-110 shadow-md' : 'hover:scale-110 opacity-70 hover:opacity-100 hover:shadow-sm'}`}
+                                                style={{ backgroundColor: color.hex }}
+                                                title={color.name}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
-                                    {product.details && product.details.map((detail, i) => (
-                                        <div key={i} className="pt-2">
-                                            <div className="text-[10px] uppercase tracking-[0.2em] text-secondary mb-1">{detail.label}</div>
-                                            <div className="font-serif text-primary">{detail.value}</div>
+                            {/* 2. Size Selector — right after color */}
+                            {sizes.length > 0 && (
+                                <div className="space-y-3 pb-5 mb-5 border-b border-primary/5">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">Габариты</span>
+                                        <span className="text-xs font-serif text-primary opacity-70">
+                                            {sizes[selectedSize]?.value}
+                                        </span>
+                                    </div>
+                                    <div className="flex gap-2 flex-wrap">
+                                        {sizes.map((size, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => setSelectedSize(i)}
+                                                aria-label={`Выбрать размер ${size.label}`}
+                                                className={`px-4 py-2.5 text-[11px] font-sans tracking-wide rounded-full transition-all duration-300 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent border ${selectedSize === i ? 'bg-accent text-white border-accent shadow-md scale-105' : 'bg-transparent text-primary border-primary/20 hover:border-accent/50 hover:bg-primary/5'}`}
+                                            >
+                                                {size.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* 3. Characteristics */}
+                            {product.details && product.details.length > 0 && (
+                                <div className="space-y-3 pb-6 mb-6 border-b border-primary/5">
+                                    <div className="text-[10px] uppercase tracking-[0.2em] text-secondary">Характеристики</div>
+                                    {product.details.map((detail, i) => (
+                                        <div key={i} className="flex justify-between items-baseline gap-4">
+                                            <span className="text-[10px] uppercase tracking-[0.15em] text-secondary">{detail.label}</span>
+                                            <span className="font-serif text-primary text-right">{detail.value}</span>
                                         </div>
                                     ))}
                                 </div>
+                            )}
 
-                                {/* Color Selector Workspace */}
-                                {colors.length > 0 && (
-                                    <div className="space-y-4 py-6 border-t border-primary/5">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">Цвет</span>
-                                            <span className="text-sm font-serif text-primary opacity-70">
-                                                {colors[selectedColor]?.name}
-                                            </span>
-                                        </div>
-                                        <div className="flex gap-4">
-                                            {colors.map((color, i) => (
-                                                <button
-                                                    key={i}
-                                                    onClick={() => setSelectedColor(i)}
-                                                    aria-label={`Выбрать цвет ${color.name}`}
-                                                    className={`w-10 h-10 rounded-full transition-all duration-500 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent ${selectedColor === i ? 'ring-2 ring-offset-4 ring-primary scale-110 shadow-md' : 'hover:scale-110 opacity-70 hover:opacity-100 hover:shadow-sm'}`}
-                                                    style={{ backgroundColor: color.hex }}
-                                                    title={color.name}
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
+                            {/* Description */}
+                            <p className="text-base leading-relaxed opacity-80 font-serif text-primary mb-8">
+                                {product.description}
+                            </p>
 
-                                {/* Size Selector Workspace */}
-                                {sizes.length > 0 && (
-                                    <div className="space-y-3 py-6 border-t border-primary/5">
-                                        <div className="flex justify-between items-center mb-3">
-                                            <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">Габариты (Ш×Г×В)</span>
-                                            <span className="text-xs font-serif text-primary opacity-70 transition-all">
-                                                {sizes[selectedSize]?.value}
-                                            </span>
-                                        </div>
-                                        <div className="flex gap-2 flex-wrap">
-                                            {sizes.map((size, i) => (
-                                                <button
-                                                    key={i}
-                                                    onClick={() => setSelectedSize(i)}
-                                                    aria-label={`Выбрать размер ${size.label}`}
-                                                    className={`px-4 py-2.5 text-[11px] font-sans tracking-wide rounded-full transition-all duration-300 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent border ${selectedSize === i ? 'bg-accent text-white border-accent shadow-md scale-105' : 'bg-transparent text-primary border-primary/20 hover:border-accent/50 hover:bg-primary/5'}`}
-                                                >
-                                                    {size.label}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Premium CTA Button */}
+                            {/* CTA Button */}
+                            <div ref={ctaRef}>
                                 <button
                                     onClick={() => setIsOrderOpen(true)}
                                     className="w-full bg-accent text-white py-5 text-xs uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-transform duration-500 ease-spring text-center shadow-[0_4px_15px_rgba(196,162,101,0.25)] hover:shadow-[0_0_25px_rgba(196,162,101,0.55)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
                                 >
-                                    Оформить заказ
+                                    Оставить заявку
                                 </button>
-
-                                <p className="text-[10px] text-center text-secondary uppercase tracking-[0.2em]">
-                                    Индивидуальное изготовление от 45 дней
-                                </p>
                             </div>
+
+                            <p className="text-[10px] text-center text-secondary uppercase tracking-[0.2em] mt-4">
+                                Индивидуальное изготовление от 45 дней
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Bottom Section: Boca Style (Mood) */}
-            <div className="w-full bg-surface py-20 lg:py-40">
-                <div className="px-6 md:px-12 mb-20 text-center reveal">
-                    <span className="text-xs uppercase tracking-[0.3em] text-accent block mb-4">Mood</span>
+            {/* Bottom Section: Mood — minimal gap */}
+            <div className="w-full bg-surface py-10 lg:py-16">
+                <div className="px-6 md:px-12 mb-10 text-center reveal">
+                    <span className="text-xs uppercase tracking-[0.3em] text-accent block mb-3">Mood</span>
                     <h2 className="text-4xl md:text-6xl font-serif font-thin">В интерьере</h2>
                 </div>
 
@@ -282,6 +539,18 @@ const ProductDetail = () => {
 
                 </div>
             </div>
+
+            {/* Lightbox */}
+            {lightboxOpen && (
+                <Lightbox
+                    images={gallery}
+                    activeIndex={lightboxIndex}
+                    onClose={closeLightbox}
+                    onPrev={prevLightbox}
+                    onNext={nextLightbox}
+                    productName={product.name}
+                />
+            )}
 
             <OrderModal
                 isOpen={isOrderOpen}

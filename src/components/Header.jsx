@@ -132,12 +132,12 @@ const Header = () => {
                 ))}
             </nav>
 
-            {/* Right - CTA Button & Theme Toggle */}
-            <div className="hidden md:flex items-center gap-6">
+            {/* Right - Theme Toggle Only */}
+            <div className="hidden md:flex items-center">
                 <button
                     onClick={toggleTheme}
                     aria-label="Переключить тему"
-                    className="text-primary hover:text-accent border border-primary/20 hover:border-accent/40 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-full p-2.5"
+                    className="text-primary hover:text-accent border border-primary/20 hover:border-accent/40 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-full p-2.5"
                 >
                     {isDarkMode ? (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -149,14 +149,6 @@ const Header = () => {
                         </svg>
                     )}
                 </button>
-                <Link
-                    to="/request"
-                    aria-label="Оставить заявку на премиальную мебель"
-                    className="px-7 py-3 bg-accent text-white text-[10px] md:text-xs font-sans uppercase tracking-widest transition-all duration-300 ease-out rounded-full shadow-[0_4px_15px_rgba(196,162,101,0.25)] hover:shadow-[0_0_25px_rgba(196,162,101,0.55)] hover:bg-accent/85 hover:-translate-y-1 active:scale-95 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
-                    onClick={(e) => { setIsMenuOpen(false); handleNavClick(e, '/request'); }}
-                >
-                    Оставить заявку
-                </Link>
             </div>
 
             {/* Mobile Actions */}
@@ -213,15 +205,7 @@ const Header = () => {
                     ))}
                 </div>
 
-                <div className="mt-auto pt-6">
-                    <Link
-                        to="/request"
-                        onClick={(e) => { setIsMenuOpen(false); handleNavClick(e, '/request'); }}
-                        className="block w-full text-center px-7 py-4 bg-accent text-white text-xs font-sans uppercase tracking-widest rounded-full shadow-[0_4px_15px_rgba(196,162,101,0.25)] active:scale-95 transition-transform duration-200"
-                    >
-                        Оставить заявку
-                    </Link>
-                </div>
+                {/* Spacer — mobile menu has no CTA */}
             </nav>
         </header>
     );
