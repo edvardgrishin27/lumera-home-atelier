@@ -53,27 +53,24 @@ const FounderCard = ({ name, role, image, quote, bio, fullBio, expertise, revers
                             zIndex: 0,
                         }}
                     />
-                    {/* Само фото — компактный портрет */}
+                    {/* Само фото — компактный портрет (эффекты как в каталоге) */}
                     <div
-                        className="relative aspect-[3/4] overflow-hidden rounded-[1.5rem] bg-surface/50"
-                        style={{
-                            zIndex: 1,
-                            boxShadow: '0 8px 40px rgba(196,162,101,0.10), 0 2px 12px rgba(0,0,0,0.06)',
-                        }}
+                        className="relative aspect-[3/4] overflow-hidden rounded-[1.5rem] bg-surface shadow-elevated group-hover:shadow-floating transition-shadow duration-500"
+                        style={{ zIndex: 1 }}
                     >
                         {image && (
                             <img
                                 src={image}
                                 alt={name}
-                                className="w-full h-full object-cover object-top scale-[1.03] group-hover:scale-100 transition-transform duration-[1.4s] ease-out"
+                                className="w-full h-full object-cover object-top transition-transform duration-700 ease-spring group-hover:scale-105"
                                 loading="lazy"
                                 decoding="async"
                                 width="360"
                                 height="480"
                             />
                         )}
-                        {/* Деликатный градиент внизу фото */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
+                        {/* Кинематографический градиент на hover (как в каталоге) */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     </div>
                     {/* Имя поверх фото (мобайл) */}
                     <div className="absolute bottom-0 left-0 right-0 p-5 lg:hidden" style={{ zIndex: 2 }}>
