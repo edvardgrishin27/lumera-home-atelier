@@ -212,7 +212,7 @@ const About = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="pt-16 md:pt-40 px-5 md:px-20 pb-8 md:pb-0 min-h-screen bg-background w-full overflow-hidden">
+        <div ref={containerRef} className="pt-16 md:pt-40 px-5 md:px-20 pb-4 md:pb-0 bg-background w-full overflow-hidden">
             <SEO
                 title="О компании Lumera Home Atelier — мебель из Китая на заказ"
                 description="Lumera Home Atelier — ателье дизайнерской мебели из Китая. Мебель на заказ по индивидуальным проектам, авторские коллекции, доставка по России."
@@ -279,8 +279,8 @@ const About = () => {
             {/* ═══════════════════════════════════════════════════════
                 СЕКЦИЯ: О КОМПАНИИ (оригинальный контент)
             ═══════════════════════════════════════════════════════ */}
-            <div className="max-w-[1600px] mx-auto content-layer mb-12 md:mb-32">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-20">
+            <div className="max-w-[1600px] mx-auto content-layer mb-0 md:mb-32">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-20">
 
                     {/* Левая типографская колонка */}
                     <div className="lg:col-span-5 lg:sticky lg:top-40 h-fit reveal">
@@ -294,7 +294,7 @@ const About = () => {
                     </div>
 
                     {/* Правая колонка со ступенчатым контентом */}
-                    <div className="lg:col-span-7 space-y-12 md:space-y-32 mb-8 md:mb-20">
+                    <div className="lg:col-span-7 space-y-10 md:space-y-32 mb-0 md:mb-20">
                         {/* Раздел 1 — Философия */}
                         <div className="reveal">
                             <div className="aspect-[4/3] bg-surface overflow-hidden relative mb-4 md:mb-8 rounded-2xl shadow-elevated transition-shadow duration-500 hover:shadow-hover-glow cursor-crosshair">
