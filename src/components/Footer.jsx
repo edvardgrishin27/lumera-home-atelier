@@ -29,7 +29,7 @@ const Footer = () => {
                 <div className="md:col-span-1"></div>
 
                 {/* Info Columns */}
-                <div className="md:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-12 font-sans text-sm tracking-wide leading-relaxed text-primary/70">
+                <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 font-sans text-sm tracking-wide leading-relaxed text-primary/70">
 
                     {/* Column 1: Schedule */}
                     <div>
@@ -76,8 +76,27 @@ const Footer = () => {
                             <Link to="/privacy" className="hover:text-accent transition-colors border-b border-transparent hover:border-accent">
                                 Политика конфиденциальности
                             </Link>
-                            <Link to="/requisites" className="hover:text-accent transition-colors border-b border-transparent hover:border-accent mt-4">
+                            <Link to="/requisites" className="hover:text-accent transition-colors border-b border-transparent hover:border-accent">
                                 Реквизиты
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Column 4: For Customers */}
+                    <div>
+                        <h3 className="text-primary/40 text-xs uppercase tracking-widest mb-6">Покупателям</h3>
+                        <div className="space-y-4 flex flex-col items-start">
+                            <Link to="/contact" className="hover:text-accent transition-colors border-b border-transparent hover:border-accent">
+                                Контакты
+                            </Link>
+                            <Link to="/workflow" className="hover:text-accent transition-colors border-b border-transparent hover:border-accent">
+                                Этапы работы
+                            </Link>
+                            <Link to="/guarantee" className="hover:text-accent transition-colors border-b border-transparent hover:border-accent">
+                                Гарантии
+                            </Link>
+                            <Link to="/returns" className="hover:text-accent transition-colors border-b border-transparent hover:border-accent">
+                                Возврат и обмен
                             </Link>
                         </div>
                     </div>

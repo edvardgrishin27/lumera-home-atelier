@@ -92,16 +92,16 @@ const Header = () => {
 
     const navLinks = [
         { name: 'Каталог', path: '/catalog' },
+        { name: 'Этапы работы', path: '/workflow' },
         { name: 'Бизнесу', path: '/b2b' },
         { name: 'О нас', path: '/about' },
         { name: 'Блог', path: '/blog' },
-        { name: 'Контакты', path: '/contact' },
     ];
 
     return (
         <header
             ref={headerRef}
-            className="fixed top-0 left-0 w-full z-50 px-8 md:px-12 py-6 flex justify-between items-center transition-colors duration-300 bg-background/90 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
+            className="fixed top-0 left-0 w-full z-50 px-8 md:px-12 py-4 flex justify-between items-center transition-colors duration-300 bg-background/90 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
         >
             {/* Logo Section - Shrinks on scroll */}
             <Link to="/" onClick={(e) => handleNavClick(e, '/')} className="relative z-50 group origin-left">

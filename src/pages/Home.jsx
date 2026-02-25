@@ -174,9 +174,9 @@ const Home = () => {
             />
 
             {/* Hero Section — OKANA-inspired layout */}
-            <section className="hero-container content-layer relative w-full bg-background px-3 md:px-5 pt-[88px] md:pt-[96px] pb-3 md:pb-5">
+            <section className="hero-container content-layer relative w-full bg-background px-3 md:px-5 pt-[104px] md:pt-[112px] pb-4 md:pb-6">
                 {/* Rounded hero container with background image */}
-                <div className="relative w-full h-[calc(100vh-100px)] md:h-[calc(100vh-116px)] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden">
+                <div className="relative w-full h-[calc(100vh-260px)] md:h-[calc(100vh-300px)] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden">
                     {/* Background Image */}
                     <div className="absolute inset-0 z-0">
                         <img
@@ -197,14 +197,7 @@ const Home = () => {
                     <div className="absolute bottom-0 left-0 right-0 h-[55%] z-[1] bg-gradient-to-t from-black/40 to-transparent" />
 
                     {/* Content Layer */}
-                    <div className="relative z-10 flex flex-col justify-end h-[calc(100vh-100px)] md:h-[calc(100vh-116px)] p-6 md:p-10 lg:p-12">
-                        {/* Top area — small label */}
-                        <div className="absolute top-6 left-6 md:top-10 md:left-10 lg:top-12 lg:left-12">
-                            <span className="hero-word inline-block text-white/60 text-[10px] md:text-xs uppercase tracking-[0.3em] font-sans">
-                                Lumera Home Atelier
-                            </span>
-                        </div>
-
+                    <div className="relative z-10 flex flex-col justify-end h-[calc(100vh-260px)] md:h-[calc(100vh-300px)] p-6 md:p-10 lg:p-12">
                         {/* Main content at bottom */}
                         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10 lg:gap-16">
                             {/* Left side — heading + description + CTA */}
@@ -265,7 +258,7 @@ const Home = () => {
             </section>
 
             {/* Hit Sales Section - 3x3 Grid */}
-            <section className="py-32 bg-surface min-h-[80vh] relative z-10">
+            <section className="pt-8 pb-32 bg-surface min-h-[80vh] relative z-10">
                 <div className="px-6 md:px-20 mb-16 flex flex-col md:flex-row justify-between items-end gap-8">
                     <h2 className="text-5xl md:text-6xl font-serif font-light text-primary tracking-tight">{home.hitsTitle || 'Хиты продаж'}</h2>
 
@@ -322,7 +315,7 @@ const Home = () => {
 
             {/* Philosophy Quote — uses dangerouslySetInnerHTML for accent styling.
                 Content source: trusted defaultContent in ContentContext.jsx, not user input. */}
-            <section className="py-20 md:py-28 px-6 md:px-20 text-center bg-background relative z-10 content-layer">
+            <section className="py-12 md:py-16 px-6 md:px-20 text-center bg-background relative z-10 content-layer">
                 <p
                     className="font-serif text-3xl md:text-5xl leading-relaxed max-w-4xl mx-auto text-primary whitespace-pre-line"
                     dangerouslySetInnerHTML={{ __html: quoteHtml }} // eslint-disable-line react/no-danger
