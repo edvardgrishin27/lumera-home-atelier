@@ -279,43 +279,42 @@ const About = () => {
             {/* ═══════════════════════════════════════════════════════
                 СЕКЦИЯ: О КОМПАНИИ (оригинальный контент)
             ═══════════════════════════════════════════════════════ */}
-            <div className="max-w-[1600px] mx-auto content-layer mb-0 md:mb-32">
+            <div className="max-w-[1600px] mx-auto content-layer mb-0">
+
+                {/* Заголовок — полная ширина */}
+                <div className="mb-10 md:mb-16 reveal">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4 block">{ab.title}</span>
+                    <h1 className="text-4xl md:text-8xl font-serif font-thin mb-4 md:mb-6 text-primary tracking-tightest leading-[0.9]">
+                        Искусство<br />жить
+                    </h1>
+                    <p className="text-lg md:text-2xl font-serif max-w-xl text-primary/80 leading-relaxed">
+                        {ab.subtitle}
+                    </p>
+                </div>
+
+                {/* Контент — два раздела рядом */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-20">
 
-                    {/* Левая типографская колонка */}
-                    <div className="lg:col-span-5 lg:sticky lg:top-40 h-fit reveal">
-                        <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4 md:mb-6 block">{ab.title}</span>
-                        <h1 className="text-4xl md:text-8xl font-serif font-thin mb-5 md:mb-8 text-primary tracking-tightest leading-[0.9]">
-                            Искусство<br />жить
-                        </h1>
-                        <p className="text-lg md:text-2xl font-serif max-w-md text-primary/80 leading-relaxed mb-6 md:mb-12">
-                            {ab.subtitle}
+                    {/* Философия — с изображением */}
+                    <div className="lg:col-span-7 reveal">
+                        <div className="aspect-[4/3] bg-surface overflow-hidden relative mb-4 md:mb-8 rounded-2xl shadow-elevated transition-shadow duration-500 hover:shadow-hover-glow cursor-crosshair">
+                            <img src={ab.image1} className="w-full h-full object-cover parallax-media scale-110" alt="Ателье Lumera Home Atelier — мастерская дизайнерской мебели" loading="lazy" decoding="async" width="800" height="600" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                        </div>
+                        <h2 className="text-3xl font-serif mb-4 text-primary">Философия</h2>
+                        <p className="text-sm text-secondary leading-relaxed">
+                            {ab.description1}
                         </p>
                     </div>
 
-                    {/* Правая колонка со ступенчатым контентом */}
-                    <div className="lg:col-span-7 space-y-10 md:space-y-32 mb-0 md:mb-20">
-                        {/* Раздел 1 — Философия */}
-                        <div className="reveal">
-                            <div className="aspect-[4/3] bg-surface overflow-hidden relative mb-4 md:mb-8 rounded-2xl shadow-elevated transition-shadow duration-500 hover:shadow-hover-glow cursor-crosshair">
-                                <img src={ab.image1} className="w-full h-full object-cover parallax-media scale-110" alt="Ателье Lumera Home Atelier — мастерская дизайнерской мебели" loading="lazy" decoding="async" width="800" height="600" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
-                            </div>
-                            <h2 className="text-3xl font-serif mb-4 text-primary">Философия</h2>
-                            <p className="text-sm text-secondary leading-relaxed max-w-xl">
-                                {ab.description1}
-                            </p>
-                        </div>
-
-                        {/* Раздел 2 — Подход */}
-                        <div className="reveal ml-0 md:ml-20">
-                            <h2 className="text-3xl font-serif mb-4 text-primary">Подход</h2>
-                            <p className="text-sm text-secondary leading-relaxed max-w-xl">
-                                {ab.description2}
-                            </p>
-                        </div>
-
+                    {/* Подход — текстовый, выровнен по низу */}
+                    <div className="lg:col-span-5 reveal flex flex-col justify-end pb-0 md:pb-4">
+                        <h2 className="text-3xl font-serif mb-4 text-primary">Подход</h2>
+                        <p className="text-sm text-secondary leading-relaxed">
+                            {ab.description2}
+                        </p>
                     </div>
+
                 </div>
             </div>
 
