@@ -7,8 +7,10 @@ import * as OTPAuth from 'otpauth';
 import pool from './db.js';
 import { seed } from './seed.js';
 import { defaultSections, defaultProducts } from './defaults.js';
+import createLogger from './logger.js';
 
 const app = new Hono();
+const startedAt = Date.now();
 
 // ─── Config ───
 const PORT = parseInt(process.env.PORT || '3001');
@@ -61,6 +63,62 @@ function invalidateCache() {
     cache.productsAt = 0;
 }
 
+// ─── Loggers ───
+const log = {
+    server: createLogger('server'),
+    auth: createLogger('auth'),
+    content: createLogger('content'),
+    products: createLogger('products'),
+    presign: createLogger('presign'),
+    db: createLogger('db'),
+    rateLimit: createLogger('rateLimit'),
+    http: createLogger('http'),
+};
+
+// ─── IP Helper (needs to be before middleware) ───
+function getIP(c) {
+    return c.req.header('X-Real-IP') || c.req.header('X-Forwarded-For')?.split(',')[0]?.trim() || 'unknown';
+}
+
+// ─── Request Logging Middleware ───
+app.use('*', async (c, next) => {
+    const start = Date.now();
+    const method = c.req.method;
+    const path = c.req.path;
+
+    await next();
+
+    const duration = Date.now() - start;
+    const status = c.res.status;
+    const ip = getIP(c);
+
+    // Skip health check logging to reduce noise
+    if (path === '/api/health') return;
+
+    log.http.info(`${method} ${path}`, {
+        method,
+        path,
+        status,
+        duration_ms: duration,
+        ip,
+    });
+});
+
+// ─── Global Error Handler ───
+app.onError((err, c) => {
+    const path = c.req.path;
+    const method = c.req.method;
+
+    log.server.error('Unhandled error', {
+        method,
+        path,
+        error: err.message,
+        stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined,
+    });
+
+    return c.json({ error: 'Internal server error' }, 500);
+});
+
 // ─── DB Rate Limiter ───
 async function checkRateLimit(ip, endpoint, limit, windowMs = 60000) {
     try {
@@ -75,7 +133,7 @@ async function checkRateLimit(ip, endpoint, limit, windowMs = 60000) {
         );
         return result.rows[0].count <= limit;
     } catch (err) {
-        console.error('[rateLimit] DB error, allowing request:', err.message);
+        log.rateLimit.error('DB error, allowing request', { error: err.message });
         return true; // fail open — don't block users on DB errors
     }
 }
@@ -92,7 +150,7 @@ setInterval(async () => {
     try {
         const result = await pool.query('DELETE FROM admin_sessions WHERE expires_at < NOW()');
         if (result.rowCount > 0) {
-            console.log(`[sessions] Cleaned up ${result.rowCount} expired sessions`);
+            log.db.info('Cleaned up expired sessions', { count: result.rowCount });
         }
     } catch { /* ignore cleanup errors */ }
 }, 1800000);
@@ -196,7 +254,7 @@ async function authMiddleware(c, next) {
             return next();
         }
     } catch (err) {
-        console.error('[auth] Session check error:', err.message);
+        log.auth.error('Session check error', { error: err.message });
     }
 
     // 2. Fallback: check static API_SECRET (backward compat during transition)
@@ -205,10 +263,6 @@ async function authMiddleware(c, next) {
     }
 
     return c.json({ error: 'Unauthorized' }, 401);
-}
-
-function getIP(c) {
-    return c.req.header('X-Real-IP') || c.req.header('X-Forwarded-For')?.split(',')[0]?.trim() || 'unknown';
 }
 
 async function publicRateLimit(c, next) {
@@ -275,7 +329,7 @@ app.post('/api/auth/login', async (c) => {
 
     // Check server has auth config
     if (!ADMIN_PASSWORD_HASH || !TOTP_SECRET) {
-        console.error('[auth] ADMIN_PASSWORD_HASH or TOTP_SECRET not configured');
+        log.auth.error('ADMIN_PASSWORD_HASH or TOTP_SECRET not configured');
         return c.json({ error: 'server_error', message: 'Сервер не настроен для аутентификации' }, 500);
     }
 
@@ -358,7 +412,7 @@ app.post('/api/auth/login', async (c) => {
             [token, ip, expiresAt]
         );
 
-        console.log(`[auth] Login success from ${ip}`);
+        log.auth.info('Login success', { ip });
 
         return c.json({
             ok: true,
@@ -366,7 +420,7 @@ app.post('/api/auth/login', async (c) => {
             expiresAt: expiresAt.toISOString(),
         });
     } catch (err) {
-        console.error('[auth:login] Error:', err.message);
+        log.auth.error('Login error', { error: err.message });
         return c.json({ error: 'server_error', message: 'Ошибка сервера' }, 500);
     }
 });
@@ -378,9 +432,9 @@ app.post('/api/auth/logout', async (c) => {
         const token = auth.slice(7);
         try {
             await pool.query('DELETE FROM admin_sessions WHERE token = $1', [token]);
-            console.log('[auth] Logout');
+            log.auth.info('Logout');
         } catch (err) {
-            console.error('[auth:logout] Error:', err.message);
+            log.auth.error('Logout error', { error: err.message });
         }
     }
     return c.json({ ok: true });
@@ -410,9 +464,34 @@ app.get('/api/auth/verify', async (c) => {
 // PUBLIC ENDPOINTS
 // ═══════════════════════════════════════════
 
-// ─── Health check ───
-app.get('/api/health', (c) => {
-    return c.json({ ok: true, time: new Date().toISOString() });
+// ─── Health check (detailed diagnostics) ───
+app.get('/api/health', async (c) => {
+    const mem = process.memoryUsage();
+    const uptimeMs = Date.now() - startedAt;
+
+    let dbOk = false;
+    let dbLatency = 0;
+    try {
+        const t0 = Date.now();
+        await pool.query('SELECT 1');
+        dbLatency = Date.now() - t0;
+        dbOk = true;
+    } catch { /* db down */ }
+
+    const healthy = dbOk;
+    const status = healthy ? 200 : 503;
+
+    return c.json({
+        ok: healthy,
+        time: new Date().toISOString(),
+        uptime_s: Math.floor(uptimeMs / 1000),
+        db: { ok: dbOk, latency_ms: dbLatency },
+        memory: {
+            rss_mb: Math.round(mem.rss / 1048576),
+            heap_used_mb: Math.round(mem.heapUsed / 1048576),
+            heap_total_mb: Math.round(mem.heapTotal / 1048576),
+        },
+    }, status);
 });
 
 // ─── GET /api/content — All content (sections + products) ───
@@ -450,7 +529,7 @@ app.get('/api/content', publicRateLimit, async (c) => {
 
         return c.json(result);
     } catch (err) {
-        console.error('[content] Error:', err.message);
+        log.content.error('Failed to fetch content', { error: err.message });
         return c.json({ error: 'Failed to fetch content' }, 500);
     }
 });
@@ -478,7 +557,7 @@ app.get('/api/products', publicRateLimit, async (c) => {
 
         return c.json(products);
     } catch (err) {
-        console.error('[products] Error:', err.message);
+        log.products.error('Failed to fetch products', { error: err.message });
         return c.json({ error: 'Failed to fetch products' }, 500);
     }
 });
@@ -497,7 +576,7 @@ app.get('/api/products/:slug', publicRateLimit, async (c) => {
         const row = result.rows[0];
         return c.json({ id: row.id, slug: row.slug, ...row.data });
     } catch (err) {
-        console.error('[product] Error:', err.message);
+        log.products.error('Failed to fetch product', { error: err.message });
         return c.json({ error: 'Failed to fetch product' }, 500);
     }
 });
@@ -530,10 +609,10 @@ app.put('/api/content/:key', authMiddleware, adminRateLimit, async (c) => {
         );
 
         invalidateCache();
-        console.log(`[content] Updated section: ${key}`);
+        log.content.info('Updated section', { key });
         return c.json({ ok: true });
     } catch (err) {
-        console.error('[content:put] Error:', err.message);
+        log.content.error('Failed to update section', { error: err.message });
         return c.json({ error: 'Failed to update section' }, 500);
     }
 });
@@ -567,10 +646,10 @@ app.post('/api/products', authMiddleware, adminRateLimit, async (c) => {
         );
 
         invalidateCache();
-        console.log(`[products] Created: ${slug} (id=${result.rows[0].id})`);
+        log.products.info('Created product', { slug, id: result.rows[0].id });
         return c.json({ ok: true, id: result.rows[0].id, slug }, 201);
     } catch (err) {
-        console.error('[products:create] Error:', err.message);
+        log.products.error('Failed to create product', { error: err.message });
         return c.json({ error: 'Failed to create product' }, 500);
     }
 });
@@ -603,10 +682,10 @@ app.put('/api/products/reorder', authMiddleware, adminRateLimit, async (c) => {
         }
 
         invalidateCache();
-        console.log(`[products] Reordered: ${order.join(', ')}`);
+        log.products.info('Reordered products', { order });
         return c.json({ ok: true });
     } catch (err) {
-        console.error('[products:reorder] Error:', err.message);
+        log.products.error('Failed to reorder', { error: err.message });
         return c.json({ error: 'Failed to reorder products' }, 500);
     }
 });
@@ -645,10 +724,10 @@ app.put('/api/products/:id', authMiddleware, adminRateLimit, async (c) => {
         );
 
         invalidateCache();
-        console.log(`[products] Updated: id=${id}, slug=${slug}`);
+        log.products.info('Updated product', { id, slug });
         return c.json({ ok: true });
     } catch (err) {
-        console.error('[products:update] Error:', err.message);
+        log.products.error('Failed to update product', { error: err.message });
         return c.json({ error: 'Failed to update product' }, 500);
     }
 });
@@ -665,10 +744,10 @@ app.delete('/api/products/:id', authMiddleware, adminRateLimit, async (c) => {
         }
 
         invalidateCache();
-        console.log(`[products] Deleted: id=${id}, slug=${result.rows[0].slug}`);
+        log.products.info('Deleted product', { id, slug: result.rows[0].slug });
         return c.json({ ok: true });
     } catch (err) {
-        console.error('[products:delete] Error:', err.message);
+        log.products.error('Failed to delete product', { error: err.message });
         return c.json({ error: 'Failed to delete product' }, 500);
     }
 });
@@ -709,10 +788,10 @@ app.post('/api/content/reset', authMiddleware, adminRateLimit, async (c) => {
         }
 
         invalidateCache();
-        console.log('[content] Reset to defaults');
+        log.content.info('Reset to defaults');
         return c.json({ ok: true });
     } catch (err) {
-        console.error('[content:reset] Error:', err.message);
+        log.content.error('Failed to reset content', { error: err.message });
         return c.json({ error: 'Failed to reset content' }, 500);
     }
 });
@@ -748,11 +827,11 @@ app.post('/api/presign', authMiddleware, adminRateLimit, async (c) => {
         const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 600 });
         const publicUrl = `https://s3.twcstorage.ru/${S3_BUCKET}/${key}`;
 
-        console.log(`[presign] ${folder}/${sanitized} → ${publicUrl}`);
+        log.presign.info('Generated presigned URL', { folder, filename: sanitized, publicUrl });
 
         return c.json({ uploadUrl, publicUrl });
     } catch (err) {
-        console.error('[presign] Error:', err.message);
+        log.presign.error('Failed to generate presigned URL', { error: err.message });
         return c.json({ error: 'Failed to generate presigned URL' }, 500);
     }
 });
@@ -765,12 +844,12 @@ async function start() {
         while (retries > 0) {
             try {
                 await pool.query('SELECT 1');
-                console.log('[db] Connected to PostgreSQL');
+                log.db.info('Connected to PostgreSQL');
                 break;
             } catch {
                 retries--;
                 if (retries === 0) throw new Error('Could not connect to database after 30s');
-                console.log(`[db] Waiting for PostgreSQL... (${retries} retries left)`);
+                log.db.warn('Waiting for PostgreSQL', { retriesLeft: retries });
                 await new Promise(r => setTimeout(r, 2000));
             }
         }
@@ -785,31 +864,44 @@ async function start() {
             'utf-8'
         );
         await pool.query(initSQL);
-        console.log('[db] Schema applied');
+        log.db.info('Schema applied');
 
         // Seed if empty
         await seed();
 
         // Log auth status
         if (ADMIN_PASSWORD_HASH && TOTP_SECRET) {
-            console.log('[auth] Server-side authentication configured ✓');
+            log.auth.info('Server-side authentication configured');
         } else {
-            console.warn('[auth] ⚠ ADMIN_PASSWORD_HASH or TOTP_SECRET not set — login endpoint disabled');
+            log.auth.warn('ADMIN_PASSWORD_HASH or TOTP_SECRET not set — login endpoint disabled');
         }
 
         if (API_SECRET) {
-            console.log('[auth] API_SECRET fallback available (backward compat)');
+            log.auth.info('API_SECRET fallback available (backward compat)');
         }
 
         // Start HTTP server
         serve({ fetch: app.fetch, port: PORT }, () => {
-            console.log(`Lumera API running at http://0.0.0.0:${PORT}`);
+            log.server.info('Lumera API started', { port: PORT, url: `http://0.0.0.0:${PORT}` });
         });
     } catch (err) {
-        console.error('[startup] Fatal error:', err.message);
+        log.server.error('Fatal startup error', { error: err.message });
         process.exit(1);
     }
 }
 
-console.log(`Lumera API starting on port ${PORT}...`);
+// ─── Process-level error handlers ───
+process.on('uncaughtException', (err) => {
+    log.server.error('Uncaught exception', { error: err.message, stack: err.stack });
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason) => {
+    log.server.error('Unhandled promise rejection', {
+        error: reason instanceof Error ? reason.message : String(reason),
+        stack: reason instanceof Error ? reason.stack : undefined,
+    });
+});
+
+log.server.info('Lumera API starting', { port: PORT });
 start();
