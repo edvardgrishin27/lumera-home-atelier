@@ -130,6 +130,18 @@ const defaultContent = {
         formPhone: 'Телефон',
         formSubmit: 'Отправить',
     },
+    catalog: {
+        categories: [
+            { key: 'Sofas', label: 'Диваны' },
+            { key: 'Armchairs', label: 'Кресла' },
+            { key: 'Tables', label: 'Столы' },
+            { key: 'Chairs', label: 'Стулья' },
+            { key: 'Beds', label: 'Кровати' },
+            { key: 'Wardrobes', label: 'Шкафы' },
+            { key: 'Dressers', label: 'Комоды' },
+            { key: 'Shelves', label: 'Стеллажи' },
+        ],
+    },
     settings: {
         phone: '8 (499) 877-16-78',
         email: 'info@lumerahome.ru',
@@ -145,7 +157,7 @@ const defaultContent = {
 
 const CACHE_KEY = 'lumera_content';
 const CACHE_VERSION_KEY = 'lumera_content_v';
-const CACHE_VERSION = 7; // bump to invalidate stale localStorage cache
+const CACHE_VERSION = 8; // bump to invalidate stale localStorage cache
 
 const ContentContext = createContext();
 
@@ -200,6 +212,18 @@ export const ContentProvider = ({ children }) => {
                         ...defaultContent.about,
                         ...(data.about || {}),
                     };
+                }
+
+                // Merge catalog: preserve default categories when API doesn't have them yet
+                if (defaultContent.catalog) {
+                    merged.catalog = {
+                        ...defaultContent.catalog,
+                        ...(data.catalog || {}),
+                    };
+                    // If API has categories, use them; otherwise keep defaults
+                    if (data.catalog?.categories) {
+                        merged.catalog.categories = data.catalog.categories;
+                    }
                 }
 
                 // Merge blog posts: keep API posts, add any defaults missing from API

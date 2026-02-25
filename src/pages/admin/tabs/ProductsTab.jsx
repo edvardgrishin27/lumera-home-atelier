@@ -9,12 +9,13 @@ import GalleryEditor from '../components/GalleryEditor';
 
 const ProductsTab = () => {
     const { content, updateProduct, addProduct, deleteProduct } = useContent();
+    const categories = content.catalog?.categories || [];
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({});
     const [showAdd, setShowAdd] = useState(false);
 
     const [newProduct, setNewProduct] = useState({
-        name: '', category: 'Sofas', price: 0, image: '', description: '', specs: '', video: '',
+        name: '', category: categories[0]?.key || 'Sofas', price: 0, image: '', description: '', specs: '', video: '',
         colors: [], sizes: [], details: {}, gallery: []
     });
 
@@ -56,7 +57,16 @@ const ProductsTab = () => {
                     <h3 className="text-sm font-semibold mb-4 text-blue-800">Новый товар</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                         <Field label="Название" value={newProduct.name} onChange={v => setNewProduct({ ...newProduct, name: v })} />
-                        <Field label="Категория" value={newProduct.category} onChange={v => setNewProduct({ ...newProduct, category: v })} />
+                        <div>
+                            <label className="block text-xs text-gray-500 mb-1">Категория</label>
+                            <select
+                                value={newProduct.category}
+                                onChange={e => setNewProduct({ ...newProduct, category: e.target.value })}
+                                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:border-blue-400 outline-none transition-colors"
+                            >
+                                {categories.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+                            </select>
+                        </div>
                         <Field label="Цена (₽)" value={newProduct.price} onChange={v => setNewProduct({ ...newProduct, price: v })} type="number" />
                         <FileUpload label="Фото" value={newProduct.image} onChange={v => setNewProduct({ ...newProduct, image: v })} folder="products" />
                         <div className="md:col-span-2">
@@ -95,7 +105,19 @@ const ProductsTab = () => {
                             <div className="p-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                                     <Field label="Название" value={editData.name} onChange={v => setEditData({ ...editData, name: v })} />
-                                    <Field label="Категория" value={editData.category} onChange={v => setEditData({ ...editData, category: v })} />
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">Категория</label>
+                                        <select
+                                            value={editData.category}
+                                            onChange={e => setEditData({ ...editData, category: e.target.value })}
+                                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:border-blue-400 outline-none transition-colors"
+                                        >
+                                            {categories.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+                                            {!categories.some(c => c.key === editData.category) && (
+                                                <option value={editData.category}>{editData.category} (не в списке)</option>
+                                            )}
+                                        </select>
+                                    </div>
                                     <Field label="Цена (₽)" value={editData.price} onChange={v => setEditData({ ...editData, price: parseInt(v) || 0 })} type="number" />
                                     <FileUpload label="Главное фото" value={editData.image} onChange={v => setEditData({ ...editData, image: v })} folder="products" />
                                     <div className="md:col-span-2">
@@ -130,7 +152,7 @@ const ProductsTab = () => {
                                 <img src={product.image} alt="" className="w-16 h-16 object-cover rounded-full bg-gray-100 flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <h3 className="font-medium text-gray-900 truncate">{product.name}</h3>
-                                    <p className="text-xs text-gray-500">{product.category} · {product.price.toLocaleString()} ₽</p>
+                                    <p className="text-xs text-gray-500">{categories.find(c => c.key === product.category)?.label || product.category} · {product.price.toLocaleString()} ₽</p>
                                 </div>
                                 <div className="flex gap-2 flex-shrink-0">
                                     <button onClick={() => startEdit(product)} className="text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-full text-sm transition-colors">Изменить</button>

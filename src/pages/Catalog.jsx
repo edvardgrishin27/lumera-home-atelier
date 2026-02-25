@@ -4,13 +4,13 @@ import gsap from 'gsap';
 import { useContent } from '../context/ContentContext';
 import SEO from '../components/SEO';
 
-/* ─── Маппинг категорий EN → RU ─── */
-const CATEGORY_MAP = {
-    All: 'Все',
-    Sofas: 'Диваны',
-    Armchairs: 'Кресла',
-    Tables: 'Столы',
-    Chairs: 'Стулья',
+/* ─── Маппинг категорий EN → RU (строится динамически из content.catalog.categories) ─── */
+const buildCategoryMap = (categories) => {
+    const map = { All: 'Все' };
+    if (categories && Array.isArray(categories)) {
+        categories.forEach(c => { map[c.key] = c.label; });
+    }
+    return map;
 };
 
 /* ─── Маппинг сортировок ─── */
@@ -310,7 +310,7 @@ const ActiveFilters = ({ filters, onRemove, onClearAll }) => {
 /* ═════════════════════════════════════════════════════════
    Компонент: Карточка товара
 ═════════════════════════════════════════════════════════ */
-const ProductCard = ({ product, viewMode }) => {
+const ProductCard = ({ product, viewMode, categoryMap = {} }) => {
     if (viewMode === 'list') {
         return (
             <Link
@@ -330,7 +330,7 @@ const ProductCard = ({ product, viewMode }) => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 </div>
                 <div className="flex flex-col justify-center min-w-0 flex-1">
-                    <span className="text-[10px] text-secondary uppercase tracking-widest mb-2">{CATEGORY_MAP[product.category] || product.category}</span>
+                    <span className="text-[10px] text-secondary uppercase tracking-widest mb-2">{categoryMap[product.category] || product.category}</span>
                     <h3 className="text-xl md:text-2xl font-serif text-primary group-hover:text-accent transition-colors duration-300 mb-2 truncate">{product.name}</h3>
                     <p className="text-sm text-secondary leading-relaxed mb-3 line-clamp-2 hidden md:block">{product.description}</p>
                     <span className="text-lg font-serif text-primary/90">{product.price.toLocaleString()} ₽</span>
@@ -362,7 +362,7 @@ const ProductCard = ({ product, viewMode }) => {
                     <span className="text-lg font-serif text-primary/90">{product.price.toLocaleString()} ₽</span>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <span className="text-[10px] text-secondary uppercase tracking-widest">{CATEGORY_MAP[product.category] || product.category}</span>
+                    <span className="text-[10px] text-secondary uppercase tracking-widest">{categoryMap[product.category] || product.category}</span>
                     <p className="text-sm text-primary/70 font-serif leading-relaxed border-t border-primary/10 pt-4 mt-2">
                         {product.description}
                     </p>
@@ -380,6 +380,9 @@ const Catalog = () => {
     const { content } = useContent();
     const products = content.products;
 
+    // ── Динамический маппинг категорий из админки ──
+    const CATEGORY_MAP = useMemo(() => buildCategoryMap(content.catalog?.categories), [content.catalog?.categories]);
+
     // ── Состояния фильтров ──
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('All');
@@ -390,7 +393,7 @@ const Catalog = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     // ── Извлечение данных для фильтров ──
-    const categories = useMemo(() => Object.keys(CATEGORY_MAP), []);
+    const categories = useMemo(() => Object.keys(CATEGORY_MAP), [CATEGORY_MAP]);
     const allMaterials = useMemo(() => extractMaterials(products), [products]);
     const allColors = useMemo(() => extractColors(products), [products]);
 
@@ -828,13 +831,13 @@ const Catalog = () => {
                         {viewMode === 'grid' ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-16">
                                 {filteredProducts.map((product) => (
-                                    <ProductCard key={product.id} product={product} viewMode="grid" />
+                                    <ProductCard key={product.id} product={product} viewMode="grid" categoryMap={CATEGORY_MAP} />
                                 ))}
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4">
                                 {filteredProducts.map((product) => (
-                                    <ProductCard key={product.id} product={product} viewMode="list" />
+                                    <ProductCard key={product.id} product={product} viewMode="list" categoryMap={CATEGORY_MAP} />
                                 ))}
                             </div>
                         )}
