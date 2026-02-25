@@ -839,7 +839,7 @@ const Catalog = () => {
                         </>
 
                     {/* ── Сетка товаров ── */}
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 min-h-[60vh]">
                         {viewMode === 'grid' ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-16">
                                 {filteredProducts.map((product) => (

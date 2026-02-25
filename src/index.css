@@ -28,6 +28,10 @@ html.dark {
   /* #1A1A1A */
 }
 
+html {
+  overflow-y: scroll;
+}
+
 body {
   background-color: rgb(var(--color-background));
   color: rgb(var(--color-primary));
