@@ -725,7 +725,7 @@ const Catalog = () => {
                             {/* Фильтр: Цвет */}
                             {allColors.length > 0 && (
                                 <FilterSection title="Цвет" defaultOpen={true}>
-                                    <div className="flex flex-wrap gap-3.5 py-1">
+                                    <div className="flex flex-wrap gap-3.5 p-1.5">
                                         {allColors.map(c => (
                                             <ColorSwatch
                                                 key={c.hex}
@@ -804,7 +804,7 @@ const Catalog = () => {
                                 {/* Цвет */}
                                 {allColors.length > 0 && (
                                     <FilterSection title="Цвет" defaultOpen={true}>
-                                        <div className="flex flex-wrap gap-3.5 py-1">
+                                        <div className="flex flex-wrap gap-3.5 p-1.5">
                                             {allColors.map(c => (
                                                 <ColorSwatch
                                                     key={c.hex}
