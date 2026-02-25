@@ -10,18 +10,20 @@ const B2B = () => {
     const { content } = useContent();
     const b = content.b2b;
     const [form, setForm] = useState({ name: '', company: '', email: '', phone: '' });
+    const [contactMethod, setContactMethod] = useState('WhatsApp');
     const [status, setStatus] = useState('idle'); // idle | sending | success | error
 
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name.trim() || !form.email.trim()) return;
+        if (!form.name.trim() || !form.phone.trim()) return;
         setStatus('sending');
         try {
-            await submitForm({ ...form, message: '', page: 'B2B' });
+            await submitForm({ ...form, message: `Способ связи: ${contactMethod}`, page: 'B2B' });
             setStatus('success');
             setForm({ name: '', company: '', email: '', phone: '' });
+            setContactMethod('WhatsApp');
         } catch {
             setStatus('error');
         }
@@ -118,8 +120,23 @@ const B2B = () => {
                                 <input type="text" name="company" value={form.company} onChange={handleChange} placeholder="Компания" className="w-full border-b border-primary/20 py-3 md:py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-lg md:text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12">
-                                <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="Email *" required className="w-full border-b border-primary/20 py-3 md:py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-lg md:text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
-                                <input type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="Телефон" className="w-full border-b border-primary/20 py-3 md:py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-lg md:text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
+                                <input type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="Телефон *" required className="w-full border-b border-primary/20 py-3 md:py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-lg md:text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
+                                <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="Email" className="w-full border-b border-primary/20 py-3 md:py-4 outline-none focus:border-primary transition-colors duration-300 bg-transparent font-serif text-lg md:text-xl text-primary placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />
+                            </div>
+                            <div className="space-y-4">
+                                <label className="text-[10px] uppercase tracking-[0.2em] text-secondary">Где удобно обсудить детали?</label>
+                                <div className="flex gap-3 flex-wrap">
+                                    {['WhatsApp', 'Telegram', 'Звонок'].map((method) => (
+                                        <button
+                                            key={method}
+                                            type="button"
+                                            onClick={() => setContactMethod(method)}
+                                            className={`px-6 py-3 text-[10px] uppercase tracking-[0.2em] rounded-full transition-opacity transition-transform duration-500 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${contactMethod === method ? 'bg-accent text-white shadow-elevated scale-105' : 'bg-background text-primary border border-primary/20 hover:border-accent/50 hover:bg-primary/5'}`}
+                                        >
+                                            {method}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                             {status === 'success' && (
                                 <p className="text-accent font-serif text-base md:text-lg">Спасибо! Мы свяжемся с вами в ближайшее время.</p>
