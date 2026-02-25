@@ -18,8 +18,8 @@ const Home = () => {
     const products = content.products;
     const home = content.home;
 
-    // Get exactly 9 products for 3 rows x 3 columns
-    const hitProducts = [...products, ...products.slice(0, Math.max(0, 9 - products.length))].slice(0, 9);
+    // Get exactly 8 products for 2 rows x 4 columns
+    const hitProducts = [...products, ...products.slice(0, Math.max(0, 8 - products.length))].slice(0, 8);
 
     const reviews = home.reviews || [];
     const whyItems = home.whyItems || [];
@@ -257,9 +257,9 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Hit Sales Section - 3x3 Grid */}
-            <section className="pt-8 pb-32 bg-surface min-h-[80vh] relative z-10">
-                <div className="px-6 md:px-20 mb-16 flex flex-col md:flex-row justify-between items-end gap-8">
+            {/* Hit Sales Section - 4x2 Grid */}
+            <section className="pt-8 pb-20 bg-surface relative z-10">
+                <div className="px-6 md:px-20 mb-12 flex flex-col md:flex-row justify-between items-end gap-8">
                     <h2 className="text-5xl md:text-6xl font-serif font-light text-primary tracking-tight">{home.hitsTitle || 'Хиты продаж'}</h2>
 
                     <Link to="/catalog" className="flex items-center gap-4 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-full p-2 pr-4 transition-opacity duration-300 hover:opacity-100 opacity-80">
@@ -270,16 +270,16 @@ const Home = () => {
                     </Link>
                 </div>
 
-                {/* Grid Container 3 cols x infinite rows */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16 px-6 md:px-20">
+                {/* Grid Container 4 cols x 2 rows */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-10 px-6 md:px-20">
                     {hitProducts.map((product, idx) => (
                         <Link
                             key={idx}
                             to={`/product/${product.slug}`}
-                            className="hit-card opacity-0 translate-y-10 group cursor-pointer block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl transition-shadow duration-500 ease-spring"
+                            className="hit-card opacity-0 translate-y-10 group cursor-pointer block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl overflow-hidden relative"
                         >
-                            {/* Image Container with Layered Shadow */}
-                            <div className="aspect-[4/5] overflow-hidden mb-6 bg-surface relative rounded-xl shadow-elevated group-hover:shadow-floating transition-shadow duration-500">
+                            {/* Full card is the image */}
+                            <div className="aspect-[3/4] overflow-hidden bg-surface relative rounded-2xl shadow-elevated group-hover:shadow-floating transition-shadow duration-500">
                                 <img
                                     src={product.image}
                                     className="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105"
@@ -287,46 +287,29 @@ const Home = () => {
                                     loading="lazy"
                                     decoding="async"
                                     width="600"
-                                    height="750"
+                                    height="800"
                                 />
-                                {/* Cinematic Overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                                {/* Quick View Tag */}
-                                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-spring transform translate-y-4 group-hover:translate-y-0">
-                                    <div className="bg-accent/90 backdrop-blur-sm px-6 py-2 text-[10px] uppercase tracking-widest text-white rounded-full shadow-[0_4px_15px_rgba(196,162,101,0.4)] whitespace-nowrap">
-                                        {home.productView || 'Подробнее'}
-                                    </div>
-                                </div>
-                            </div>
+                                {/* Gradient overlay — always visible at bottom for text */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
 
-                            {/* Info Below */}
-                            <div className="flex justify-between items-start px-2">
-                                <div>
-                                    <h3 className="text-xl font-serif text-primary group-hover:text-accent transition-colors duration-300 mb-1">{product.name}</h3>
-                                    <p className="text-[10px] uppercase tracking-widest text-secondary">{product.category}</p>
+                                {/* Text overlay at bottom — like reference */}
+                                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5">
+                                    <h3 className="text-sm md:text-base font-serif text-white leading-snug mb-1">{product.name}</h3>
+                                    <p className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/50 mb-2 font-sans">{product.category}</p>
+                                    <span className="text-lg md:text-xl font-serif text-white font-light">{product.price.toLocaleString()} ₽</span>
                                 </div>
-                                <span className="text-sm font-serif text-primary opacity-80 whitespace-nowrap">{product.price.toLocaleString()} ₽</span>
                             </div>
                         </Link>
                     ))}
                 </div>
             </section>
 
-            {/* Philosophy Quote — uses dangerouslySetInnerHTML for accent styling.
-                Content source: trusted defaultContent in ContentContext.jsx, not user input. */}
-            <section className="py-12 md:py-16 px-6 md:px-20 text-center bg-background relative z-10 content-layer">
-                <p
-                    className="font-serif text-3xl md:text-5xl leading-relaxed max-w-4xl mx-auto text-primary whitespace-pre-line"
-                    dangerouslySetInnerHTML={{ __html: quoteHtml }} // eslint-disable-line react/no-danger
-                />
-            </section>
-
             {/* ═══════════════════════════════════════════════════════════════
                 TESTIMONIALS SECTION — Dark surface, 3 review cards
             ═══════════════════════════════════════════════════════════════ */}
             {reviews.length > 0 && (
-                <section className="relative z-10 py-16 md:py-24 bg-[#0e0e0e] overflow-hidden">
+                <section className="relative z-10 py-12 md:py-16 bg-[#0e0e0e] overflow-hidden">
                     {/* Subtle grain texture overlay */}
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
                         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
@@ -334,7 +317,7 @@ const Home = () => {
 
                     <div className="px-6 md:px-20 relative">
                         {/* Header Row */}
-                        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-16 md:mb-20 section-reveal">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-12 md:mb-16 section-reveal">
                             <h2 className="text-5xl md:text-7xl font-serif font-thin text-white/95 tracking-tightest leading-[0.9]">
                                 {home.reviewsTitle || 'Отзывы клиентов'}
                             </h2>
@@ -396,7 +379,7 @@ const Home = () => {
                 WHY CHOOSE US SECTION — Dark continuation, 4-column grid
             ═══════════════════════════════════════════════════════════════ */}
             {whyItems.length > 0 && (
-                <section className="relative z-10 py-16 md:py-24 bg-[#0e0e0e] overflow-hidden border-t border-white/[0.04]">
+                <section className="relative z-10 py-12 md:py-16 bg-[#0e0e0e] overflow-hidden border-t border-white/[0.04]">
                     {/* Subtle grain texture overlay */}
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
                         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
@@ -404,7 +387,7 @@ const Home = () => {
 
                     <div className="px-6 md:px-20 relative">
                         {/* Section Title */}
-                        <div className="mb-20 md:mb-28 section-reveal">
+                        <div className="mb-14 md:mb-20 section-reveal">
                             <h2 className="text-5xl md:text-7xl font-serif font-thin text-white/95 tracking-tightest leading-[0.9]">
                                 {home.whyTitle || 'Почему Lumera'}
                             </h2>
@@ -434,6 +417,14 @@ const Home = () => {
                     </div>
                 </section>
             )}
+
+            {/* Philosophy Quote — moved before footer/contacts */}
+            <section className="py-16 md:py-24 px-6 md:px-20 text-center bg-background relative z-10 content-layer">
+                <p
+                    className="font-serif text-3xl md:text-5xl leading-relaxed max-w-4xl mx-auto text-primary whitespace-pre-line"
+                    dangerouslySetInnerHTML={{ __html: quoteHtml }} // eslint-disable-line react/no-danger
+                />
+            </section>
 
         </div>
     );
