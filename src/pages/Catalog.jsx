@@ -125,17 +125,30 @@ const ListIcon = ({ active }) => (
 const FilterSection = ({ title, defaultOpen = true, children }) => {
     const [open, setOpen] = useState(defaultOpen);
     const bodyRef = useRef(null);
+    const initializedRef = useRef(false);
 
     useEffect(() => {
         if (!bodyRef.current) return;
+        // Skip animation on first mount — just set the correct state
+        if (!initializedRef.current) {
+            initializedRef.current = true;
+            if (!defaultOpen) {
+                gsap.set(bodyRef.current, { height: 0, opacity: 0 });
+            }
+            return;
+        }
         if (open) {
+            gsap.killTweensOf(bodyRef.current);
+            gsap.set(bodyRef.current, { height: 'auto', opacity: 1 });
+            const fullHeight = bodyRef.current.scrollHeight;
             gsap.fromTo(bodyRef.current,
                 { height: 0, opacity: 0 },
-                { height: 'auto', opacity: 1, duration: 0.4, ease: 'power2.out' }
+                { height: fullHeight, opacity: 1, duration: 0.45, ease: 'power2.out', clearProps: 'height' }
             );
         } else {
+            gsap.killTweensOf(bodyRef.current);
             gsap.to(bodyRef.current,
-                { height: 0, opacity: 0, duration: 0.3, ease: 'power2.in' }
+                { height: 0, opacity: 0, duration: 0.35, ease: 'power2.inOut' }
             );
         }
     }, [open]);
@@ -163,7 +176,7 @@ const FilterSection = ({ title, defaultOpen = true, children }) => {
 ═════════════════════════════════════════════════════════ */
 const FilterCheckbox = ({ label, checked, onChange, count }) => (
     <label className="flex items-center gap-3 py-1.5 group cursor-pointer select-none">
-        <div className={`w-4 h-4 rounded border transition-all duration-200 flex items-center justify-center ${
+        <div className={`w-4 h-4 rounded border transition-colors duration-200 flex items-center justify-center ${
             checked
                 ? 'bg-accent border-accent'
                 : 'border-primary/20 group-hover:border-accent/50'
@@ -191,7 +204,7 @@ const ColorSwatch = ({ hex, name, selected, onClick }) => (
     <button
         onClick={onClick}
         title={name}
-        className={`group relative w-7 h-7 rounded-full transition-all duration-300 cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 ${
+        className={`group relative w-7 h-7 rounded-full transition-transform duration-300 ease-out cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 ${
             selected ? 'ring-2 ring-accent ring-offset-2 ring-offset-background scale-110' : 'hover:scale-110'
         }`}
         style={{ backgroundColor: hex }}
@@ -240,9 +253,10 @@ const SortDropdown = ({ value, onChange }) => {
     useEffect(() => {
         if (!dropdownRef.current) return;
         if (open) {
+            gsap.killTweensOf(dropdownRef.current);
             gsap.fromTo(dropdownRef.current,
-                { opacity: 0, y: 8, scale: 0.97 },
-                { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: 'power2.out' }
+                { opacity: 0, y: 6, scale: 0.98 },
+                { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: 'power3.out' }
             );
         }
     }, [open]);
@@ -251,7 +265,7 @@ const SortDropdown = ({ value, onChange }) => {
         <div ref={ref} className="relative">
             <button
                 onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-surface rounded-xl border border-primary/8 text-xs text-primary/80 hover:border-accent/30 transition-all duration-300 cursor-pointer focus-visible:outline-2 focus-visible:outline-accent"
+                className="flex items-center gap-2 px-4 py-2.5 bg-surface rounded-xl border border-primary/8 text-xs text-primary/80 hover:border-accent/30 transition-colors duration-300 cursor-pointer focus-visible:outline-2 focus-visible:outline-accent"
             >
                 <span>{currentLabel}</span>
                 <ChevronIcon open={open} />
@@ -514,12 +528,13 @@ const Catalog = () => {
         );
     }, []);
 
-    // ── GSAP: анимация появления карточек ──
+    // ── GSAP: анимация появления карточек (smooth premium feel) ──
     useEffect(() => {
         const ctx = gsap.context(() => {
+            // Small delay to let DOM settle after filter change
             gsap.fromTo('.product-card',
-                { opacity: 0, y: 30 },
-                { opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: 'power3.out', overwrite: true }
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.6, stagger: 0.05, ease: 'power2.out', overwrite: true, delay: 0.05 }
             );
         }, containerRef);
         return () => ctx.revert();
@@ -581,7 +596,7 @@ const Catalog = () => {
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Поиск по каталогу..."
-                            className="w-full pl-11 pr-10 py-3.5 bg-surface border border-primary/8 rounded-2xl text-sm text-primary placeholder:text-secondary/40 focus:outline-none focus:border-accent/40 focus:ring-1 focus:ring-accent/20 transition-all duration-300"
+                            className="w-full pl-11 pr-10 py-3.5 bg-surface border border-primary/8 rounded-2xl text-sm text-primary placeholder:text-secondary/40 focus:outline-none focus:border-accent/40 focus:ring-1 focus:ring-accent/20 transition-colors duration-300"
                         />
                         {search && (
                             <button
@@ -599,7 +614,7 @@ const Catalog = () => {
                             <button
                                 key={cat}
                                 onClick={() => setCategory(cat)}
-                                className={`text-[11px] uppercase tracking-[0.15em] px-5 py-2.5 rounded-full border transition-all duration-300 ease-spring cursor-pointer focus-visible:outline-2 focus-visible:outline-accent ${
+                                className={`text-[11px] uppercase tracking-[0.15em] px-5 py-2.5 rounded-full border transition-colors duration-300 ease-out cursor-pointer focus-visible:outline-2 focus-visible:outline-accent ${
                                     category === cat
                                         ? 'text-white bg-accent border-accent shadow-elevated'
                                         : 'text-primary/60 border-primary/12 hover:border-accent/40 hover:text-accent hover:bg-accent/5'
@@ -620,7 +635,7 @@ const Catalog = () => {
                         {/* Мобильная кнопка фильтров */}
                         <button
                             onClick={() => setSidebarOpen(true)}
-                            className="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-surface border border-primary/8 rounded-xl text-xs text-primary/70 hover:border-accent/30 transition-all duration-300 cursor-pointer"
+                            className="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-surface border border-primary/8 rounded-xl text-xs text-primary/70 hover:border-accent/30 transition-colors duration-300 cursor-pointer"
                         >
                             <FilterIcon />
                             <span>Фильтры</span>
@@ -643,14 +658,14 @@ const Catalog = () => {
                         <div className="hidden md:flex items-center gap-1 bg-surface border border-primary/8 rounded-xl p-1">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-2 rounded-lg transition-all duration-200 cursor-pointer ${viewMode === 'grid' ? 'bg-primary/5' : 'hover:bg-primary/5'}`}
+                                className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer ${viewMode === 'grid' ? 'bg-primary/5' : 'hover:bg-primary/5'}`}
                                 title="Сетка"
                             >
                                 <GridIcon active={viewMode === 'grid'} />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`p-2 rounded-lg transition-all duration-200 cursor-pointer ${viewMode === 'list' ? 'bg-primary/5' : 'hover:bg-primary/5'}`}
+                                className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer ${viewMode === 'list' ? 'bg-primary/5' : 'hover:bg-primary/5'}`}
                                 title="Список"
                             >
                                 <ListIcon active={viewMode === 'list'} />
@@ -729,7 +744,7 @@ const Catalog = () => {
                             {activeFilters.length > 0 && (
                                 <button
                                     onClick={clearAllFilters}
-                                    className="mt-6 w-full py-3 text-[11px] uppercase tracking-[0.15em] text-secondary hover:text-accent border border-primary/8 rounded-xl hover:border-accent/30 transition-all duration-300 cursor-pointer"
+                                    className="mt-6 w-full py-3 text-[11px] uppercase tracking-[0.15em] text-secondary hover:text-accent border border-primary/8 rounded-xl hover:border-accent/30 transition-colors duration-300 cursor-pointer"
                                 >
                                     Сбросить все фильтры
                                 </button>
@@ -738,15 +753,14 @@ const Catalog = () => {
                     </aside>
 
                     {/* ── Мобильный сайдбар (оверлей) ── */}
-                    {sidebarOpen && (
-                        <>
-                            {/* Backdrop */}
-                            <div
-                                className="fixed inset-0 bg-black/40 z-40 lg:hidden"
-                                onClick={closeSidebar}
-                            />
-                            {/* Панель */}
-                            <div className="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-background z-50 lg:hidden overflow-y-auto shadow-floating p-6 pt-8">
+                    <>
+                        {/* Backdrop */}
+                        <div
+                            className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity duration-400 ease-out ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                            onClick={closeSidebar}
+                        />
+                        {/* Панель */}
+                        <div className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-background z-50 lg:hidden overflow-y-auto shadow-floating p-6 pt-8 transition-transform duration-400 ease-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                                 <div className="flex items-center justify-between mb-8">
                                     <h3 className="text-[10px] uppercase tracking-[0.3em] text-accent">Фильтры</h3>
                                     <button
@@ -816,7 +830,7 @@ const Catalog = () => {
                                     {activeFilters.length > 0 && (
                                         <button
                                             onClick={() => { clearAllFilters(); closeSidebar(); }}
-                                            className="w-full py-3 text-[11px] uppercase tracking-[0.15em] text-secondary hover:text-accent border border-primary/8 rounded-xl hover:border-accent/30 transition-all duration-300 cursor-pointer"
+                                            className="w-full py-3 text-[11px] uppercase tracking-[0.15em] text-secondary hover:text-accent border border-primary/8 rounded-xl hover:border-accent/30 transition-colors duration-300 cursor-pointer"
                                         >
                                             Сбросить все фильтры
                                         </button>
@@ -824,7 +838,6 @@ const Catalog = () => {
                                 </div>
                             </div>
                         </>
-                    )}
 
                     {/* ── Сетка товаров ── */}
                     <div className="flex-1 min-w-0">

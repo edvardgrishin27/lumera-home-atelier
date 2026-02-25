@@ -300,7 +300,7 @@ const Home = () => {
                                 <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 z-[3]">
                                     <h3 className="text-sm md:text-base font-serif text-white leading-snug mb-1">{product.name}</h3>
                                     <p className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/50 mb-2 font-sans">{product.category}</p>
-                                    <span className="text-lg md:text-xl font-serif text-white font-light">{product.price.toLocaleString()} ₽</span>
+                                    <span className="text-lg md:text-xl font-serif text-accent font-light">{product.price.toLocaleString()} ₽</span>
                                 </div>
                             </div>
                         </Link>

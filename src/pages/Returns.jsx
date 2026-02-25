@@ -1,10 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
+import { useContent } from '../context/ContentContext';
 import SEO from '../components/SEO';
 
 const Returns = () => {
     const containerRef = useRef(null);
+    const { content } = useContent();
+    const ret = content.returns || {};
+    const sections = ret.sections || [];
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -25,90 +29,43 @@ const Returns = () => {
             <section className="pt-40 md:pt-48 pb-16 md:pb-20 px-6 md:px-20">
                 <div className="ret-header max-w-4xl">
                     <span className="text-accent text-[10px] md:text-xs uppercase tracking-[0.3em] font-sans block mb-6">
-                        Покупателям
+                        {ret.label || 'Покупателям'}
                     </span>
                     <h1 className="text-4xl md:text-6xl font-serif font-light text-primary leading-[1.05] tracking-tight mb-8">
-                        Возврат и обмен
+                        {ret.title || 'Возврат и обмен'}
                     </h1>
                 </div>
             </section>
 
             <section className="px-6 md:px-20 pb-32">
                 <div className="max-w-3xl space-y-12">
-
-                    {/* Section 1 */}
-                    <div className="ret-section">
-                        <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">Общие положения</h2>
-                        <div className="text-sm md:text-base text-secondary font-sans leading-relaxed space-y-4">
-                            <p>
-                                Lumera Home Atelier работает в соответствии с Законом РФ &laquo;О защите прав потребителей&raquo; от 07.02.1992 &#8470; 2300-1 (ст. 26.1).
-                            </p>
-                            <p>
-                                Вся продукция Lumera изготавливается по индивидуальному заказу клиента: с учётом выбранных размеров, материалов, цвета обивки и конфигурации. Такие товары имеют индивидуально-определённые свойства.
-                            </p>
+                    {sections.map((section, idx) => (
+                        <div key={idx} className={`ret-section ${idx > 0 ? 'border-t border-primary/8 pt-10' : ''}`}>
+                            <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">{section.title}</h2>
+                            <div className="text-sm md:text-base text-secondary font-sans leading-relaxed space-y-4">
+                                {section.text.split('\n').map((line, li) => {
+                                    if (line.startsWith('•')) {
+                                        return (
+                                            <div key={li} className="flex items-start gap-3">
+                                                <span className="text-accent mt-1 shrink-0">&#10003;</span>
+                                                <span>{line.slice(1).trim()}</span>
+                                            </div>
+                                        );
+                                    }
+                                    if (/^\d+\./.test(line)) {
+                                        return (
+                                            <div key={li} className="flex items-start gap-3">
+                                                <span className="text-accent mt-1 shrink-0">{line.match(/^\d+/)[0]}.</span>
+                                                <span>{line.replace(/^\d+\.\s*/, '')}</span>
+                                            </div>
+                                        );
+                                    }
+                                    if (line.trim() === '') return null;
+                                    return <p key={li}>{line}</p>;
+                                })}
+                            </div>
                         </div>
-                    </div>
-
-                    {/* Section 2 */}
-                    <div className="ret-section border-t border-primary/8 pt-10">
-                        <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">Товары надлежащего качества</h2>
-                        <div className="text-sm md:text-base text-secondary font-sans leading-relaxed space-y-4">
-                            <p>
-                                Согласно законодательству РФ, товары надлежащего качества, изготовленные по индивидуальному заказу, возврату и обмену не подлежат.
-                            </p>
-                            <p>
-                                Это относится к мебели, произведённой с учётом персональных пожеланий клиента: выбранная ткань, размер, конфигурация, цвет и материалы.
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Section 3 */}
-                    <div className="ret-section border-t border-primary/8 pt-10">
-                        <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">Товары ненадлежащего качества</h2>
-                        <div className="text-sm md:text-base text-secondary font-sans leading-relaxed space-y-4">
-                            <p>
-                                Если при получении вы обнаружили производственный брак или несоответствие заказу, мы гарантируем:
-                            </p>
-                            <ul className="space-y-3 pl-0">
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">&#10003;</span>
-                                    <span>Бесплатную замену изделия на аналогичное или идентичное</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">&#10003;</span>
-                                    <span>При отсутствии необходимого варианта отделки &mdash; подбор схожего решения или полный возврат стоимости</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">&#10003;</span>
-                                    <span>Рассмотрение обращения в течение 5 рабочих дней</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    {/* Section 4 */}
-                    <div className="ret-section border-t border-primary/8 pt-10">
-                        <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">Порядок обращения</h2>
-                        <div className="text-sm md:text-base text-secondary font-sans leading-relaxed space-y-4">
-                            <p>
-                                Для оформления возврата или обмена свяжитесь с нами любым удобным способом:
-                            </p>
-                            <ul className="space-y-2">
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">1.</span>
-                                    <span>Напишите на <a href="mailto:info@lumerahome.ru" className="text-accent hover:underline">info@lumerahome.ru</a> с описанием проблемы и фотографиями</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">2.</span>
-                                    <span>Укажите номер заказа и дату получения</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">3.</span>
-                                    <span>Мы рассмотрим обращение и предложим решение</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    ))}
 
                     {/* Back link */}
                     <div className="ret-section pt-8">
@@ -119,7 +76,6 @@ const Returns = () => {
                             На главную
                         </Link>
                     </div>
-
                 </div>
             </section>
         </div>

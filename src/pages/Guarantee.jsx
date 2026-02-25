@@ -1,10 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
+import { useContent } from '../context/ContentContext';
 import SEO from '../components/SEO';
 
 const Guarantee = () => {
     const containerRef = useRef(null);
+    const { content } = useContent();
+    const gar = content.guarantee || {};
+    const sections = gar.sections || [];
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -25,114 +29,51 @@ const Guarantee = () => {
             <section className="pt-40 md:pt-48 pb-16 md:pb-20 px-6 md:px-20">
                 <div className="gar-header max-w-4xl">
                     <span className="text-accent text-[10px] md:text-xs uppercase tracking-[0.3em] font-sans block mb-6">
-                        Покупателям
+                        {gar.label || 'Покупателям'}
                     </span>
                     <h1 className="text-4xl md:text-6xl font-serif font-light text-primary leading-[1.05] tracking-tight mb-8">
-                        Гарантии
+                        {gar.title || 'Гарантии'}
                     </h1>
                 </div>
             </section>
 
             <section className="px-6 md:px-20 pb-32">
                 <div className="max-w-3xl space-y-12">
-
-                    {/* Section 1 */}
-                    <div className="gar-section">
-                        <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">Гарантийный срок</h2>
-                        <div className="text-sm md:text-base text-secondary font-sans leading-relaxed space-y-4">
-                            <p>
-                                На всю продукцию Lumera Home Atelier предоставляется гарантия <strong className="text-primary">12 месяцев</strong> со дня передачи товара покупателю.
-                            </p>
-                            <p>
-                                В течение гарантийного срока мы несём полную ответственность за производственные дефекты и скрытые недостатки изделия.
-                            </p>
+                    {sections.map((section, idx) => (
+                        <div key={idx} className={`gar-section ${idx > 0 ? 'border-t border-primary/8 pt-10' : ''}`}>
+                            <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">{section.title}</h2>
+                            <div className="text-sm md:text-base text-secondary font-sans leading-relaxed space-y-4">
+                                {section.text.split('\n').map((line, li) => {
+                                    if (line.startsWith('•')) {
+                                        return (
+                                            <div key={li} className="flex items-start gap-3">
+                                                <span className="text-accent mt-1 shrink-0">&#10003;</span>
+                                                <span>{line.slice(1).trim()}</span>
+                                            </div>
+                                        );
+                                    }
+                                    if (line.startsWith('—')) {
+                                        return (
+                                            <div key={li} className="flex items-start gap-3">
+                                                <span className="text-primary/30 mt-1 shrink-0">&mdash;</span>
+                                                <span>{line.slice(1).trim()}</span>
+                                            </div>
+                                        );
+                                    }
+                                    if (/^\d+\./.test(line)) {
+                                        return (
+                                            <div key={li} className="flex items-start gap-3">
+                                                <span className="text-accent mt-1 shrink-0">{line.match(/^\d+/)[0]}.</span>
+                                                <span>{line.replace(/^\d+\.\s*/, '')}</span>
+                                            </div>
+                                        );
+                                    }
+                                    if (line.trim() === '') return null;
+                                    return <p key={li}>{line}</p>;
+                                })}
+                            </div>
                         </div>
-                    </div>
-
-                    {/* Section 2 */}
-                    <div className="gar-section border-t border-primary/8 pt-10">
-                        <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">Что покрывает гарантия</h2>
-                        <div className="text-sm md:text-base text-secondary font-sans leading-relaxed">
-                            <ul className="space-y-3">
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">&#10003;</span>
-                                    <span>Дефекты каркаса и несущих конструкций</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">&#10003;</span>
-                                    <span>Неисправности механизмов трансформации</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">&#10003;</span>
-                                    <span>Отклонения обивочных материалов от заявленных характеристик</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">&#10003;</span>
-                                    <span>Несоответствие размеров или комплектации договору</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    {/* Section 3 */}
-                    <div className="gar-section border-t border-primary/8 pt-10">
-                        <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">Ограничения гарантии</h2>
-                        <div className="text-sm md:text-base text-secondary font-sans leading-relaxed">
-                            <p className="mb-4">Гарантия не распространяется на:</p>
-                            <ul className="space-y-3">
-                                <li className="flex items-start gap-3">
-                                    <span className="text-primary/30 mt-1 shrink-0">&mdash;</span>
-                                    <span>Повреждения, вызванные нарушением условий эксплуатации</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-primary/30 mt-1 shrink-0">&mdash;</span>
-                                    <span>Естественный износ материалов при регулярном использовании</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-primary/30 mt-1 shrink-0">&mdash;</span>
-                                    <span>Механические повреждения, нанесённые после получения</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-primary/30 mt-1 shrink-0">&mdash;</span>
-                                    <span>Следствия самостоятельного ремонта или модификации</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    {/* Section 4 */}
-                    <div className="gar-section border-t border-primary/8 pt-10">
-                        <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">Гарантийное обслуживание</h2>
-                        <div className="text-sm md:text-base text-secondary font-sans leading-relaxed space-y-4">
-                            <p>
-                                В случае подтверждения гарантийного случая:
-                            </p>
-                            <ul className="space-y-3">
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">1.</span>
-                                    <span>Изделие будет заменено на аналогичное или идентичное</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">2.</span>
-                                    <span>При отсутствии необходимых материалов &mdash; подбираем схожий вариант или оформляем полный возврат стоимости</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-accent mt-1 shrink-0">3.</span>
-                                    <span>Срок рассмотрения обращения &mdash; до 5 рабочих дней</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    {/* Section 5 */}
-                    <div className="gar-section border-t border-primary/8 pt-10">
-                        <h2 className="text-xl md:text-2xl font-serif font-light text-primary mb-4">Рекомендации по уходу</h2>
-                        <div className="text-sm md:text-base text-secondary font-sans leading-relaxed space-y-4">
-                            <p>
-                                Для продления срока службы мебели рекомендуем соблюдать инструкцию по эксплуатации, которая является частью договора. Подробные рекомендации по уходу за конкретными материалами предоставляются при покупке.
-                            </p>
-                        </div>
-                    </div>
+                    ))}
 
                     {/* Contact */}
                     <div className="gar-section border-t border-primary/8 pt-10">
@@ -153,7 +94,6 @@ const Guarantee = () => {
                             На главную
                         </Link>
                     </div>
-
                 </div>
             </section>
         </div>
