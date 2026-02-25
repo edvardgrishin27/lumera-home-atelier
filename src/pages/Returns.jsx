@@ -19,14 +19,14 @@ const Returns = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="bg-background min-h-screen">
+        <div ref={containerRef} className="bg-background min-h-screen pb-24 md:pb-0">
             <SEO
                 title="Возврат и обмен — условия | Lumera Home Atelier"
                 description="Условия возврата и обмена мебели. Индивидуальные заказы, права потребителей и порядок обращения."
                 url="/returns"
             />
 
-            <section className="pt-40 md:pt-48 pb-16 md:pb-20 px-6 md:px-20">
+            <section className="pt-16 md:pt-48 pb-16 md:pb-20 px-6 md:px-20">
                 <div className="ret-header max-w-4xl">
                     <span className="text-accent text-[10px] md:text-xs uppercase tracking-[0.3em] font-sans block mb-6">
                         {ret.label || 'Покупателям'}

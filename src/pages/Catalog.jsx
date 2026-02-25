@@ -359,7 +359,7 @@ const ProductCard = ({ product, viewMode, categoryMap = {} }) => {
             to={`/product/${product.slug}`}
             className="product-card group block opacity-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-3xl transition-transform duration-500 ease-spring hover:-translate-y-2"
         >
-            <div className="bg-surface aspect-[4/3] overflow-hidden mb-6 relative rounded-2xl shadow-elevated group-hover:shadow-floating transition-shadow duration-500">
+            <div className="bg-surface aspect-[3/4] md:aspect-[4/3] overflow-hidden mb-3 md:mb-6 relative rounded-2xl shadow-elevated group-hover:shadow-floating transition-shadow duration-500">
                 <img
                     src={product.image}
                     alt={product.name}
@@ -369,16 +369,16 @@ const ProductCard = ({ product, viewMode, categoryMap = {} }) => {
                     width="800"
                     height="600"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none hidden md:block" />
             </div>
-            <div className="pt-4 px-2">
-                <div className="flex justify-between items-baseline mb-2">
-                    <h3 className="text-2xl font-serif text-primary group-hover:text-accent transition-colors duration-300 ease-spring">{product.name}</h3>
-                    <span className="text-lg font-serif text-primary/90">{product.price.toLocaleString()} ₽</span>
+            <div className="pt-2 md:pt-4 px-1 md:px-2">
+                <div className="flex flex-col md:flex-row justify-between md:items-baseline mb-1 md:mb-2">
+                    <h3 className="text-sm md:text-2xl font-serif text-primary group-hover:text-accent transition-colors duration-300 ease-spring truncate md:truncate-none">{product.name}</h3>
+                    <span className="text-sm md:text-lg font-serif text-accent md:text-primary/90">{product.price.toLocaleString()} ₽</span>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <span className="text-[10px] text-secondary uppercase tracking-widest">{categoryMap[product.category] || product.category}</span>
-                    <p className="text-sm text-primary/70 font-serif leading-relaxed border-t border-primary/10 pt-4 mt-2">
+                    <span className="text-[9px] md:text-[10px] text-secondary uppercase tracking-widest">{categoryMap[product.category] || product.category}</span>
+                    <p className="hidden md:block text-sm text-primary/70 font-serif leading-relaxed border-t border-primary/10 pt-4 mt-2">
                         {product.description}
                     </p>
                 </div>
@@ -556,7 +556,7 @@ const Catalog = () => {
     const closeSidebar = useCallback(() => setSidebarOpen(false), []);
 
     return (
-        <div ref={containerRef} className="pt-32 pb-20 px-6 md:px-12 min-h-screen bg-background">
+        <div ref={containerRef} className="pt-16 md:pt-32 pb-28 md:pb-20 px-4 md:px-12 min-h-screen bg-background">
             <SEO
                 title="Каталог мебели из Китая — цены, фото | Купить с доставкой"
                 description="Каталог мебели из Китая с ценами и фото — диваны, кресла, столы, кровати под заказ. Доставка по Москве и России. Каталог Lumera Home Atelier."
@@ -582,13 +582,13 @@ const Catalog = () => {
             <div className="max-w-[1800px] mx-auto content-layer">
 
                 {/* ═══ HEADER: Заголовок + Поиск ═══ */}
-                <header className="mb-12 md:mb-16 catalog-reveal">
-                    <h1 className="text-6xl md:text-8xl font-serif font-thin mb-10 text-primary tracking-tight text-center">
+                <header className="mb-5 md:mb-16 catalog-reveal">
+                    <h1 className="hidden md:block text-6xl lg:text-8xl font-serif font-thin mb-8 md:mb-10 text-primary tracking-tight text-center">
                         Коллекция
                     </h1>
 
                     {/* Поиск */}
-                    <div className="max-w-xl mx-auto relative mb-10">
+                    <div className="max-w-xl mx-auto relative mb-4 md:mb-10">
                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary/50">
                             <SearchIcon />
                         </div>
@@ -610,12 +610,12 @@ const Catalog = () => {
                     </div>
 
                     {/* Категории — горизонтальные пиллы */}
-                    <div className="flex flex-wrap justify-center gap-3 md:gap-4 catalog-reveal">
+                    <div className="flex flex-wrap justify-start md:justify-center gap-2 md:gap-4 catalog-reveal">
                         {categories.map(cat => (
                             <button
                                 key={cat}
                                 onClick={() => setCategory(cat)}
-                                className={`text-[11px] uppercase tracking-[0.15em] px-5 py-2.5 rounded-full border transition-colors duration-300 ease-out cursor-pointer focus-visible:outline-2 focus-visible:outline-accent ${
+                                className={`text-[10px] md:text-[11px] uppercase tracking-[0.12em] md:tracking-[0.15em] px-3.5 md:px-5 py-2 md:py-2.5 rounded-full border transition-colors duration-300 ease-out cursor-pointer focus-visible:outline-2 focus-visible:outline-accent ${
                                     category === cat
                                         ? 'text-white bg-accent border-accent shadow-elevated'
                                         : 'text-primary/60 border-primary/12 hover:border-accent/40 hover:text-accent hover:bg-accent/5'
@@ -631,7 +631,7 @@ const Catalog = () => {
                 </header>
 
                 {/* ═══ TOOLBAR: Счётчик + Вид + Сортировка + Кнопка фильтров (mobile) ═══ */}
-                <div className="flex items-center justify-between mb-8 catalog-reveal">
+                <div className="flex items-center justify-between mb-4 md:mb-8 catalog-reveal">
                     <div className="flex items-center gap-4">
                         {/* Мобильная кнопка фильтров */}
                         <button
@@ -843,7 +843,7 @@ const Catalog = () => {
                     {/* ── Сетка товаров ── */}
                     <div className="flex-1 min-w-0 min-h-[60vh]">
                         {viewMode === 'grid' ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-16">
+                            <div className="grid grid-cols-2 md:grid-cols-2 gap-x-3 gap-y-6 md:gap-x-10 md:gap-y-16">
                                 {filteredProducts.map((product) => (
                                     <ProductCard key={product.id} product={product} viewMode="grid" categoryMap={CATEGORY_MAP} />
                                 ))}

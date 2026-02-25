@@ -46,7 +46,7 @@ export const ToastProvider = ({ children }) => {
             {/* Toast Container */}
             <div
                 aria-live="polite"
-                className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-2 pointer-events-none"
+                className="fixed bottom-24 md:bottom-6 right-6 z-[9999] flex flex-col gap-2 pointer-events-none"
             >
                 {toasts.map((t) => (
                     <div

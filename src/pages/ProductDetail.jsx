@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
@@ -165,7 +165,7 @@ const Lightbox = ({ images, activeIndex, onClose, onPrev, onNext, productName })
 /* ─── Sticky Product Bar (appears BELOW the main header) ─── */
 const StickyProductBar = ({ product, visible, onOrder }) => (
     <div
-        className={`fixed left-0 w-full z-[45] transition-all duration-500 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+        className={`hidden md:block fixed left-0 w-full z-[45] transition-all duration-500 ease-out ${visible ? 'md:opacity-100 md:translate-y-0' : 'md:opacity-0 md:-translate-y-4 pointer-events-none'}`}
         style={{ top: '68px' }}
     >
         <div className="bg-surface/95 backdrop-blur-md border-t border-t-accent/30 border-b border-primary/10 shadow-[0_4px_20px_rgba(0,0,0,0.08)] dark:bg-[rgba(38,38,38,0.98)] dark:border-b-[rgba(255,255,255,0.08)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.6)]">
@@ -199,6 +199,7 @@ const StickyProductBar = ({ product, visible, onOrder }) => (
 
 const ProductDetail = () => {
     const { slug } = useParams();
+    const navigate = useNavigate();
     const { content } = useContent();
     const products = content.products;
     const product = products.find(p => p.slug === slug) || products[0];
@@ -211,6 +212,16 @@ const ProductDetail = () => {
     const [showStickyBar, setShowStickyBar] = useState(false);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
+
+    // Dispatch product name to mobile header
+    useEffect(() => {
+        if (product?.name) {
+            window.dispatchEvent(new CustomEvent('setPageTitle', { detail: product.name }));
+        }
+        return () => {
+            window.dispatchEvent(new CustomEvent('setPageTitle', { detail: '' }));
+        };
+    }, [product?.name]);
 
     const colors = product?.colors || [];
     const sizes = product?.sizes || [];
@@ -338,13 +349,13 @@ const ProductDetail = () => {
             />
 
             {/* Top Section */}
-            <div className="pt-32 pb-8 px-6 md:px-12 max-w-[1600px] mx-auto content-layer">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+            <div className="pt-14 md:pt-32 pb-4 md:pb-8 px-0 md:px-12 max-w-[1600px] mx-auto content-layer">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-16">
 
                     {/* Left: Gallery — more compact */}
-                    <div className="lg:col-span-7 reveal">
+                    <div className="lg:col-span-7 reveal relative">
                         <div
-                            className="aspect-[4/3] bg-surface mb-3 overflow-hidden relative group cursor-zoom-in rounded-2xl shadow-elevated"
+                            className="aspect-[4/3] bg-surface mb-3 overflow-hidden relative group cursor-zoom-in rounded-none md:rounded-2xl shadow-none md:shadow-elevated"
                             onClick={() => openLightbox(activeImage)}
                         >
                             {isVideo(gallery[activeImage]) ? (
@@ -378,7 +389,7 @@ const ProductDetail = () => {
                                 </span>
                             </div>
                         </div>
-                        <div className="grid grid-cols-4 gap-3">
+                        <div className="grid grid-cols-4 gap-2 md:gap-3 px-3 md:px-0">
                             {gallery.map((media, idx) => (
                                 <button
                                     key={idx}
@@ -402,31 +413,31 @@ const ProductDetail = () => {
                     </div>
 
                     {/* Right: Sticky Info — reorganized order */}
-                    <div className="lg:col-span-5 relative">
+                    <div className="lg:col-span-5 relative px-4 md:px-0">
                         <div className="sticky top-32 reveal">
                             {/* Title + Price */}
-                            <div className="border-b border-primary/10 pb-6 mb-6">
-                                <h1 className="text-4xl md:text-5xl font-serif mb-3 leading-tight tracking-tightest text-primary">{product.name}</h1>
-                                <p className="text-xs uppercase tracking-[0.2em] text-secondary mb-4">{product.category}</p>
-                                <p className="text-2xl font-serif text-accent">{product.price?.toLocaleString()} ₽</p>
+                            <div className="border-b border-primary/10 pb-4 md:pb-6 mb-4 md:mb-6">
+                                <h1 className="text-2xl md:text-4xl lg:text-5xl font-serif mb-1.5 md:mb-3 leading-tight tracking-tightest text-primary">{product.name}</h1>
+                                <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-secondary mb-2 md:mb-4">{product.category}</p>
+                                <p className="text-xl md:text-2xl font-serif text-accent">{product.price?.toLocaleString()} ₽</p>
                             </div>
 
                             {/* 1. Color Selector — moved up */}
                             {colors.length > 0 && (
-                                <div className="space-y-3 pb-5 mb-5 border-b border-primary/5">
+                                <div className="space-y-2 md:space-y-3 pb-3 md:pb-5 mb-3 md:mb-5 border-b border-primary/5">
                                     <div className="flex justify-between items-center">
                                         <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">Цвет</span>
                                         <span className="text-sm font-serif text-primary opacity-70">
                                             {colors[selectedColor]?.name}
                                         </span>
                                     </div>
-                                    <div className="flex gap-4 p-1.5">
+                                    <div className="flex gap-3 md:gap-4 p-1">
                                         {colors.map((color, i) => (
                                             <button
                                                 key={i}
                                                 onClick={() => setSelectedColor(i)}
                                                 aria-label={`Выбрать цвет ${color.name}`}
-                                                className="w-10 h-10 rounded-full cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+                                                className="w-8 h-8 md:w-10 md:h-10 rounded-full cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
                                                 style={{
                                                     backgroundColor: color.hex,
                                                     boxShadow: selectedColor === i
@@ -445,7 +456,7 @@ const ProductDetail = () => {
 
                             {/* 2. Size Selector — right after color */}
                             {sizes.length > 0 && (
-                                <div className="space-y-3 pb-5 mb-5 border-b border-primary/5">
+                                <div className="space-y-2 md:space-y-3 pb-3 md:pb-5 mb-3 md:mb-5 border-b border-primary/5">
                                     <div className="flex justify-between items-center">
                                         <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">Габариты</span>
                                         <span className="text-xs font-serif text-primary opacity-70">
@@ -469,7 +480,7 @@ const ProductDetail = () => {
 
                             {/* 3. Characteristics */}
                             {product.details && product.details.length > 0 && (
-                                <div className="space-y-3 pb-6 mb-6 border-b border-primary/5">
+                                <div className="space-y-2 md:space-y-3 pb-4 md:pb-6 mb-4 md:mb-6 border-b border-primary/5">
                                     <div className="text-[10px] uppercase tracking-[0.2em] text-secondary">Характеристики</div>
                                     {product.details.map((detail, i) => (
                                         <div key={i} className="flex justify-between items-baseline gap-4">
@@ -481,30 +492,29 @@ const ProductDetail = () => {
                             )}
 
                             {/* Description */}
-                            <p className="text-base leading-relaxed opacity-80 font-serif text-primary mb-8">
+                            <p className="text-sm md:text-base leading-relaxed opacity-80 font-serif text-primary mb-4 md:mb-8">
                                 {product.description}
                             </p>
 
-                            {/* CTA Button */}
-                            <div ref={ctaRef}>
+                            {/* CTA Button — hidden on mobile (fixed CTA at bottom instead) */}
+                            <div ref={ctaRef} className="hidden md:block">
                                 <button
                                     onClick={() => setIsOrderOpen(true)}
                                     className="w-full bg-accent text-white py-5 text-xs uppercase tracking-[0.2em] rounded-full hover:bg-accent/80 transition-transform duration-500 ease-spring text-center shadow-[0_4px_15px_rgba(196,162,101,0.25)] hover:shadow-[0_0_25px_rgba(196,162,101,0.55)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
                                 >
                                     Оставить заявку
                                 </button>
+                                <p className="text-[10px] text-center text-secondary uppercase tracking-[0.2em] mt-4">
+                                    Индивидуальное изготовление от 45 дней
+                                </p>
                             </div>
-
-                            <p className="text-[10px] text-center text-secondary uppercase tracking-[0.2em] mt-4">
-                                Индивидуальное изготовление от 45 дней
-                            </p>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Bottom Section: Mood — minimal gap */}
-            <div className="w-full bg-surface py-10 lg:py-16">
+            <div className="w-full bg-surface py-10 lg:py-16 pb-24 md:pb-10 lg:pb-16">
                 <div className="px-6 md:px-12 mb-10 text-center reveal">
                     <span className="text-xs uppercase tracking-[0.3em] text-accent block mb-3">Mood</span>
                     <h2 className="text-4xl md:text-6xl font-serif font-thin">В интерьере</h2>
@@ -543,6 +553,24 @@ const ProductDetail = () => {
                         <img src={gallery[2] || product.image} className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700 ease-out" alt={`${product.name} — детали и текстура`} loading="lazy" decoding="async" width="1200" height="900" />
                     </div>
 
+                </div>
+            </div>
+
+            {/* Mobile Fixed CTA Bottom Bar */}
+            <div className="fixed bottom-0 left-0 right-0 z-[48] md:hidden bg-surface/95 backdrop-blur-xl border-t border-primary/10 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]"
+                style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+            >
+                <div className="flex items-center justify-between px-5 py-3">
+                    <div className="min-w-0 mr-3">
+                        <p className="text-sm font-serif text-primary truncate leading-tight">{product.name}</p>
+                        <p className="text-base font-serif text-accent font-medium">{product.price?.toLocaleString()} ₽</p>
+                    </div>
+                    <button
+                        onClick={() => setIsOrderOpen(true)}
+                        className="flex-shrink-0 px-5 py-3 bg-accent text-white text-[10px] uppercase tracking-[0.12em] rounded-full active:scale-95 transition-transform duration-200 shadow-[0_4px_15px_rgba(196,162,101,0.25)]"
+                    >
+                        Заявка
+                    </button>
                 </div>
             </div>
 

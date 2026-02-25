@@ -35,7 +35,7 @@ const Reviews = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="min-h-screen bg-background w-full overflow-hidden">
+        <div ref={containerRef} className="min-h-screen bg-background w-full overflow-hidden pb-24 md:pb-0">
             <SEO
                 title="Отзывы клиентов — Lumera Home Atelier"
                 description="Отзывы клиентов о премиальной мебели Lumera Home Atelier. Реальные впечатления покупателей о качестве, доставке и сервисе."
@@ -46,7 +46,7 @@ const Reviews = () => {
                 ]}
             />
 
-            <div className="pt-40 pb-32 px-6 md:px-20">
+            <div className="pt-16 md:pt-40 pb-32 px-6 md:px-20">
                 {/* Header */}
                 <div className="max-w-[1600px] mx-auto mb-20 reveal">
                     <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6 block">Отзывы</span>

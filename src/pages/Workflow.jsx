@@ -79,7 +79,7 @@ const Workflow = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="bg-background min-h-screen">
+        <div ref={containerRef} className="bg-background min-h-screen pb-24 md:pb-0">
             <SEO
                 title="Этапы работы — как мы работаем | Lumera Home Atelier"
                 description="5 прозрачных этапов работы: от консультации до доставки мебели из Китая. Контроль качества на каждом шаге."
@@ -87,7 +87,7 @@ const Workflow = () => {
             />
 
             {/* Hero Header */}
-            <section className="pt-40 md:pt-48 pb-16 md:pb-24 px-6 md:px-20">
+            <section className="pt-16 md:pt-48 pb-16 md:pb-24 px-6 md:px-20">
                 <div className="wf-header max-w-5xl">
                     <span className="text-accent text-[10px] md:text-xs uppercase tracking-[0.3em] font-sans block mb-6">
                         {wf.label || 'Как мы работаем'}

@@ -38,7 +38,7 @@ const Contact = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="min-h-screen bg-background w-full relative pt-32 lg:pt-0">
+        <div ref={containerRef} className="min-h-screen bg-background w-full relative pt-16 md:pt-32 lg:pt-0 pb-24 md:pb-0">
             <SEO
                 title="Контакты Lumera Home Atelier — телефон, адрес в Москве"
                 description="Контакты Lumera Home Atelier: телефон 8 (499) 877-16-78, email info@lumerahome.ru. Москва. Бесплатная консультация по подбору мебели из Китая."
@@ -83,14 +83,14 @@ const Contact = () => {
                 </div>
 
                 {/* Content Right Side */}
-                <div className="flex flex-col justify-center px-6 md:px-20 lg:px-32 py-20 bg-background relative z-10 w-full">
+                <div className="flex flex-col justify-center px-5 md:px-20 lg:px-32 py-8 md:py-20 bg-background relative z-10 w-full">
                     <div className="max-w-xl w-full mx-auto lg:mx-0">
                         <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6 block reveal">{cPage.subtitle}</span>
-                        <h1 className="text-6xl md:text-8xl font-serif font-thin mb-16 text-primary tracking-tightest leading-[0.9] reveal">
+                        <h1 className="text-3xl md:text-8xl font-serif font-thin mb-8 md:mb-16 text-primary tracking-tightest leading-[0.9] reveal">
                             {cPage.title}
                         </h1>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20 reveal">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 mb-10 md:mb-20 reveal">
                             <div className="space-y-4">
                                 <h3 className="text-[10px] uppercase tracking-[0.2em] text-secondary">{s.footerAddressLabel}</h3>
                                 <p className="font-serif text-xl text-primary leading-relaxed whitespace-pre-line">{s.footerAddress}</p>
@@ -103,9 +103,9 @@ const Contact = () => {
                         </div>
 
                         {/* Elevated Form */}
-                        <div className="bg-surface p-8 md:p-12 rounded-3xl shadow-floating reveal relative overflow-hidden">
+                        <div className="bg-surface p-5 md:p-12 rounded-2xl md:rounded-3xl shadow-floating reveal relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-background via-accent to-background opacity-50"></div>
-                            <h3 className="font-serif text-3xl mb-8 text-primary">{cPage.formTitle || 'Оставить заявку'}</h3>
+                            <h3 className="font-serif text-2xl md:text-3xl mb-5 md:mb-8 text-primary">{cPage.formTitle || 'Оставить заявку'}</h3>
                             <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
                                 <div className="relative group">
                                     <input type="text" name="name" value={form.name} onChange={handleChange} placeholder={cPage.formName || 'ИМЯ'} required aria-label={cPage.formName || 'Имя'} className="w-full bg-transparent border-b border-primary/10 py-3 text-lg font-serif outline-none focus:border-primary transition-colors duration-300 placeholder:font-sans placeholder:text-xs placeholder:tracking-[0.2em] placeholder:text-secondary placeholder:uppercase" />

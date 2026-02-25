@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CustomCursor from './components/Cursor';
+import MobileTabBar from './components/MobileTabBar';
 
 // Lazy-loaded pages for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -99,6 +100,8 @@ function App() {
 
     // Hide Header/Footer/Cursor on admin panel pages
     const isSpecialPage = location.pathname.startsWith('/panel/');
+    const isProductPage = location.pathname.startsWith('/product/');
+    const showTabBar = !isSpecialPage && !isProductPage;
 
     return (
         <div className="antialiased text-primary bg-background min-h-screen relative selection:bg-accent selection:text-white">
@@ -131,6 +134,7 @@ function App() {
                 </Suspense>
             </main>
             {!isSpecialPage && <Footer />}
+            {showTabBar && <MobileTabBar />}
         </div>
     );
 }

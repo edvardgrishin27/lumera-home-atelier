@@ -39,7 +39,7 @@ const B2B = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="bg-background min-h-screen w-full relative pt-40 px-6 md:px-20 pb-20">
+        <div ref={containerRef} className="bg-background min-h-screen w-full relative pt-16 md:pt-40 px-6 md:px-20 pb-24 md:pb-20">
             <SEO
                 title="Мебель для отелей и ресторанов оптом из Китая — B2B"
                 description="Мебель оптом из Китая для отелей, ресторанов, офисов и коворкингов. Мебель для HoReCa от Lumera Home Atelier — индивидуальные проекты, доставка по РФ."

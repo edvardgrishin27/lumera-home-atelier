@@ -39,7 +39,7 @@ const BlogPost = () => {
     // we extrapolate the excerpt to look like a full post for demonstration,
     // or just display what we have beautifully.
     return (
-        <div ref={containerRef} className="pt-32 pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background w-full">
+        <div ref={containerRef} className="pt-16 md:pt-32 pb-24 md:pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background w-full">
             <SEO
                 title={`${post.title} — статья в блоге Lumera`}
                 description={`${post.excerpt?.slice(0, 140)}... Читайте в блоге Lumera Home Atelier.`}

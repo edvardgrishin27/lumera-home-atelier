@@ -7,15 +7,15 @@ const Footer = () => {
     const s = content.settings;
 
     return (
-        <footer className="bg-background text-primary pt-20 pb-12 px-6 md:px-20 overflow-hidden border-t border-primary/5">
+        <footer className="bg-background text-primary pt-10 md:pt-20 pb-8 md:pb-12 px-5 md:px-20 overflow-hidden border-t border-primary/5">
             {/* Top Heading */}
-            <div className="mb-20">
-                <h2 className="text-5xl md:text-7xl font-sans uppercase tracking-widest font-normal text-primary">Контакты</h2>
+            <div className="mb-8 md:mb-20">
+                <h2 className="text-2xl md:text-7xl font-sans uppercase tracking-widest font-normal text-primary">Контакты</h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-32">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 mb-12 md:mb-32">
                 {/* Image (Mood) - Left Side, bottom-aligned with text columns */}
-                <div className="md:col-span-4 self-end group">
+                <div className="hidden md:block md:col-span-4 self-end group">
                     <div className="aspect-[3/2] overflow-hidden rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
                         <img
                             src="https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/home-hero.jpg"
@@ -26,10 +26,10 @@ const Footer = () => {
                 </div>
 
                 {/* Spacing */}
-                <div className="md:col-span-1"></div>
+                <div className="hidden md:block md:col-span-1"></div>
 
                 {/* Info Columns */}
-                <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 font-sans text-sm tracking-wide leading-relaxed text-primary/70">
+                <div className="md:col-span-7 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 font-sans text-sm tracking-wide leading-relaxed text-primary/70">
 
                     {/* Column 1: Schedule */}
                     <div>
@@ -105,7 +105,7 @@ const Footer = () => {
             </div>
 
             {/* Bottom Bar */}
-            <div className="border-t border-primary/10 pt-8 flex justify-center items-center text-[10px] uppercase tracking-widest text-primary/40">
+            <div className="border-t border-primary/10 pt-8 pb-24 md:pb-0 flex justify-center items-center text-[10px] uppercase tracking-widest text-primary/40">
                 <span>© 2021–2026</span>
             </div>
 

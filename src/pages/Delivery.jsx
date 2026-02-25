@@ -17,7 +17,7 @@ const Delivery = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="pt-40 pb-20 px-6 md:px-20 min-h-screen bg-background w-full overflow-hidden">
+        <div ref={containerRef} className="pt-16 md:pt-40 pb-24 md:pb-20 px-6 md:px-20 min-h-screen bg-background w-full overflow-hidden">
             <SEO
                 title="Доставка мебели из Китая по России — сроки, стоимость, города"
                 description="Доставка мебели из Китая в Москву, СПб и регионы России. Сроки от 45 дней, бесплатная доставка от 100 000 ₽. Оплата, гарантия, возврат — Lumera Home Atelier."

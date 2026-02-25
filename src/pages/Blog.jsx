@@ -37,7 +37,7 @@ const Blog = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="pt-40 pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background w-full overflow-hidden">
+        <div ref={containerRef} className="pt-16 md:pt-40 pb-24 md:pb-20 px-6 md:px-12 lg:px-20 min-h-screen bg-background w-full overflow-hidden">
             <SEO
                 title="Блог о мебели — как выбрать диван, кровать, тренды интерьера"
                 description="Экспертные статьи: как выбрать диван, кровать, кресло. Тренды дизайна интерьера, обзоры материалов, рейтинги мебели. Блог Lumera Home Atelier."

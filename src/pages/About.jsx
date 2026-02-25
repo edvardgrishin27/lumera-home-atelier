@@ -212,7 +212,7 @@ const About = () => {
     }, []);
 
     return (
-        <div ref={containerRef} className="pt-40 px-6 md:px-20 min-h-screen bg-background w-full overflow-hidden">
+        <div ref={containerRef} className="pt-16 md:pt-40 px-6 md:px-20 pb-24 md:pb-0 min-h-screen bg-background w-full overflow-hidden">
             <SEO
                 title="О компании Lumera Home Atelier — мебель из Китая на заказ"
                 description="Lumera Home Atelier — ателье дизайнерской мебели из Китая. Мебель на заказ по индивидуальным проектам, авторские коллекции, доставка по России."
