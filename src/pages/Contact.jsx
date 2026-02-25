@@ -41,7 +41,7 @@ const Contact = () => {
         <div ref={containerRef} className="min-h-screen bg-background w-full relative pt-16 md:pt-32 lg:pt-0 pb-24 md:pb-0">
             <SEO
                 title="Контакты Lumera Home Atelier — телефон, адрес в Москве"
-                description="Контакты Lumera Home Atelier: телефон 8 (499) 877-16-78, email info@lumerahome.ru. Москва. Бесплатная консультация по подбору мебели из Китая."
+                description="Контакты Lumera Home Atelier: телефон +7 (985) 835-11-90, email info@lumerahome.ru. Москва. Бесплатная консультация по подбору мебели из Китая."
                 url="/contact"
                 breadcrumbs={[
                     { name: 'Главная', url: '/' },
@@ -51,7 +51,7 @@ const Contact = () => {
                     "@context": "https://schema.org",
                     "@type": "LocalBusiness",
                     "name": "Lumera Home Atelier",
-                    "telephone": "8 (499) 877-16-78",
+                    "telephone": "+79858351190",
                     "email": "info@lumerahome.ru",
                     "url": "https://lumerahome.ru",
                     "address": {

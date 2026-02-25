@@ -159,7 +159,7 @@ const Home = () => {
                         "@type": "FurnitureStore",
                         "name": "Lumera Home Atelier",
                         "url": "https://lumerahome.ru",
-                        "telephone": "8 (499) 877-16-78",
+                        "telephone": "+79858351190",
                         "email": "info@lumerahome.ru",
                         "address": {
                             "@type": "PostalAddress",
@@ -167,7 +167,7 @@ const Home = () => {
                             "addressCountry": "RU"
                         },
                         "priceRange": "₽₽₽",
-                        "sameAs": ["https://t.me/lumera"]
+                        "sameAs": ["https://t.me/veromill"]
                     },
                     ...reviewSchemas
                 ]}
