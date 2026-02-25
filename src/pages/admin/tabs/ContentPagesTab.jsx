@@ -11,9 +11,53 @@ const ContentPagesTab = () => {
         <div>
             <h2 className="text-xl font-semibold mb-8">Страницы контента</h2>
 
-            {/* About Page */}
+            {/* About Page — Основатели */}
             <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-                <h3 className="text-sm font-semibold mb-4 text-gray-700">О нас</h3>
+                <h3 className="text-sm font-semibold mb-4 text-gray-700">О нас — Основатели</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                    <Field label="Лейбл секции" value={content.about.foundersLabel} onChange={v => updateContentPage('about', 'foundersLabel', v)} />
+                    <Field label="Заголовок секции" value={content.about.foundersTitle} onChange={v => updateContentPage('about', 'foundersTitle', v)} type="textarea" rows={2} />
+                    <div className="md:col-span-2">
+                        <Field label="Подзаголовок" value={content.about.foundersSubtitle} onChange={v => updateContentPage('about', 'foundersSubtitle', v)} />
+                    </div>
+                </div>
+
+                {/* Основатель 1 */}
+                <div className="mt-6 border-t border-gray-100 pt-4">
+                    <h4 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Основатель 1</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                        <Field label="Имя" value={content.about.founder1Name} onChange={v => updateContentPage('about', 'founder1Name', v)} />
+                        <Field label="Роль" value={content.about.founder1Role} onChange={v => updateContentPage('about', 'founder1Role', v)} />
+                        <div className="md:col-span-2">
+                            <Field label="Цитата" value={content.about.founder1Quote} onChange={v => updateContentPage('about', 'founder1Quote', v)} type="textarea" />
+                            <Field label="Краткая биография" value={content.about.founder1Bio} onChange={v => updateContentPage('about', 'founder1Bio', v)} type="textarea" rows={3} />
+                            <Field label="Полная биография (раскрывается по кнопке)" value={content.about.founder1FullBio} onChange={v => updateContentPage('about', 'founder1FullBio', v)} type="textarea" rows={8} />
+                            <Field label="Экспертиза" value={content.about.founder1Expertise} onChange={v => updateContentPage('about', 'founder1Expertise', v)} />
+                        </div>
+                        <FileUpload label="Фото" value={content.about.founder1Image} onChange={v => updateContentPage('about', 'founder1Image', v)} folder="pages" />
+                    </div>
+                </div>
+
+                {/* Основатель 2 */}
+                <div className="mt-6 border-t border-gray-100 pt-4">
+                    <h4 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Основатель 2</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                        <Field label="Имя" value={content.about.founder2Name} onChange={v => updateContentPage('about', 'founder2Name', v)} />
+                        <Field label="Роль" value={content.about.founder2Role} onChange={v => updateContentPage('about', 'founder2Role', v)} />
+                        <div className="md:col-span-2">
+                            <Field label="Цитата" value={content.about.founder2Quote} onChange={v => updateContentPage('about', 'founder2Quote', v)} type="textarea" />
+                            <Field label="Краткая биография" value={content.about.founder2Bio} onChange={v => updateContentPage('about', 'founder2Bio', v)} type="textarea" rows={3} />
+                            <Field label="Полная биография (раскрывается по кнопке)" value={content.about.founder2FullBio} onChange={v => updateContentPage('about', 'founder2FullBio', v)} type="textarea" rows={8} />
+                            <Field label="Экспертиза" value={content.about.founder2Expertise} onChange={v => updateContentPage('about', 'founder2Expertise', v)} />
+                        </div>
+                        <FileUpload label="Фото" value={content.about.founder2Image} onChange={v => updateContentPage('about', 'founder2Image', v)} folder="pages" />
+                    </div>
+                </div>
+            </div>
+
+            {/* About Page — Основное */}
+            <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+                <h3 className="text-sm font-semibold mb-4 text-gray-700">О нас — Контент</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                     <Field label="Заголовок" value={content.about.title} onChange={v => updateContentPage('about', 'title', v)} />
                     <Field label="Подзаголовок" value={content.about.subtitle} onChange={v => updateContentPage('about', 'subtitle', v)} />

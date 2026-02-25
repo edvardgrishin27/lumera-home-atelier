@@ -1,8 +1,155 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
 import SEO from '../components/SEO';
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* ─── Карточка основателя: компактный портрет + декоративная рамка ─── */
+const FounderCard = ({ name, role, image, quote, bio, fullBio, expertise, reverse }) => {
+    const [expanded, setExpanded] = useState(false);
+    const fullBioRef = useRef(null);
+
+    const handleToggle = () => {
+        setExpanded(prev => !prev);
+    };
+
+    // Плавная анимация раскрытия через GSAP
+    useEffect(() => {
+        if (!fullBioRef.current) return;
+        if (expanded) {
+            gsap.fromTo(fullBioRef.current,
+                { height: 0, opacity: 0 },
+                { height: 'auto', opacity: 1, duration: 0.6, ease: 'power2.out' }
+            );
+        } else {
+            gsap.to(fullBioRef.current,
+                { height: 0, opacity: 0, duration: 0.4, ease: 'power2.in' }
+            );
+        }
+    }, [expanded]);
+
+    return (
+        <div className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-center founder-card`}>
+
+            {/* ── Компактный портрет с декоративным обрамлением ── */}
+            <div className={`lg:col-span-5 ${reverse ? 'lg:order-2' : 'lg:order-1'} flex justify-center`}>
+                <div className="relative group w-[280px] md:w-[320px] xl:w-[360px]">
+                    {/* Декоративная золотая рамка — офсет за фото */}
+                    <div
+                        className={`absolute inset-0 rounded-[2rem] border border-accent/30 transition-transform duration-700 ease-out group-hover:translate-x-0 group-hover:translate-y-0 ${
+                            reverse
+                                ? '-translate-x-3 translate-y-3'
+                                : 'translate-x-3 translate-y-3'
+                        }`}
+                        style={{ zIndex: 0 }}
+                    />
+                    {/* Мягкое золотое свечение за фото */}
+                    <div
+                        className="absolute -inset-4 rounded-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                        style={{
+                            background: 'radial-gradient(ellipse at center, rgba(196,162,101,0.08) 0%, transparent 70%)',
+                            zIndex: 0,
+                        }}
+                    />
+                    {/* Само фото — компактный портрет */}
+                    <div
+                        className="relative aspect-[3/4] overflow-hidden rounded-[1.5rem] bg-surface/50"
+                        style={{
+                            zIndex: 1,
+                            boxShadow: '0 8px 40px rgba(196,162,101,0.10), 0 2px 12px rgba(0,0,0,0.06)',
+                        }}
+                    >
+                        {image && (
+                            <img
+                                src={image}
+                                alt={name}
+                                className="w-full h-full object-cover object-top scale-[1.03] group-hover:scale-100 transition-transform duration-[1.4s] ease-out"
+                                loading="lazy"
+                                decoding="async"
+                                width="360"
+                                height="480"
+                            />
+                        )}
+                        {/* Деликатный градиент внизу фото */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
+                    </div>
+                    {/* Имя поверх фото (мобайл) */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5 lg:hidden" style={{ zIndex: 2 }}>
+                        <span className="text-white/60 text-[9px] uppercase tracking-[0.3em] block mb-1">{role}</span>
+                        <h3 className="text-white text-xl font-serif">{name}</h3>
+                    </div>
+                </div>
+            </div>
+
+            {/* ── Текстовый контент ── */}
+            <div className={`lg:col-span-7 ${reverse ? 'lg:order-1' : 'lg:order-2'} flex flex-col justify-center`}>
+                {/* Имя (десктоп) */}
+                <div className="hidden lg:block mb-8">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-accent block mb-3">{role}</span>
+                    <h3 className="text-4xl xl:text-5xl font-serif text-primary tracking-tight leading-[1.1]">{name}</h3>
+                </div>
+
+                {/* Цитата */}
+                <blockquote className="relative pl-6 border-l-2 border-accent/40 mb-8">
+                    <p className="text-lg md:text-xl font-serif italic text-primary/80 leading-relaxed">
+                        &laquo;{quote}&raquo;
+                    </p>
+                </blockquote>
+
+                {/* Краткая биография */}
+                <p className="text-sm text-secondary leading-[1.8] mb-4">
+                    {bio}
+                </p>
+
+                {/* Кнопка «Читать полностью» */}
+                {fullBio && (
+                    <button
+                        onClick={handleToggle}
+                        className="group/btn inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-accent hover:text-primary transition-colors duration-300 mb-6 cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 active:scale-[0.97]"
+                    >
+                        <span>{expanded ? 'Свернуть' : 'Читать полностью'}</span>
+                        <svg
+                            className={`w-3.5 h-3.5 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                )}
+
+                {/* Полная биография (раскрывающийся блок) */}
+                {fullBio && (
+                    <div
+                        ref={fullBioRef}
+                        className="overflow-hidden mb-6"
+                        style={{ height: 0, opacity: 0 }}
+                    >
+                        <div className="border-l-2 border-accent/15 pl-6 py-2 space-y-4">
+                            {fullBio.split('\n\n').map((paragraph, i) => (
+                                <p key={i} className="text-sm text-secondary/90 leading-[1.8]">
+                                    {paragraph}
+                                </p>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Экспертиза */}
+                <div className="border-t border-primary/10 pt-6">
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-accent block mb-3">Экспертиза</span>
+                    <p className="text-xs text-secondary/80 tracking-wide leading-relaxed">
+                        {expertise}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const About = () => {
     const containerRef = useRef(null);
@@ -11,11 +158,13 @@ const About = () => {
 
     useEffect(() => {
         let ctx = gsap.context(() => {
+            // Основные reveal-анимации
             gsap.fromTo('.reveal',
                 { opacity: 0, y: 40 },
                 { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out', delay: 0.2 }
             );
 
+            // Параллакс на изображениях
             gsap.utils.toArray('.parallax-media').forEach((media) => {
                 gsap.to(media, {
                     yPercent: 15,
@@ -28,6 +177,39 @@ const About = () => {
                     }
                 });
             });
+
+            // Анимация карточек основателей по скроллу
+            gsap.utils.toArray('.founder-card').forEach((card) => {
+                gsap.fromTo(card,
+                    { opacity: 0, y: 60 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1.2,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 85%',
+                            end: 'top 40%',
+                            toggleActions: 'play none none none',
+                        }
+                    }
+                );
+            });
+
+            // Анимация золотой линии-разделителя
+            gsap.fromTo('.founders-divider',
+                { scaleX: 0 },
+                {
+                    scaleX: 1,
+                    duration: 1.5,
+                    ease: 'power3.inOut',
+                    scrollTrigger: {
+                        trigger: '.founders-divider',
+                        start: 'top 90%',
+                    }
+                }
+            );
         }, containerRef);
         return () => ctx.revert();
     }, []);
@@ -43,10 +225,67 @@ const About = () => {
                     { name: 'О нас' },
                 ]}
             />
+
+            {/* ═══════════════════════════════════════════════════════
+                СЕКЦИЯ: ОСНОВАТЕЛИ — поверх всего контента
+            ═══════════════════════════════════════════════════════ */}
+            <div className="max-w-[1600px] mx-auto content-layer mb-32 md:mb-40">
+
+                {/* Заголовок секции */}
+                <div className="text-center mb-20 md:mb-28 reveal">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6 block">
+                        {ab.foundersLabel}
+                    </span>
+                    <h2 className="text-5xl md:text-7xl xl:text-8xl font-serif font-thin text-primary tracking-tightest leading-[0.95] mb-6">
+                        {(ab.foundersTitle || '').split('\n').map((line, i) => (
+                            <React.Fragment key={i}>
+                                {i > 0 && <br />}
+                                {line}
+                            </React.Fragment>
+                        ))}
+                    </h2>
+                    <p className="text-lg md:text-xl font-serif text-secondary max-w-lg mx-auto leading-relaxed">
+                        {ab.foundersSubtitle}
+                    </p>
+                </div>
+
+                {/* Основатель 1 — Вероника (первая) */}
+                <FounderCard
+                    name={ab.founder1Name}
+                    role={ab.founder1Role}
+                    image={ab.founder1Image}
+                    quote={ab.founder1Quote}
+                    bio={ab.founder1Bio}
+                    fullBio={ab.founder1FullBio}
+                    expertise={ab.founder1Expertise}
+                    reverse={false}
+                />
+
+                {/* Золотой разделитель */}
+                <div className="my-20 md:my-28 flex justify-center">
+                    <div className="founders-divider h-px w-32 bg-gradient-to-r from-transparent via-accent/60 to-transparent origin-center" />
+                </div>
+
+                {/* Основатель 2 — Эдвард (второй) */}
+                <FounderCard
+                    name={ab.founder2Name}
+                    role={ab.founder2Role}
+                    image={ab.founder2Image}
+                    quote={ab.founder2Quote}
+                    bio={ab.founder2Bio}
+                    fullBio={ab.founder2FullBio}
+                    expertise={ab.founder2Expertise}
+                    reverse={true}
+                />
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════
+                СЕКЦИЯ: О КОМПАНИИ (оригинальный контент)
+            ═══════════════════════════════════════════════════════ */}
             <div className="max-w-[1600px] mx-auto content-layer mb-32">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
 
-                    {/* Left Typography Column */}
+                    {/* Левая типографская колонка */}
                     <div className="lg:col-span-5 lg:sticky lg:top-40 h-fit reveal">
                         <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6 block">{ab.title}</span>
                         <h1 className="text-6xl md:text-8xl font-serif font-thin mb-8 text-primary tracking-tightest leading-[0.9]">
@@ -57,9 +296,9 @@ const About = () => {
                         </p>
                     </div>
 
-                    {/* Right Staggered Content Column */}
+                    {/* Правая колонка со ступенчатым контентом */}
                     <div className="lg:col-span-7 space-y-32 mb-20">
-                        {/* Section 1 */}
+                        {/* Раздел 1 — Философия */}
                         <div className="reveal">
                             <div className="aspect-[4/3] bg-surface overflow-hidden relative mb-8 rounded-2xl shadow-elevated transition-shadow duration-500 hover:shadow-hover-glow cursor-crosshair">
                                 <img src={ab.image1} className="w-full h-full object-cover parallax-media scale-110" alt="Ателье Lumera Home Atelier — мастерская дизайнерской мебели" loading="lazy" decoding="async" width="800" height="600" />
@@ -71,7 +310,7 @@ const About = () => {
                             </p>
                         </div>
 
-                        {/* Section 2 */}
+                        {/* Раздел 2 — Подход */}
                         <div className="reveal ml-0 md:ml-20">
                             <h2 className="text-3xl font-serif mb-4 text-primary">Подход</h2>
                             <p className="text-sm text-secondary leading-relaxed max-w-xl">
@@ -79,7 +318,7 @@ const About = () => {
                             </p>
                         </div>
 
-                        {/* Stats Section */}
+                        {/* Статистика */}
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-8 border-t border-primary/10 pt-16 reveal">
                             <div>
                                 <span className="block text-4xl md:text-5xl font-serif text-primary mb-2">{ab.stats1Value}</span>
