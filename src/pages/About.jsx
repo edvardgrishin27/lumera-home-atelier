@@ -31,11 +31,11 @@ const FounderCard = ({ name, role, image, quote, bio, fullBio, expertise, revers
     }, [expanded]);
 
     return (
-        <div className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-center founder-card`}>
+        <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-20 items-center founder-card`}>
 
             {/* ── Компактный портрет с декоративным обрамлением ── */}
             <div className={`lg:col-span-5 ${reverse ? 'lg:order-2' : 'lg:order-1'} flex justify-center`}>
-                <div className="relative group w-[280px] md:w-[320px] xl:w-[360px]">
+                <div className="relative group w-[200px] md:w-[320px] xl:w-[360px]">
                     {/* Декоративная золотая рамка — офсет за фото */}
                     <div
                         className={`absolute inset-0 rounded-[2rem] border border-accent/30 transition-transform duration-700 ease-out group-hover:translate-x-0 group-hover:translate-y-0 ${
@@ -226,14 +226,14 @@ const About = () => {
             {/* ═══════════════════════════════════════════════════════
                 СЕКЦИЯ: ОСНОВАТЕЛИ — поверх всего контента
             ═══════════════════════════════════════════════════════ */}
-            <div className="max-w-[1600px] mx-auto content-layer mb-32 md:mb-40">
+            <div className="max-w-[1600px] mx-auto content-layer mb-12 md:mb-40">
 
                 {/* Заголовок секции */}
-                <div className="text-center mb-20 md:mb-28 reveal">
+                <div className="text-center mb-8 md:mb-28 reveal">
                     <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6 block">
                         {ab.foundersLabel}
                     </span>
-                    <h2 className="text-5xl md:text-7xl xl:text-8xl font-serif font-thin text-primary tracking-tightest leading-[0.95] mb-6">
+                    <h2 className="text-3xl md:text-7xl xl:text-8xl font-serif font-thin text-primary tracking-tightest leading-[0.95] mb-4 md:mb-6">
                         {(ab.foundersTitle || '').split('\n').map((line, i) => (
                             <React.Fragment key={i}>
                                 {i > 0 && <br />}
@@ -241,7 +241,7 @@ const About = () => {
                             </React.Fragment>
                         ))}
                     </h2>
-                    <p className="text-lg md:text-xl font-serif text-secondary max-w-lg mx-auto leading-relaxed">
+                    <p className="text-base md:text-xl font-serif text-secondary max-w-lg mx-auto leading-relaxed">
                         {ab.foundersSubtitle}
                     </p>
                 </div>
@@ -259,7 +259,7 @@ const About = () => {
                 />
 
                 {/* Золотой разделитель */}
-                <div className="my-20 md:my-28 flex justify-center">
+                <div className="my-8 md:my-28 flex justify-center">
                     <div className="founders-divider h-px w-32 bg-gradient-to-r from-transparent via-accent/60 to-transparent origin-center" />
                 </div>
 
@@ -279,25 +279,25 @@ const About = () => {
             {/* ═══════════════════════════════════════════════════════
                 СЕКЦИЯ: О КОМПАНИИ (оригинальный контент)
             ═══════════════════════════════════════════════════════ */}
-            <div className="max-w-[1600px] mx-auto content-layer mb-32">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+            <div className="max-w-[1600px] mx-auto content-layer mb-12 md:mb-32">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-20">
 
                     {/* Левая типографская колонка */}
                     <div className="lg:col-span-5 lg:sticky lg:top-40 h-fit reveal">
-                        <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6 block">{ab.title}</span>
-                        <h1 className="text-6xl md:text-8xl font-serif font-thin mb-8 text-primary tracking-tightest leading-[0.9]">
+                        <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4 md:mb-6 block">{ab.title}</span>
+                        <h1 className="text-4xl md:text-8xl font-serif font-thin mb-5 md:mb-8 text-primary tracking-tightest leading-[0.9]">
                             Искусство<br />жить
                         </h1>
-                        <p className="text-xl md:text-2xl font-serif max-w-md text-primary/80 leading-relaxed mb-12">
+                        <p className="text-lg md:text-2xl font-serif max-w-md text-primary/80 leading-relaxed mb-6 md:mb-12">
                             {ab.subtitle}
                         </p>
                     </div>
 
                     {/* Правая колонка со ступенчатым контентом */}
-                    <div className="lg:col-span-7 space-y-32 mb-20">
+                    <div className="lg:col-span-7 space-y-12 md:space-y-32 mb-8 md:mb-20">
                         {/* Раздел 1 — Философия */}
                         <div className="reveal">
-                            <div className="aspect-[4/3] bg-surface overflow-hidden relative mb-8 rounded-2xl shadow-elevated transition-shadow duration-500 hover:shadow-hover-glow cursor-crosshair">
+                            <div className="aspect-[4/3] bg-surface overflow-hidden relative mb-4 md:mb-8 rounded-2xl shadow-elevated transition-shadow duration-500 hover:shadow-hover-glow cursor-crosshair">
                                 <img src={ab.image1} className="w-full h-full object-cover parallax-media scale-110" alt="Ателье Lumera Home Atelier — мастерская дизайнерской мебели" loading="lazy" decoding="async" width="800" height="600" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                             </div>
@@ -316,7 +316,7 @@ const About = () => {
                         </div>
 
                         {/* Статистика */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 border-t border-primary/10 pt-16 reveal">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 border-t border-primary/10 pt-8 md:pt-16 reveal">
                             <div>
                                 <span className="block text-4xl md:text-5xl font-serif text-primary mb-2">{ab.stats1Value}</span>
                                 <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">{ab.stats1Label}</span>

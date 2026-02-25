@@ -118,7 +118,7 @@ const Lightbox = ({ images, activeIndex, onClose, onPrev, onNext, productName })
 
             {/* Image — smooth scale + fade entrance */}
             <div
-                className={`relative z-[101] w-full h-full flex items-center justify-center p-16 md:p-24 transition-all duration-500 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
+                className={`relative z-[101] w-full h-full flex items-center justify-center p-3 md:p-16 transition-all duration-500 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
                 style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
@@ -355,7 +355,7 @@ const ProductDetail = () => {
                     {/* Left: Gallery — more compact */}
                     <div className="lg:col-span-7 reveal relative">
                         <div
-                            className="aspect-[4/3] bg-surface mb-3 overflow-hidden relative group cursor-zoom-in rounded-none md:rounded-2xl shadow-none md:shadow-elevated"
+                            className="aspect-[4/3] bg-surface mb-3 overflow-hidden relative group cursor-zoom-in rounded-2xl shadow-elevated mx-3 md:mx-0"
                             onClick={() => openLightbox(activeImage)}
                         >
                             {isVideo(gallery[activeImage]) ? (

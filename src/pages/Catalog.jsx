@@ -609,24 +609,26 @@ const Catalog = () => {
                         )}
                     </div>
 
-                    {/* Категории — горизонтальные пиллы */}
-                    <div className="flex flex-wrap justify-start md:justify-center gap-2 md:gap-4 catalog-reveal">
-                        {categories.map(cat => (
-                            <button
-                                key={cat}
-                                onClick={() => setCategory(cat)}
-                                className={`text-[10px] md:text-[11px] uppercase tracking-[0.12em] md:tracking-[0.15em] px-3.5 md:px-5 py-2 md:py-2.5 rounded-full border transition-colors duration-300 ease-out cursor-pointer focus-visible:outline-2 focus-visible:outline-accent ${
-                                    category === cat
-                                        ? 'text-white bg-accent border-accent shadow-elevated'
-                                        : 'text-primary/60 border-primary/12 hover:border-accent/40 hover:text-accent hover:bg-accent/5'
-                                }`}
-                            >
-                                {CATEGORY_MAP[cat]}
-                                <span className={`ml-1.5 text-[10px] ${category === cat ? 'text-white/70' : 'text-secondary/50'}`}>
-                                    {categoryCounts[cat]}
-                                </span>
-                            </button>
-                        ))}
+                    {/* Категории — горизонтальный скролл на мобайле, по центру на десктопе */}
+                    <div className="overflow-x-auto md:overflow-visible -mx-4 md:mx-0 px-4 md:px-0 scrollbar-hide catalog-reveal">
+                        <div className="flex md:flex-wrap md:justify-center gap-2 md:gap-4 w-max md:w-auto">
+                            {categories.map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setCategory(cat)}
+                                    className={`text-[11px] md:text-[11px] tracking-[0.05em] md:tracking-[0.15em] px-4 md:px-5 py-2 md:py-2.5 rounded-full border transition-colors duration-300 ease-out cursor-pointer focus-visible:outline-2 focus-visible:outline-accent whitespace-nowrap ${
+                                        category === cat
+                                            ? 'text-white bg-accent border-accent shadow-[0_2px_8px_rgba(196,162,101,0.3)]'
+                                            : 'text-primary/70 bg-surface border-primary/8 hover:border-accent/40 hover:text-accent'
+                                    }`}
+                                >
+                                    {CATEGORY_MAP[cat]}
+                                    <span className={`ml-1 text-[10px] ${category === cat ? 'text-white/70' : 'text-secondary/40'}`}>
+                                        {categoryCounts[cat]}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </header>
 
@@ -753,85 +755,101 @@ const Catalog = () => {
                         </div>
                     </aside>
 
-                    {/* ── Мобильный сайдбар (оверлей) ── */}
+                    {/* ── Мобильный фильтр — модальное окно (bottom sheet) ── */}
                     <>
                         {/* Backdrop */}
                         <div
-                            className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity duration-400 ease-out ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                            className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-[55] lg:hidden transition-opacity duration-300 ease-out ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                             onClick={closeSidebar}
                         />
-                        {/* Панель */}
-                        <div className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-background z-50 lg:hidden overflow-y-auto shadow-floating p-6 pt-8 transition-transform duration-400 ease-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                                <div className="flex items-center justify-between mb-8">
-                                    <h3 className="text-[10px] uppercase tracking-[0.3em] text-accent">Фильтры</h3>
+                        {/* Bottom Sheet Modal */}
+                        <div className={`fixed bottom-0 left-0 right-0 z-[56] lg:hidden bg-background rounded-t-3xl shadow-floating overflow-hidden transition-transform duration-400 ease-out ${sidebarOpen ? 'translate-y-0' : 'translate-y-full'}`}
+                            style={{ maxHeight: '85vh', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+                        >
+                                {/* Handle bar */}
+                                <div className="flex justify-center pt-3 pb-1">
+                                    <div className="w-10 h-1 rounded-full bg-primary/15" />
+                                </div>
+
+                                {/* Header */}
+                                <div className="flex items-center justify-between px-5 pb-3 border-b border-primary/8">
+                                    <h3 className="text-sm font-sans font-medium text-primary tracking-wide">Фильтры</h3>
                                     <button
                                         onClick={closeSidebar}
-                                        className="p-2 hover:bg-primary/5 rounded-lg transition-colors duration-200 cursor-pointer"
+                                        className="w-8 h-8 flex items-center justify-center rounded-full bg-primary/5 text-primary hover:bg-primary/10 transition-colors duration-200 cursor-pointer"
+                                        aria-label="Закрыть фильтры"
                                     >
-                                        <CloseIcon />
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
                                     </button>
                                 </div>
 
-                                {/* Тип мебели */}
-                                <FilterSection title="Тип мебели" defaultOpen={true}>
-                                    <div className="space-y-0.5">
-                                        {categories.filter(c => c !== 'All').map(cat => (
-                                            <FilterCheckbox
-                                                key={cat}
-                                                label={CATEGORY_MAP[cat]}
-                                                checked={category === cat}
-                                                onChange={() => setCategory(category === cat ? 'All' : cat)}
-                                                count={categoryCounts[cat]}
-                                            />
-                                        ))}
-                                    </div>
-                                </FilterSection>
-
-                                {/* Материал */}
-                                {allMaterials.length > 0 && (
-                                    <FilterSection title="Материал" defaultOpen={true}>
+                                {/* Scrollable content */}
+                                <div className="overflow-y-auto px-5 pt-4" style={{ maxHeight: 'calc(85vh - 140px)' }}>
+                                    {/* Тип мебели */}
+                                    <FilterSection title="Тип мебели" defaultOpen={true}>
                                         <div className="space-y-0.5">
-                                            {allMaterials.map(mat => (
+                                            {categories.filter(c => c !== 'All').map(cat => (
                                                 <FilterCheckbox
-                                                    key={mat}
-                                                    label={mat}
-                                                    checked={selectedMaterials.includes(mat)}
-                                                    onChange={() => toggleMaterial(mat)}
+                                                    key={cat}
+                                                    label={CATEGORY_MAP[cat]}
+                                                    checked={category === cat}
+                                                    onChange={() => setCategory(category === cat ? 'All' : cat)}
+                                                    count={categoryCounts[cat]}
                                                 />
                                             ))}
                                         </div>
                                     </FilterSection>
-                                )}
 
-                                {/* Цвет */}
-                                {allColors.length > 0 && (
-                                    <FilterSection title="Цвет" defaultOpen={true}>
-                                        <div className="flex flex-wrap gap-3.5 p-1.5">
-                                            {allColors.map(c => (
-                                                <ColorSwatch
-                                                    key={c.hex}
-                                                    hex={c.hex}
-                                                    name={c.name}
-                                                    selected={selectedColors.includes(c.hex)}
-                                                    onClick={() => toggleColor(c.hex)}
-                                                />
-                                            ))}
-                                        </div>
-                                    </FilterSection>
-                                )}
+                                    {/* Материал */}
+                                    {allMaterials.length > 0 && (
+                                        <FilterSection title="Материал" defaultOpen={true}>
+                                            <div className="space-y-0.5">
+                                                {allMaterials.map(mat => (
+                                                    <FilterCheckbox
+                                                        key={mat}
+                                                        label={mat}
+                                                        checked={selectedMaterials.includes(mat)}
+                                                        onChange={() => toggleMaterial(mat)}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </FilterSection>
+                                    )}
 
-                                {/* Кнопки */}
-                                <div className="mt-8 space-y-3">
+                                    {/* Цвет */}
+                                    {allColors.length > 0 && (
+                                        <FilterSection title="Цвет" defaultOpen={true}>
+                                            <div className="flex flex-wrap gap-3.5 p-1.5">
+                                                {allColors.map(c => (
+                                                    <ColorSwatch
+                                                        key={c.hex}
+                                                        hex={c.hex}
+                                                        name={c.name}
+                                                        selected={selectedColors.includes(c.hex)}
+                                                        onClick={() => toggleColor(c.hex)}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </FilterSection>
+                                    )}
+                                    {/* Spacer for bottom buttons */}
+                                    <div className="h-4" />
+                                </div>
+
+                                {/* Fixed bottom buttons */}
+                                <div className="px-5 py-4 border-t border-primary/8 bg-background space-y-2.5">
                                     <button
                                         onClick={closeSidebar}
-                                        className="w-full py-3 bg-accent text-white text-[11px] uppercase tracking-[0.15em] rounded-xl hover:bg-accent/90 transition-colors duration-300 cursor-pointer"
+                                        className="w-full py-3.5 bg-accent text-white text-[11px] uppercase tracking-[0.15em] rounded-2xl hover:bg-accent/90 transition-colors duration-300 cursor-pointer shadow-lg"
                                     >
                                         Показать {filteredProducts.length} {pluralProducts(filteredProducts.length)}
                                     </button>
                                     {activeFilters.length > 0 && (
                                         <button
                                             onClick={() => { clearAllFilters(); closeSidebar(); }}
-                                            className="w-full py-3 text-[11px] uppercase tracking-[0.15em] text-secondary hover:text-accent border border-primary/8 rounded-xl hover:border-accent/30 transition-colors duration-300 cursor-pointer"
+                                            className="w-full py-3 text-[11px] uppercase tracking-[0.15em] text-secondary hover:text-accent transition-colors duration-300 cursor-pointer"
                                         >
                                             Сбросить все фильтры
                                         </button>
