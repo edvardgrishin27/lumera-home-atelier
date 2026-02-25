@@ -253,7 +253,7 @@ const Home = () => {
 
             {/* Philosophy Quote — uses dangerouslySetInnerHTML for accent styling.
                 Content source: trusted defaultContent in ContentContext.jsx, not user input. */}
-            <section className="py-40 px-6 md:px-20 text-center bg-background relative z-10 content-layer">
+            <section className="py-20 md:py-28 px-6 md:px-20 text-center bg-background relative z-10 content-layer">
                 <p
                     className="font-serif text-3xl md:text-5xl leading-relaxed max-w-4xl mx-auto text-primary whitespace-pre-line"
                     dangerouslySetInnerHTML={{ __html: quoteHtml }} // eslint-disable-line react/no-danger
@@ -264,7 +264,7 @@ const Home = () => {
                 TESTIMONIALS SECTION — Dark surface, 3 review cards
             ═══════════════════════════════════════════════════════════════ */}
             {reviews.length > 0 && (
-                <section className="relative z-10 py-28 md:py-36 bg-[#0e0e0e] overflow-hidden">
+                <section className="relative z-10 py-16 md:py-24 bg-[#0e0e0e] overflow-hidden">
                     {/* Subtle grain texture overlay */}
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
                         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
@@ -334,7 +334,7 @@ const Home = () => {
                 WHY CHOOSE US SECTION — Dark continuation, 4-column grid
             ═══════════════════════════════════════════════════════════════ */}
             {whyItems.length > 0 && (
-                <section className="relative z-10 py-28 md:py-36 bg-[#0e0e0e] overflow-hidden border-t border-white/[0.04]">
+                <section className="relative z-10 py-16 md:py-24 bg-[#0e0e0e] overflow-hidden border-t border-white/[0.04]">
                     {/* Subtle grain texture overlay */}
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
                         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,

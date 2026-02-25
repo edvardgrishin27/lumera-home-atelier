@@ -41,6 +41,7 @@ const ROUTES = [
     '/contact',
     '/request',
     '/delivery',
+    '/reviews',
 ];
 
 async function prerender() {
