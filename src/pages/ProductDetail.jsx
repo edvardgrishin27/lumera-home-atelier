@@ -513,7 +513,7 @@ const ProductDetail = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 px-4 md:px-8">
 
                     {product.video && (
-                        <div className="md:col-span-2 aspect-video overflow-hidden rounded-2xl relative reveal group">
+                        <div className="md:col-span-2 aspect-video overflow-hidden rounded-2xl isolate relative reveal group" style={{ transform: 'translateZ(0)' }}>
                             <video
                                 className="w-full h-full object-cover parallax-media scale-110"
                                 autoPlay
@@ -530,7 +530,7 @@ const ProductDetail = () => {
                         </div>
                     )}
 
-                    <div className="aspect-[3/4] overflow-hidden rounded-2xl reveal">
+                    <div className="aspect-[3/4] overflow-hidden rounded-2xl isolate reveal" style={{ transform: 'translateZ(0)' }}>
                         <img src={gallery[1] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt={`${product.name} — вид сбоку`} loading="lazy" decoding="async" width="800" height="1067" />
                     </div>
 
@@ -539,7 +539,7 @@ const ProductDetail = () => {
                         <p className="opacity-50 text-sm max-w-xs">Каждый шов, каждый изгиб выверен с точностью до миллиметра.</p>
                     </div>
 
-                    <div className="aspect-square md:aspect-[4/3] overflow-hidden rounded-2xl md:col-span-2 reveal">
+                    <div className="aspect-square md:aspect-[4/3] overflow-hidden rounded-2xl isolate md:col-span-2 reveal" style={{ transform: 'translateZ(0)' }}>
                         <img src={gallery[2] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt={`${product.name} — детали и текстура`} loading="lazy" decoding="async" width="1200" height="900" />
                     </div>
 
