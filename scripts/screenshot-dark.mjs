@@ -36,7 +36,7 @@ async function takeScreenshot() {
   const page = await browser.newPage();
   await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 2 });
 
-  await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
+  await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
   await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)));
 
   // Enable dark mode

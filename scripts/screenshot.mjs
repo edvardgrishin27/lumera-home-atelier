@@ -63,7 +63,7 @@ async function takeScreenshot() {
   }
 
   // Navigate and wait for all animations/images to load
-  await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
+  await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
 
   // Wait extra for GSAP animations and lazy-loaded images
   await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)));

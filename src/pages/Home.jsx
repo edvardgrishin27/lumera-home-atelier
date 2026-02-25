@@ -207,19 +207,21 @@ const Home = () => {
                                         {home.heroTitle1} <span className="italic text-accent">{home.heroTitle2}</span> {home.heroTitle3}
                                     </span>
                                 </h1>
-                                <div className="hero-desc flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+                                <div className="hero-desc flex flex-col gap-5">
                                     <p className="text-white/70 text-sm md:text-base font-sans leading-relaxed max-w-md">
                                         {home.heroDescription}
                                     </p>
-                                    <Link
-                                        to="/catalog"
-                                        className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-7 py-3.5 rounded-full text-xs md:text-sm font-sans uppercase tracking-[0.15em] transition-all duration-300 ease-spring hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-black shadow-[0_8px_30px_rgba(196,162,101,0.35)] whitespace-nowrap shrink-0"
-                                    >
-                                        Смотреть каталог
-                                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                                            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                        </svg>
-                                    </Link>
+                                    <div>
+                                        <Link
+                                            to="/catalog"
+                                            className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-7 py-3.5 rounded-full text-xs md:text-sm font-sans uppercase tracking-[0.15em] transition-all duration-300 ease-spring hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-black shadow-[0_8px_30px_rgba(196,162,101,0.35)] whitespace-nowrap shrink-0"
+                                        >
+                                            Смотреть каталог
+                                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                                                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
 
