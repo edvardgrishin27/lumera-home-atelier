@@ -90,11 +90,7 @@ const Contact = () => {
                             {cPage.title}
                         </h1>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 mb-10 md:mb-20 reveal">
-                            <div className="space-y-4">
-                                <h3 className="text-[10px] uppercase tracking-[0.2em] text-secondary">{s.footerAddressLabel}</h3>
-                                <p className="font-serif text-xl text-primary leading-relaxed whitespace-pre-line">{s.footerAddress}</p>
-                            </div>
+                        <div className="mb-10 md:mb-20 reveal">
                             <div className="space-y-4">
                                 <h3 className="text-[10px] uppercase tracking-[0.2em] text-secondary">{cPage.connectLabel}</h3>
                                 <p className="font-serif text-xl text-primary mb-1 block hover:text-accent transition-colors cursor-pointer">{s.phone}</p>
