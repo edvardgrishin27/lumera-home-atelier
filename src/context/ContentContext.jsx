@@ -194,7 +194,7 @@ const defaultContent = {
 
 const CACHE_KEY = 'lumera_content';
 const CACHE_VERSION_KEY = 'lumera_content_v';
-const CACHE_VERSION = 9; // bump to invalidate stale localStorage cache
+const CACHE_VERSION = 10; // bump to invalidate stale localStorage cache
 
 const ContentContext = createContext();
 
