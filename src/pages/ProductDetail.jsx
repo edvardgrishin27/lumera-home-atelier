@@ -171,7 +171,7 @@ const StickyProductBar = ({ product, visible, onOrder }) => (
         {/* Top accent separator */}
         <div className="h-px w-full bg-accent/30" />
         <div className="bg-surface/95 backdrop-blur-md border-b border-primary/10 shadow-[0_4px_20px_rgba(0,0,0,0.08)] dark:bg-[rgba(38,38,38,0.98)] dark:border-[rgba(255,255,255,0.08)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.6)]">
-            <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-3.5 flex items-center justify-between gap-4">
+            <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between gap-4">
                 {/* Left: product image + name + price */}
                 <div className="flex items-center gap-4 min-w-0">
                     <img

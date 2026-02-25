@@ -204,20 +204,19 @@ const ColorSwatch = ({ hex, name, selected, onClick }) => (
     <button
         onClick={onClick}
         title={name}
-        className={`group relative w-7 h-7 rounded-full transition-transform duration-300 ease-out cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 ${
-            selected ? 'ring-2 ring-accent ring-offset-2 ring-offset-background scale-110' : 'hover:scale-110'
-        }`}
-        style={{ backgroundColor: hex }}
+        className="group relative w-10 h-10 rounded-full cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+        style={{
+            backgroundColor: hex,
+            boxShadow: selected
+                ? `0 0 0 2.5px rgb(var(--color-background)), 0 0 0 4.5px rgb(var(--color-accent))`
+                : 'none',
+            transition: 'box-shadow 0.3s ease-out, transform 0.3s ease-out',
+        }}
+        onMouseEnter={(e) => { if (!selected) e.currentTarget.style.transform = 'scale(1.08)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
     >
-        {selected && (
-            <div className="absolute inset-0 flex items-center justify-center">
-                <svg className={`w-3 h-3 ${isLightColor(hex) ? 'text-primary' : 'text-white'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-        )}
         {/* Тултип */}
-        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface text-primary text-[10px] px-2 py-1 rounded-md shadow-elevated opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+        <span className="absolute -top-9 left-1/2 -translate-x-1/2 bg-surface text-primary text-[10px] px-2 py-1 rounded-md shadow-elevated opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-10">
             {name}
         </span>
     </button>
@@ -726,7 +725,7 @@ const Catalog = () => {
                             {/* Фильтр: Цвет */}
                             {allColors.length > 0 && (
                                 <FilterSection title="Цвет" defaultOpen={true}>
-                                    <div className="flex flex-wrap gap-2.5">
+                                    <div className="flex flex-wrap gap-3.5 py-1">
                                         {allColors.map(c => (
                                             <ColorSwatch
                                                 key={c.hex}
@@ -805,7 +804,7 @@ const Catalog = () => {
                                 {/* Цвет */}
                                 {allColors.length > 0 && (
                                     <FilterSection title="Цвет" defaultOpen={true}>
-                                        <div className="flex flex-wrap gap-2.5">
+                                        <div className="flex flex-wrap gap-3.5 py-1">
                                             {allColors.map(c => (
                                                 <ColorSwatch
                                                     key={c.hex}
