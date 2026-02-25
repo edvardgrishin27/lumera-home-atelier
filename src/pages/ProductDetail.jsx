@@ -168,10 +168,8 @@ const StickyProductBar = ({ product, visible, onOrder }) => (
         className={`fixed left-0 w-full z-[45] transition-all duration-500 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
         style={{ top: '68px' }}
     >
-        {/* Top accent separator */}
-        <div className="h-px w-full bg-accent/30" />
-        <div className="bg-surface/95 backdrop-blur-md border-b border-primary/10 shadow-[0_4px_20px_rgba(0,0,0,0.08)] dark:bg-[rgba(38,38,38,0.98)] dark:border-[rgba(255,255,255,0.08)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.6)]">
-            <div className="max-w-[1600px] mx-auto px-6 md:px-12 pt-3 pb-3 flex items-center justify-between gap-4">
+        <div className="bg-surface/95 backdrop-blur-md border-t border-t-accent/30 border-b border-primary/10 shadow-[0_4px_20px_rgba(0,0,0,0.08)] dark:bg-[rgba(38,38,38,0.98)] dark:border-b-[rgba(255,255,255,0.08)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.6)]">
+            <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-3 flex items-center justify-between gap-4">
                 {/* Left: product image + name + price */}
                 <div className="flex items-center gap-4 min-w-0">
                     <img
