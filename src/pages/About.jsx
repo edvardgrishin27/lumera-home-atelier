@@ -315,22 +315,26 @@ const About = () => {
                             </p>
                         </div>
 
-                        {/* Статистика */}
-                        <div className="grid grid-cols-3 gap-4 md:gap-8 border-t border-primary/10 pt-6 md:pt-16 reveal">
-                            <div>
-                                <span className="block text-2xl md:text-5xl font-serif text-primary mb-1">{ab.stats1Value}</span>
-                                <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats1Label}</span>
-                            </div>
-                            <div>
-                                <span className="block text-2xl md:text-5xl font-serif text-primary mb-1">{ab.stats2Value}</span>
-                                <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats2Label}</span>
-                            </div>
-                            <div>
-                                <span className="block text-2xl md:text-5xl font-serif text-primary mb-1">{ab.stats3Value}</span>
-                                <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats3Label}</span>
-                            </div>
-                        </div>
+                    </div>
+                </div>
+            </div>
 
+            {/* Статистика — полноширинная полоска */}
+            <div className="border-t border-primary/10 reveal">
+                <div className="max-w-[1600px] mx-auto flex items-center justify-center md:justify-start gap-8 md:gap-20 py-6 md:py-10">
+                    <div className="text-center md:text-left">
+                        <span className="block text-2xl md:text-4xl font-serif text-primary mb-1">{ab.stats1Value}</span>
+                        <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats1Label}</span>
+                    </div>
+                    <div className="w-px h-10 bg-primary/10 hidden md:block"></div>
+                    <div className="text-center md:text-left">
+                        <span className="block text-2xl md:text-4xl font-serif text-primary mb-1">{ab.stats2Value}</span>
+                        <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats2Label}</span>
+                    </div>
+                    <div className="w-px h-10 bg-primary/10 hidden md:block"></div>
+                    <div className="text-center md:text-left">
+                        <span className="block text-2xl md:text-4xl font-serif text-primary mb-1">{ab.stats3Value}</span>
+                        <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats3Label}</span>
                     </div>
                 </div>
             </div>
