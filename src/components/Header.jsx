@@ -34,6 +34,7 @@ const Header = () => {
     const subTextRef = useRef(null);
     const navRef = useRef(null);
     const mobileLogoRef = useRef(null);
+    const mobileSubRef = useRef(null);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [dynamicTitle, setDynamicTitle] = useState('');
@@ -112,7 +113,7 @@ const Header = () => {
         return () => ctx.revert();
     }, []);
 
-    // Mobile logo scroll animation (home page only)
+    // Mobile logo scroll animation (home page only) — shrink logo + fade subtext
     useEffect(() => {
         if (!isHome || !mobileLogoRef.current) return;
         const trigger = ScrollTrigger.create({
@@ -120,8 +121,12 @@ const Header = () => {
             end: 80,
             onUpdate: (self) => {
                 const p = self.progress;
-                const scale = 1 - (p * 0.3);
+                const scale = 1 - (p * 0.25);
                 gsap.set(mobileLogoRef.current, { scale, transformOrigin: 'center center' });
+                if (mobileSubRef.current) {
+                    const subOpacity = 1 - (p * 2.5);
+                    gsap.set(mobileSubRef.current, { opacity: Math.max(0, subOpacity), height: Math.max(0, (1 - p) * 14) });
+                }
             }
         });
         return () => trigger.kill();
@@ -194,7 +199,7 @@ const Header = () => {
             {/* ═══ MOBILE HEADER — Native app style ═══ */}
             <header className="fixed top-0 left-0 w-full z-50 md:hidden bg-background/95 backdrop-blur-xl border-b border-primary/5">
                 <div className="flex items-center justify-between h-12 px-4">
-                    {/* Left slot: Back button or Logo */}
+                    {/* Left slot: Back button or spacer */}
                     <div className="w-10 flex items-center justify-start">
                         {showMobileBackButton ? (
                             <button
@@ -211,11 +216,12 @@ const Header = () => {
                         )}
                     </div>
 
-                    {/* Center: Page title or Logo */}
+                    {/* Center: Full logo on home, page title elsewhere */}
                     <div className="flex-1 flex items-center justify-center min-w-0">
                         {isHome ? (
-                            <Link to="/" onClick={(e) => handleNavClick(e, '/')} className="text-center">
-                                <span ref={mobileLogoRef} className="text-lg font-serif font-light tracking-tight text-primary inline-block">LUMERA</span>
+                            <Link to="/" onClick={(e) => handleNavClick(e, '/')} className="text-center flex flex-col items-center">
+                                <span ref={mobileLogoRef} className="text-lg font-serif font-light tracking-tight text-primary inline-block leading-none">LUMERA</span>
+                                <span ref={mobileSubRef} className="text-[7px] font-sans tracking-[0.35em] uppercase opacity-50 text-primary overflow-hidden leading-none mt-0.5">Home Atelier</span>
                             </Link>
                         ) : (
                             <span className="text-sm font-sans font-medium text-primary truncate tracking-wide">
