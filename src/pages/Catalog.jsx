@@ -241,7 +241,7 @@ const SortDropdown = ({ value, onChange }) => {
         if (!dropdownRef.current) return;
         if (open) {
             gsap.fromTo(dropdownRef.current,
-                { opacity: 0, y: -8, scale: 0.97 },
+                { opacity: 0, y: 8, scale: 0.97 },
                 { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: 'power2.out' }
             );
         }
@@ -259,7 +259,7 @@ const SortDropdown = ({ value, onChange }) => {
             {open && (
                 <div
                     ref={dropdownRef}
-                    className="absolute top-full right-0 mt-2 bg-surface border border-primary/8 rounded-xl shadow-floating overflow-hidden z-30 min-w-[200px]"
+                    className="absolute bottom-full right-0 mb-2 bg-surface border border-primary/8 rounded-xl shadow-floating overflow-hidden z-30 min-w-[200px]"
                 >
                     {SORT_OPTIONS.map(opt => (
                         <button
