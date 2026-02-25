@@ -291,10 +291,13 @@ const Home = () => {
                                 />
 
                                 {/* Gradient overlay — always visible at bottom for text */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none z-[1]" />
+
+                                {/* Hover cinematic overlay — darkens on hover, sits between gradient and text */}
+                                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-[2]" />
 
                                 {/* Text overlay at bottom — like reference */}
-                                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5">
+                                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 z-[3]">
                                     <h3 className="text-sm md:text-base font-serif text-white leading-snug mb-1">{product.name}</h3>
                                     <p className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/50 mb-2 font-sans">{product.category}</p>
                                     <span className="text-lg md:text-xl font-serif text-white font-light">{product.price.toLocaleString()} ₽</span>
@@ -326,7 +329,7 @@ const Home = () => {
                                 to="/reviews"
                                 className="flex items-center gap-4 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-full p-2 pr-4 transition-opacity duration-300 hover:opacity-100 opacity-70 shrink-0"
                             >
-                                <span className="text-[10px] uppercase tracking-[0.25em] text-white/50 group-hover:text-white/80 transition-colors duration-300">
+                                <span className="text-xs uppercase tracking-[0.2em] text-white/50 group-hover:text-white/80 transition-colors duration-300">
                                     {home.reviewsLink || 'Все отзывы'}
                                 </span>
                                 <div className="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center group-hover:bg-accent group-hover:text-white group-hover:border-accent transition-colors duration-300 ease-spring text-white/60">
