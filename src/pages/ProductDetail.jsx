@@ -420,14 +420,22 @@ const ProductDetail = () => {
                                             {colors[selectedColor]?.name}
                                         </span>
                                     </div>
-                                    <div className="flex gap-4">
+                                    <div className="flex gap-4 p-1.5">
                                         {colors.map((color, i) => (
                                             <button
                                                 key={i}
                                                 onClick={() => setSelectedColor(i)}
                                                 aria-label={`Выбрать цвет ${color.name}`}
-                                                className={`w-10 h-10 rounded-full transition-all duration-500 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent ${selectedColor === i ? 'ring-2 ring-offset-4 ring-primary scale-110 shadow-md' : 'hover:scale-110 opacity-70 hover:opacity-100 hover:shadow-sm'}`}
-                                                style={{ backgroundColor: color.hex }}
+                                                className="w-10 h-10 rounded-full cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+                                                style={{
+                                                    backgroundColor: color.hex,
+                                                    boxShadow: selectedColor === i
+                                                        ? `0 0 0 2.5px rgb(var(--color-background)), 0 0 0 4.5px rgb(var(--color-accent))`
+                                                        : 'none',
+                                                    transition: 'box-shadow 0.3s ease-out, transform 0.3s ease-out',
+                                                }}
+                                                onMouseEnter={(e) => { if (selectedColor !== i) e.currentTarget.style.transform = 'scale(1.08)'; }}
+                                                onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
                                                 title={color.name}
                                             />
                                         ))}
@@ -505,7 +513,7 @@ const ProductDetail = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 px-4 md:px-8">
 
                     {product.video && (
-                        <div className="md:col-span-2 aspect-video overflow-hidden relative reveal group">
+                        <div className="md:col-span-2 aspect-video overflow-hidden rounded-2xl relative reveal group">
                             <video
                                 className="w-full h-full object-cover parallax-media scale-110"
                                 autoPlay
@@ -522,16 +530,16 @@ const ProductDetail = () => {
                         </div>
                     )}
 
-                    <div className="aspect-[3/4] overflow-hidden reveal">
+                    <div className="aspect-[3/4] overflow-hidden rounded-2xl reveal">
                         <img src={gallery[1] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt={`${product.name} — вид сбоку`} loading="lazy" decoding="async" width="800" height="1067" />
                     </div>
 
-                    <div className="aspect-[3/4] bg-background p-12 flex flex-col justify-center items-center text-center reveal">
+                    <div className="aspect-[3/4] bg-background rounded-2xl p-12 flex flex-col justify-center items-center text-center reveal">
                         <h3 className="text-3xl font-serif mb-4 italic">"Детали создают совершенство"</h3>
                         <p className="opacity-50 text-sm max-w-xs">Каждый шов, каждый изгиб выверен с точностью до миллиметра.</p>
                     </div>
 
-                    <div className="aspect-square md:aspect-[4/3] overflow-hidden md:col-span-2 reveal">
+                    <div className="aspect-square md:aspect-[4/3] overflow-hidden rounded-2xl md:col-span-2 reveal">
                         <img src={gallery[2] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt={`${product.name} — детали и текстура`} loading="lazy" decoding="async" width="1200" height="900" />
                     </div>
 
