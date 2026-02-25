@@ -124,6 +124,7 @@ const ListIcon = ({ active }) => (
 ═════════════════════════════════════════════════════════ */
 const FilterSection = ({ title, defaultOpen = true, children }) => {
     const [open, setOpen] = useState(defaultOpen);
+    const [animating, setAnimating] = useState(false);
     const bodyRef = useRef(null);
     const initializedRef = useRef(false);
 
@@ -137,18 +138,19 @@ const FilterSection = ({ title, defaultOpen = true, children }) => {
             }
             return;
         }
+        setAnimating(true);
         if (open) {
             gsap.killTweensOf(bodyRef.current);
             gsap.set(bodyRef.current, { height: 'auto', opacity: 1 });
             const fullHeight = bodyRef.current.scrollHeight;
             gsap.fromTo(bodyRef.current,
                 { height: 0, opacity: 0 },
-                { height: fullHeight, opacity: 1, duration: 0.45, ease: 'power2.out', clearProps: 'height' }
+                { height: fullHeight, opacity: 1, duration: 0.45, ease: 'power2.out', clearProps: 'height', onComplete: () => setAnimating(false) }
             );
         } else {
             gsap.killTweensOf(bodyRef.current);
             gsap.to(bodyRef.current,
-                { height: 0, opacity: 0, duration: 0.35, ease: 'power2.inOut' }
+                { height: 0, opacity: 0, duration: 0.35, ease: 'power2.inOut', onComplete: () => setAnimating(false) }
             );
         }
     }, [open]);
@@ -162,7 +164,7 @@ const FilterSection = ({ title, defaultOpen = true, children }) => {
                 <span className="text-[11px] uppercase tracking-[0.2em] text-primary/80 group-hover:text-accent transition-colors duration-300">{title}</span>
                 <ChevronIcon open={open} />
             </button>
-            <div ref={bodyRef} className="overflow-hidden" style={{ height: defaultOpen ? 'auto' : 0, opacity: defaultOpen ? 1 : 0 }}>
+            <div ref={bodyRef} className={animating || !open ? 'overflow-hidden' : 'overflow-visible'} style={{ height: defaultOpen ? 'auto' : 0, opacity: defaultOpen ? 1 : 0 }}>
                 <div className="pb-5">
                     {children}
                 </div>
