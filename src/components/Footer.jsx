@@ -87,7 +87,7 @@ const Footer = () => {
 
             {/* Bottom Bar */}
             <div className="border-t border-primary/10 pt-8 flex justify-center items-center text-[10px] uppercase tracking-widest text-primary/40">
-                <span>© 2026</span>
+                <span>© 2021–2026</span>
             </div>
 
         </footer>
