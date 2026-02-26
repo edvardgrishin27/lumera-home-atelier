@@ -165,21 +165,29 @@ const Lightbox = ({ images, activeIndex, onClose, onPrev, onNext, productName })
 
 /* ─── Sticky Product Bar (appears BELOW the main header) ─── */
 const StickyProductBar = ({ product, visible, onOrder }) => {
-    const [headerH, setHeaderH] = useState(0);
+    const [topPx, setTopPx] = useState(0);
     useEffect(() => {
         const measure = () => {
             const header = document.querySelector('header');
-            if (header) setHeaderH(header.getBoundingClientRect().height);
+            if (header) {
+                // .bottom = distance from viewport top to header bottom edge
+                // This naturally includes safe-area, transforms, everything
+                setTopPx(header.getBoundingClientRect().bottom);
+            }
         };
         measure();
         window.addEventListener('resize', measure);
-        return () => window.removeEventListener('resize', measure);
+        window.addEventListener('scroll', measure, { passive: true });
+        return () => {
+            window.removeEventListener('resize', measure);
+            window.removeEventListener('scroll', measure);
+        };
     }, []);
 
     return (
     <div
-        className={`fixed left-0 w-full z-[45] transition-all duration-500 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
-        style={{ top: headerH ? `${headerH}px` : '0px' }}
+        className={`fixed left-0 w-full z-[45] transition-opacity duration-500 ease-out ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        style={{ top: `${topPx}px` }}
     >
         {/* Top accent separator */}
         <div className="h-px w-full bg-accent/30" />
