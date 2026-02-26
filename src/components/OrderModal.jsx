@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { submitForm } from '../utils/submitForm';
 
-const OrderModal = ({ isOpen, onClose, product, selectedColor, selectedSize }) => {
+const OrderModal = ({ isOpen, onClose, product }) => {
     const [form, setForm] = useState({ name: '', phone: '' });
     const [contactMethod, setContactMethod] = useState('WhatsApp');
     const [status, setStatus] = useState('idle');
@@ -15,15 +15,10 @@ const OrderModal = ({ isOpen, onClose, product, selectedColor, selectedSize }) =
         if (!form.name.trim() || !form.phone.trim()) return;
         setStatus('sending');
 
-        const colorName = product.colors?.[selectedColor]?.name || '—';
-        const sizeName = product.sizes?.[selectedSize]?.value || product.specs || '—';
         const productUrl = `https://lumerahome.ru/product/${product.slug}`;
 
         const message = [
             `Товар: ${product.name}`,
-            `Цена: ${product.price?.toLocaleString()} ₽`,
-            `Цвет: ${colorName}`,
-            `Габариты: ${sizeName}`,
             `Категория: ${product.category}`,
             `Ссылка: ${productUrl}`,
             `Способ связи: ${contactMethod}`,
@@ -69,10 +64,6 @@ const OrderModal = ({ isOpen, onClose, product, selectedColor, selectedSize }) =
     }, [isOpen, onClose]);
 
     if (!product) return null;
-
-    const colorName = product.colors?.[selectedColor]?.name;
-    const colorHex = product.colors?.[selectedColor]?.hex;
-    const sizeLabel = product.sizes?.[selectedSize]?.label;
 
     return (
         <>
@@ -139,18 +130,7 @@ const OrderModal = ({ isOpen, onClose, product, selectedColor, selectedSize }) =
                                     />
                                     <div className="min-w-0">
                                         <p className="text-sm font-serif text-primary truncate">{product.name}</p>
-                                        <p className="text-lg font-serif text-primary">{product.price?.toLocaleString()} ₽</p>
-                                        <div className="flex items-center gap-3 mt-1">
-                                            {colorName && (
-                                                <span className="flex items-center gap-1.5 text-[10px] text-secondary uppercase tracking-wider">
-                                                    <span className="w-3 h-3 rounded-full border border-primary/10 flex-shrink-0" style={{ backgroundColor: colorHex }} />
-                                                    {colorName}
-                                                </span>
-                                            )}
-                                            {sizeLabel && (
-                                                <span className="text-[10px] text-secondary uppercase tracking-wider">{sizeLabel}</span>
-                                            )}
-                                        </div>
+                                        <p className="text-sm font-serif text-accent">По запросу</p>
                                     </div>
                                 </div>
 

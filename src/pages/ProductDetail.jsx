@@ -203,7 +203,7 @@ const StickyProductBar = ({ product, visible, onOrder }) => {
                     />
                     <div className="min-w-0">
                         <p className="text-sm font-serif text-primary truncate leading-tight">{product.name}</p>
-                        <p className="text-base font-serif text-accent font-medium">{product.price?.toLocaleString()} ₽</p>
+                        <p className="text-base font-serif text-accent font-medium">По запросу</p>
                     </div>
                 </div>
 
@@ -321,8 +321,8 @@ const ProductDetail = () => {
     return (
         <div ref={containerRef} className="bg-background min-h-screen">
             <SEO
-                title={`${product.name} — купить из Китая с доставкой | ${product.price?.toLocaleString()} ₽`}
-                description={`${product.name} — купить в Lumera Home Atelier за ${product.price?.toLocaleString()} ₽. ${product.category === 'Sofas' ? 'Дизайнерский диван' : product.category === 'Armchairs' ? 'Дизайнерское кресло' : product.category === 'Tables' ? 'Дизайнерский стол' : 'Мебель'} из Китая под заказ. Доставка по России от 45 дней.`}
+                title={`${product.name} — купить из Китая с доставкой | Lumera Home Atelier`}
+                description={`${product.name} — купить в Lumera Home Atelier. ${product.category === 'Sofas' ? 'Дизайнерский диван' : product.category === 'Armchairs' ? 'Дизайнерское кресло' : product.category === 'Tables' ? 'Дизайнерский стол' : 'Мебель'} из Китая под заказ. Цена по запросу. Доставка по России от 45 дней.`}
                 image={product.image}
                 url={`/product/${product.slug}`}
                 type="product"
@@ -342,8 +342,6 @@ const ProductDetail = () => {
                     "category": product.category,
                     "offers": {
                         "@type": "Offer",
-                        "price": product.price,
-                        "priceCurrency": "RUB",
                         "availability": "https://schema.org/InStock",
                         "seller": {
                             "@type": "Organization",
@@ -432,56 +430,8 @@ const ProductDetail = () => {
                             <div className="border-b border-primary/10 pb-6 mb-6">
                                 <h1 className="text-4xl md:text-5xl font-serif mb-3 leading-tight tracking-tightest text-primary">{product.name}</h1>
                                 <p className="text-xs uppercase tracking-[0.2em] text-secondary mb-4">{product.category}</p>
-                                <p className="text-2xl font-serif text-accent">{product.price?.toLocaleString()} ₽</p>
+                                <p className="text-2xl font-serif text-accent">По запросу</p>
                             </div>
-
-                            {/* 1. Color Selector — moved up */}
-                            {colors.length > 0 && (
-                                <div className="space-y-3 pb-5 mb-5 border-b border-primary/5">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">Цвет</span>
-                                        <span className="text-sm font-serif text-primary opacity-70">
-                                            {colors[selectedColor]?.name}
-                                        </span>
-                                    </div>
-                                    <div className="flex gap-4">
-                                        {colors.map((color, i) => (
-                                            <button
-                                                key={i}
-                                                onClick={() => setSelectedColor(i)}
-                                                aria-label={`Выбрать цвет ${color.name}`}
-                                                className={`w-10 h-10 rounded-full transition-all duration-500 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent ${selectedColor === i ? 'ring-2 ring-offset-4 ring-primary scale-110 shadow-md' : 'hover:scale-110 opacity-70 hover:opacity-100 hover:shadow-sm'}`}
-                                                style={{ backgroundColor: color.hex }}
-                                                title={color.name}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* 2. Size Selector — right after color */}
-                            {sizes.length > 0 && (
-                                <div className="space-y-3 pb-5 mb-5 border-b border-primary/5">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-[10px] uppercase tracking-[0.2em] text-secondary">Габариты</span>
-                                        <span className="text-xs font-serif text-primary opacity-70">
-                                            {sizes[selectedSize]?.value}
-                                        </span>
-                                    </div>
-                                    <div className="flex gap-2 flex-wrap">
-                                        {sizes.map((size, i) => (
-                                            <button
-                                                key={i}
-                                                onClick={() => setSelectedSize(i)}
-                                                aria-label={`Выбрать размер ${size.label}`}
-                                                className={`px-4 py-2.5 text-[11px] font-sans tracking-wide rounded-full transition-all duration-300 ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent border ${selectedSize === i ? 'bg-accent text-white border-accent shadow-md scale-105' : 'bg-transparent text-primary border-primary/20 hover:border-accent/50 hover:bg-primary/5'}`}
-                                            >
-                                                {size.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
 
                             {/* 3. Characteristics */}
                             {product.details && product.details.length > 0 && (
@@ -603,8 +553,6 @@ const ProductDetail = () => {
                 isOpen={isOrderOpen}
                 onClose={() => setIsOrderOpen(false)}
                 product={product}
-                selectedColor={selectedColor}
-                selectedSize={selectedSize}
             />
         </div>
     );

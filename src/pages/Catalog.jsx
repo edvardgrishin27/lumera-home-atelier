@@ -17,8 +17,6 @@ const buildCategoryMap = (categories) => {
 /* ─── Маппинг сортировок ─── */
 const SORT_OPTIONS = [
     { value: 'popular', label: 'По популярности' },
-    { value: 'price-asc', label: 'Цена: по возрастанию' },
-    { value: 'price-desc', label: 'Цена: по убыванию' },
     { value: 'name-asc', label: 'По алфавиту: А-Я' },
     { value: 'name-desc', label: 'По алфавиту: Я-А' },
 ];
@@ -348,7 +346,7 @@ const ProductCard = ({ product, viewMode, categoryMap = {} }) => {
                     <span className="text-[10px] text-secondary uppercase tracking-widest mb-2">{categoryMap[product.category] || product.category}</span>
                     <h3 className="text-xl md:text-2xl font-serif text-primary group-hover:text-accent transition-colors duration-300 mb-2 truncate">{product.name}</h3>
                     <p className="text-sm text-secondary leading-relaxed mb-3 line-clamp-2 hidden md:block">{product.description}</p>
-                    <span className="text-lg font-serif text-primary/90">{product.price.toLocaleString()} ₽</span>
+                    <span className="text-lg font-serif text-primary/90">По запросу</span>
                 </div>
             </Link>
         );
@@ -374,7 +372,7 @@ const ProductCard = ({ product, viewMode, categoryMap = {} }) => {
             <div className="pt-4 px-2">
                 <div className="flex justify-between items-baseline mb-2">
                     <h3 className="text-2xl font-serif text-primary group-hover:text-accent transition-colors duration-300 ease-spring">{product.name}</h3>
-                    <span className="text-lg font-serif text-primary/90">{product.price.toLocaleString()} ₽</span>
+                    <span className="text-lg font-serif text-primary/90">По запросу</span>
                 </div>
                 <div className="flex flex-col gap-2">
                     <span className="text-[10px] text-secondary uppercase tracking-widest">{categoryMap[product.category] || product.category}</span>
@@ -452,16 +450,6 @@ const Catalog = () => {
             });
         }
 
-        // Цвета
-        if (selectedColors.length > 0) {
-            result = result.filter(p => {
-                if (!p.colors) return false;
-                return selectedColors.some(hex =>
-                    p.colors.some(c => c.hex === hex)
-                );
-            });
-        }
-
         // Сортировка
         switch (sort) {
             case 'price-asc':
@@ -492,10 +480,6 @@ const Catalog = () => {
         selectedMaterials.forEach(mat => {
             tags.push({ type: 'material', value: mat, label: mat });
         });
-        selectedColors.forEach(hex => {
-            const c = allColors.find(c => c.hex === hex);
-            tags.push({ type: 'color', value: hex, label: c?.name || hex });
-        });
         if (search.trim()) {
             tags.push({ type: 'search', value: search, label: `«${search}»` });
         }
@@ -506,7 +490,7 @@ const Catalog = () => {
         switch (filter.type) {
             case 'category': setCategory('All'); break;
             case 'material': setSelectedMaterials(prev => prev.filter(m => m !== filter.value)); break;
-            case 'color': setSelectedColors(prev => prev.filter(c => c !== filter.value)); break;
+            // colors filter removed
             case 'search': setSearch(''); break;
         }
     }, []);
@@ -642,9 +626,9 @@ const Catalog = () => {
                         >
                             <FilterIcon />
                             <span>Фильтры</span>
-                            {(selectedMaterials.length + selectedColors.length) > 0 && (
+                            {selectedMaterials.length > 0 && (
                                 <span className="w-5 h-5 rounded-full bg-accent text-white text-[10px] flex items-center justify-center">
-                                    {selectedMaterials.length + selectedColors.length}
+                                    {selectedMaterials.length}
                                 </span>
                             )}
                         </button>
@@ -726,23 +710,6 @@ const Catalog = () => {
                                 </FilterSection>
                             )}
 
-                            {/* Фильтр: Цвет */}
-                            {allColors.length > 0 && (
-                                <FilterSection title="Цвет" defaultOpen={true}>
-                                    <div className="flex flex-wrap gap-2.5">
-                                        {allColors.map(c => (
-                                            <ColorSwatch
-                                                key={c.hex}
-                                                hex={c.hex}
-                                                name={c.name}
-                                                selected={selectedColors.includes(c.hex)}
-                                                onClick={() => toggleColor(c.hex)}
-                                            />
-                                        ))}
-                                    </div>
-                                </FilterSection>
-                            )}
-
                             {/* Кнопка сброса */}
                             {activeFilters.length > 0 && (
                                 <button
@@ -799,23 +766,6 @@ const Catalog = () => {
                                                     label={mat}
                                                     checked={selectedMaterials.includes(mat)}
                                                     onChange={() => toggleMaterial(mat)}
-                                                />
-                                            ))}
-                                        </div>
-                                    </FilterSection>
-                                )}
-
-                                {/* Цвет */}
-                                {allColors.length > 0 && (
-                                    <FilterSection title="Цвет" defaultOpen={true}>
-                                        <div className="flex flex-wrap gap-2.5">
-                                            {allColors.map(c => (
-                                                <ColorSwatch
-                                                    key={c.hex}
-                                                    hex={c.hex}
-                                                    name={c.name}
-                                                    selected={selectedColors.includes(c.hex)}
-                                                    onClick={() => toggleColor(c.hex)}
                                                 />
                                             ))}
                                         </div>

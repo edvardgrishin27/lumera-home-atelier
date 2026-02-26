@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useContent } from '../../../context/ContentContext';
 import Field from '../components/Field';
 import FileUpload from '../components/FileUpload';
-import ColorsEditor from '../components/ColorsEditor';
-import SizesEditor from '../components/SizesEditor';
 import DetailsEditor from '../components/DetailsEditor';
 import GalleryEditor from '../components/GalleryEditor';
 
@@ -16,15 +14,13 @@ const ProductsTab = () => {
 
     const [newProduct, setNewProduct] = useState({
         name: '', category: categories[0]?.key || 'Sofas', price: 0, image: '', description: '', specs: '', video: '',
-        colors: [], sizes: [], details: {}, gallery: []
+        details: {}, gallery: []
     });
 
     const startEdit = (product) => {
         setEditingId(product.id);
         setEditData({
             ...product,
-            colors: product.colors || [],
-            sizes: product.sizes || [],
             details: product.details || {},
             gallery: product.gallery || []
         });
@@ -55,7 +51,7 @@ const ProductsTab = () => {
         const slug = generateSlug(newProduct.name);
         if (!slug) return;
         addProduct({ ...newProduct, slug, price: parseInt(newProduct.price) || 0 });
-        setNewProduct({ name: '', category: 'Sofas', price: 0, image: '', description: '', specs: '', video: '', colors: [], sizes: [], details: {}, gallery: [] });
+        setNewProduct({ name: '', category: 'Sofas', price: 0, image: '', description: '', specs: '', video: '', details: {}, gallery: [] });
         setShowAdd(false);
     };
 
@@ -94,12 +90,6 @@ const ProductsTab = () => {
 
                         <div className="md:col-span-2 border-t border-blue-200 pt-6 mt-4">
                             <h4 className="font-semibold text-blue-800 mb-4">Детальные характеристики</h4>
-                        </div>
-                        <div className="md:col-span-2">
-                            <ColorsEditor colors={newProduct.colors} onChange={v => setNewProduct({ ...newProduct, colors: v })} />
-                        </div>
-                        <div className="md:col-span-2">
-                            <SizesEditor sizes={newProduct.sizes} onChange={v => setNewProduct({ ...newProduct, sizes: v })} />
                         </div>
                         <div className="md:col-span-2">
                             <DetailsEditor details={newProduct.details} onChange={v => setNewProduct({ ...newProduct, details: v })} />
@@ -145,12 +135,6 @@ const ProductsTab = () => {
 
                                     <div className="md:col-span-2 border-t border-gray-100 pt-6 mt-4">
                                         <h4 className="font-semibold text-gray-800 mb-4">Детальные характеристики</h4>
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <ColorsEditor colors={editData.colors} onChange={v => setEditData({ ...editData, colors: v })} />
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <SizesEditor sizes={editData.sizes} onChange={v => setEditData({ ...editData, sizes: v })} />
                                     </div>
                                     <div className="md:col-span-2">
                                         <DetailsEditor details={editData.details} onChange={v => setEditData({ ...editData, details: v })} />
