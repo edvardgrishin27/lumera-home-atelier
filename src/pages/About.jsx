@@ -140,7 +140,7 @@ const FounderCard = ({ name, role, image, quote, bio, fullBio, expertise, revers
                 )}
 
                 {/* Экспертиза */}
-                <div className="border-t border-primary/10 pt-6">
+                <div className="pt-6">
                     <span className="text-[10px] uppercase tracking-[0.2em] text-accent block mb-3">Экспертиза</span>
                     <p className="text-xs text-secondary/80 tracking-wide leading-relaxed">
                         {expertise}
@@ -302,7 +302,7 @@ const About = () => {
             {/* ═══════════════════════════════════════════════════════
                 СЕКЦИЯ: НАШИ ОСНОВАТЕЛИ В СМИ — бесконечная карусель
             ═══════════════════════════════════════════════════════ */}
-            <div className="py-10 md:py-20 border-y border-primary/10 reveal">
+            <div className="py-10 md:py-20 reveal">
                 <style>{`
                     @keyframes media-marquee {
                         from { transform: translateX(0); }
@@ -335,26 +335,48 @@ const About = () => {
                         WebkitMaskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
                     }}
                 >
-                    <div className="media-marquee-track flex items-center w-max">
+                    <div className="media-marquee-track flex items-center w-max gap-2 md:gap-3">
                         {[...MEDIA_ITEMS, ...MEDIA_ITEMS].map((item, i) => (
-                            <React.Fragment key={i}>
-                                <a
-                                    href={item.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group shrink-0 px-5 md:px-8 py-2
-                                               focus-visible:outline-2 focus-visible:outline-accent
-                                               focus-visible:outline-offset-4"
-                                    style={{ transition: 'transform 0.2s ease' }}
+                            <a
+                                key={i}
+                                href={item.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group shrink-0 inline-flex items-center gap-1.5 md:gap-2
+                                           px-4 md:px-6 py-1.5 md:py-2.5 mx-1 md:mx-1.5
+                                           rounded-full border border-primary/20
+                                           hover:border-accent/70 hover:bg-accent/8
+                                           focus-visible:outline-2 focus-visible:outline-accent
+                                           focus-visible:outline-offset-4
+                                           active:scale-95 cursor-pointer"
+                                style={{
+                                    transition: 'border-color 0.3s ease, background-color 0.3s ease, transform 0.15s ease',
+                                }}
+                            >
+                                <span className="text-sm md:text-xl font-serif font-thin text-primary/60
+                                                 group-hover:text-accent whitespace-nowrap tracking-wide
+                                                 transition-colors duration-300">
+                                    {item.brand}
+                                </span>
+                                {/* Иконка внешней ссылки — появляется при hover */}
+                                <svg
+                                    className="w-2.5 h-2.5 md:w-3 md:h-3 shrink-0 opacity-0 group-hover:opacity-100"
+                                    style={{
+                                        color: 'var(--color-accent, #c4a265)',
+                                        transition: 'opacity 0.3s ease, transform 0.3s ease',
+                                        transform: 'translate(0, 0)',
+                                    }}
+                                    onMouseEnter={e => { e.currentTarget.style.transform = 'translate(1px, -1px)'; }}
+                                    onMouseLeave={e => { e.currentTarget.style.transform = 'translate(0, 0)'; }}
+                                    fill="none"
+                                    viewBox="0 0 12 12"
+                                    stroke="currentColor"
+                                    strokeWidth="1.8"
+                                    aria-hidden="true"
                                 >
-                                    <span className="text-base md:text-2xl font-serif font-thin text-primary/30
-                                                     group-hover:text-accent whitespace-nowrap tracking-wide
-                                                     transition-colors duration-300">
-                                        {item.brand}
-                                    </span>
-                                </a>
-                                <span className="text-accent/20 text-[6px] shrink-0 select-none" aria-hidden="true">&#9670;</span>
-                            </React.Fragment>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M2 10L10 2M10 2H5M10 2v5" />
+                                </svg>
+                            </a>
                         ))}
                     </div>
                 </div>
