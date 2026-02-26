@@ -284,7 +284,7 @@ async function adminRateLimit(c, next) {
 }
 
 // ─── Validation helpers ───
-const VALID_SECTION_KEYS = ['home', 'about', 'b2b', 'blog', 'contactPage', 'settings'];
+const VALID_SECTION_KEYS = ['home', 'about', 'b2b', 'blog', 'contactPage', 'settings', 'catalog', 'workflow', 'returns', 'guarantee'];
 
 function validateProduct(data) {
     const errors = [];

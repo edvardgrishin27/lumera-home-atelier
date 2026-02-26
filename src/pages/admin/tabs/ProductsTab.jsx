@@ -35,9 +35,26 @@ const ProductsTab = () => {
         setEditingId(null);
     };
 
+    const generateSlug = (name) => {
+        const translitMap = {
+            'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'yo','ж':'zh','з':'z','и':'i','й':'j',
+            'к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f',
+            'х':'kh','ц':'ts','ч':'ch','ш':'sh','щ':'shch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya',
+        };
+        return name.toLowerCase()
+            .split('')
+            .map(ch => translitMap[ch] !== undefined ? translitMap[ch] : ch)
+            .join('')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '')
+            .substring(0, 80);
+    };
+
     const handleAdd = () => {
         if (!newProduct.name) return;
-        addProduct({ ...newProduct, price: parseInt(newProduct.price) || 0 });
+        const slug = generateSlug(newProduct.name);
+        if (!slug) return;
+        addProduct({ ...newProduct, slug, price: parseInt(newProduct.price) || 0 });
         setNewProduct({ name: '', category: 'Sofas', price: 0, image: '', description: '', specs: '', video: '', colors: [], sizes: [], details: {}, gallery: [] });
         setShowAdd(false);
     };

@@ -19,10 +19,7 @@ const FileUpload = ({ label, value, onChange, folder = 'pages' }) => {
             onChange(url);
         } catch (err) {
             console.error('Upload failed:', err);
-            setError('S3 недоступен, сохранено локально');
-            const reader = new FileReader();
-            reader.onloadend = () => onChange(reader.result);
-            reader.readAsDataURL(file);
+            setError('Ошибка загрузки на S3. Проверьте авторизацию и попробуйте снова.');
         } finally {
             setUploading(false);
         }

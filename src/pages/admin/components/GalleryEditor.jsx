@@ -17,13 +17,7 @@ const GalleryEditor = ({ images = [], onChange, folder = 'products' }) => {
             onChange([...images, ...urls]);
         } catch (err) {
             console.error('Gallery upload failed:', err);
-            const promises = files.map(file => new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.readAsDataURL(file);
-            }));
-            const fallbackUrls = await Promise.all(promises);
-            onChange([...images, ...fallbackUrls]);
+            alert('Ошибка загрузки на S3. Проверьте авторизацию и попробуйте снова.');
         } finally {
             setUploading(false);
         }
