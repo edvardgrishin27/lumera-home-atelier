@@ -166,8 +166,7 @@ const Lightbox = ({ images, activeIndex, onClose, onPrev, onNext, productName })
 /* ─── Sticky Product Bar (appears BELOW the main header) ─── */
 const StickyProductBar = ({ product, visible, onOrder }) => (
     <div
-        className={`fixed left-0 w-full z-[45] transition-all duration-500 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
-        style={{ top: '68px' }}
+        className={`fixed left-0 w-full z-[45] transition-all duration-500 ease-out top-[83px] md:top-[96px] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
     >
         {/* Top accent separator */}
         <div className="h-px w-full bg-accent/30" />
