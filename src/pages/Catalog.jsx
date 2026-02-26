@@ -21,44 +21,6 @@ const SORT_OPTIONS = [
     { value: 'name-desc', label: 'По алфавиту: Я-А' },
 ];
 
-/* ─── Capitalize first letter ─── */
-const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-
-/* ─── Метки details, которые являются материалами ─── */
-const MATERIAL_LABELS = ['Материал каркаса', 'Обивка', 'Наполнитель', 'Материал'];
-
-/* ─── Нормализация details: объект {} → пустой массив, массив → как есть ─── */
-const normalizeDetails = (details) => Array.isArray(details) ? details : [];
-
-/* ─── Извлечение уникальных материалов из details товаров ─── */
-const extractMaterials = (products) => {
-    const mats = new Set();
-    products.forEach(p => {
-        const details = normalizeDetails(p.details);
-        if (details.length > 0) {
-            details
-                .filter(d => MATERIAL_LABELS.some(l => d.label.includes(l)))
-                .forEach(d => {
-                    // Разбиваем значение — но аккуратно: не ломаем скобки
-                    // «Массив дуба, фанера» → [«Массив дуба», «фанера»]
-                    // «Итальянский бархат (Martindale > 50,000)» → целиком
-                    const raw = d.value;
-                    // Если есть скобки — убираем техническую часть в скобках
-                    const stripped = raw.replace(/\s*\([^)]*\)/g, '').trim();
-                    if (stripped.includes(',')) {
-                        stripped.split(',').forEach(v => {
-                            const clean = v.trim();
-                            if (clean.length > 0) mats.add(capitalize(clean));
-                        });
-                    } else if (stripped.length > 0) {
-                        mats.add(capitalize(stripped));
-                    }
-                });
-        }
-    });
-    return Array.from(mats).sort();
-};
-
 /* ─── Склонение «товар/товара/товаров» ─── */
 const pluralProducts = (count) => {
     const mod10 = count % 10;
@@ -89,136 +51,6 @@ const ChevronIcon = ({ open }) => (
     </svg>
 );
 
-const FilterIcon = () => (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-    </svg>
-);
-
-const GridIcon = ({ active }) => (
-    <svg className={`w-4 h-4 ${active ? 'text-accent' : 'text-secondary'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-    </svg>
-);
-
-const ListIcon = ({ active }) => (
-    <svg className={`w-4 h-4 ${active ? 'text-accent' : 'text-secondary'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
-    </svg>
-);
-
-/* ═════════════════════════════════════════════════════════
-   Компонент: Боковой фильтр — раскрывающаяся секция
-═════════════════════════════════════════════════════════ */
-const FilterSection = ({ title, defaultOpen = true, children }) => {
-    const [open, setOpen] = useState(defaultOpen);
-    const bodyRef = useRef(null);
-    const initializedRef = useRef(false);
-
-    useEffect(() => {
-        if (!bodyRef.current) return;
-        // Skip animation on first mount — just set the correct state
-        if (!initializedRef.current) {
-            initializedRef.current = true;
-            if (!defaultOpen) {
-                gsap.set(bodyRef.current, { height: 0, opacity: 0 });
-            }
-            return;
-        }
-        if (open) {
-            gsap.killTweensOf(bodyRef.current);
-            gsap.set(bodyRef.current, { height: 'auto', opacity: 1 });
-            const fullHeight = bodyRef.current.scrollHeight;
-            gsap.fromTo(bodyRef.current,
-                { height: 0, opacity: 0 },
-                { height: fullHeight, opacity: 1, duration: 0.45, ease: 'power2.out', clearProps: 'height' }
-            );
-        } else {
-            gsap.killTweensOf(bodyRef.current);
-            gsap.to(bodyRef.current,
-                { height: 0, opacity: 0, duration: 0.35, ease: 'power2.inOut' }
-            );
-        }
-    }, [open]);
-
-    return (
-        <div className="border-b border-primary/8">
-            <button
-                onClick={() => setOpen(!open)}
-                className="w-full flex items-center justify-between py-4 text-left group cursor-pointer focus-visible:outline-2 focus-visible:outline-accent"
-            >
-                <span className="text-[11px] uppercase tracking-[0.2em] text-primary/80 group-hover:text-accent transition-colors duration-300">{title}</span>
-                <ChevronIcon open={open} />
-            </button>
-            <div ref={bodyRef} className="overflow-hidden" style={{ height: defaultOpen ? 'auto' : 0, opacity: defaultOpen ? 1 : 0 }}>
-                <div className="pb-5">
-                    {children}
-                </div>
-            </div>
-        </div>
-    );
-};
-
-/* ═════════════════════════════════════════════════════════
-   Компонент: Чекбокс фильтра
-═════════════════════════════════════════════════════════ */
-const FilterCheckbox = ({ label, checked, onChange, count }) => (
-    <label className="flex items-center gap-3 py-1.5 group cursor-pointer select-none">
-        <div className={`w-4 h-4 rounded border transition-colors duration-200 flex items-center justify-center ${
-            checked
-                ? 'bg-accent border-accent'
-                : 'border-primary/20 group-hover:border-accent/50'
-        }`}>
-            {checked && (
-                <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-            )}
-        </div>
-        <span className={`text-xs transition-colors duration-200 ${checked ? 'text-primary' : 'text-secondary group-hover:text-primary/80'}`}>
-            {label}
-        </span>
-        {count !== undefined && (
-            <span className="text-[10px] text-secondary/60 ml-auto">{count}</span>
-        )}
-        <input type="checkbox" checked={checked} onChange={onChange} className="sr-only" />
-    </label>
-);
-
-/* ═════════════════════════════════════════════════════════
-   Компонент: Цветовой фильтр (кружок)
-═════════════════════════════════════════════════════════ */
-const ColorSwatch = ({ hex, name, selected, onClick }) => (
-    <button
-        onClick={onClick}
-        title={name}
-        className={`group relative w-7 h-7 rounded-full transition-transform duration-300 ease-out cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 ${
-            selected ? 'ring-2 ring-accent ring-offset-2 ring-offset-background scale-110' : 'hover:scale-110'
-        }`}
-        style={{ backgroundColor: hex }}
-    >
-        {selected && (
-            <div className="absolute inset-0 flex items-center justify-center">
-                <svg className={`w-3 h-3 ${isLightColor(hex) ? 'text-primary' : 'text-white'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-        )}
-        {/* Тултип */}
-        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface text-primary text-[10px] px-2 py-1 rounded-md shadow-elevated opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
-            {name}
-        </span>
-    </button>
-);
-
-/* Определить светлый цвет */
-const isLightColor = (hex) => {
-    const c = hex.replace('#', '');
-    const r = parseInt(c.substring(0, 2), 16);
-    const g = parseInt(c.substring(2, 4), 16);
-    const b = parseInt(c.substring(4, 6), 16);
-    return (r * 299 + g * 587 + b * 114) / 1000 > 155;
-};
 
 /* ═════════════════════════════════════════════════════════
    Компонент: Выпадающий список сортировки
@@ -391,13 +223,9 @@ const Catalog = () => {
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('All');
     const [sort, setSort] = useState('popular');
-    const [selectedMaterials, setSelectedMaterials] = useState([]);
-    const [viewMode, setViewMode] = useState('grid');
-    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     // ── Извлечение данных для фильтров ──
     const categories = useMemo(() => Object.keys(CATEGORY_MAP), [CATEGORY_MAP]);
-    const allMaterials = useMemo(() => extractMaterials(products), [products]);
 
     // ── Подсчёт товаров по категориям ──
     const categoryCounts = useMemo(() => {
@@ -427,25 +255,8 @@ const Catalog = () => {
             result = result.filter(p => p.category === category);
         }
 
-        // Материалы
-        if (selectedMaterials.length > 0) {
-            result = result.filter(p => {
-                const details = normalizeDetails(p.details);
-                if (details.length === 0) return false;
-                return selectedMaterials.some(mat =>
-                    details.some(d => d.value.includes(mat))
-                );
-            });
-        }
-
         // Сортировка
         switch (sort) {
-            case 'price-asc':
-                result.sort((a, b) => a.price - b.price);
-                break;
-            case 'price-desc':
-                result.sort((a, b) => b.price - a.price);
-                break;
             case 'name-asc':
                 result.sort((a, b) => a.name.localeCompare(b.name));
                 break;
@@ -457,7 +268,7 @@ const Catalog = () => {
         }
 
         return result;
-    }, [products, search, category, selectedMaterials, sort]);
+    }, [products, search, category, sort]);
 
     // ── Активные теги фильтров ──
     const activeFilters = useMemo(() => {
@@ -465,20 +276,15 @@ const Catalog = () => {
         if (category !== 'All') {
             tags.push({ type: 'category', value: category, label: CATEGORY_MAP[category] || category });
         }
-        selectedMaterials.forEach(mat => {
-            tags.push({ type: 'material', value: mat, label: mat });
-        });
         if (search.trim()) {
             tags.push({ type: 'search', value: search, label: `«${search}»` });
         }
         return tags;
-    }, [category, selectedMaterials, search]);
+    }, [category, search]);
 
     const removeFilter = useCallback((filter) => {
         switch (filter.type) {
             case 'category': setCategory('All'); break;
-            case 'material': setSelectedMaterials(prev => prev.filter(m => m !== filter.value)); break;
-            // colors filter removed
             case 'search': setSearch(''); break;
         }
     }, []);
@@ -486,21 +292,6 @@ const Catalog = () => {
     const clearAllFilters = useCallback(() => {
         setSearch('');
         setCategory('All');
-        setSelectedMaterials([]);
-        setSelectedColors([]);
-    }, []);
-
-    // ── Тоглы материалов и цветов ──
-    const toggleMaterial = useCallback((mat) => {
-        setSelectedMaterials(prev =>
-            prev.includes(mat) ? prev.filter(m => m !== mat) : [...prev, mat]
-        );
-    }, []);
-
-    const toggleColor = useCallback((hex) => {
-        setSelectedColors(prev =>
-            prev.includes(hex) ? prev.filter(c => c !== hex) : [...prev, hex]
-        );
     }, []);
 
     // ── GSAP: анимация появления карточек (smooth premium feel) ──
@@ -513,7 +304,7 @@ const Catalog = () => {
             );
         }, containerRef);
         return () => ctx.revert();
-    }, [filteredProducts, viewMode]);
+    }, [filteredProducts]);
 
     // ── GSAP: анимация reveal при загрузке ──
     useEffect(() => {
@@ -525,9 +316,6 @@ const Catalog = () => {
         }, containerRef);
         return () => ctx.revert();
     }, []);
-
-    // ── Закрытие мобильного сайдбара ──
-    const closeSidebar = useCallback(() => setSidebarOpen(false), []);
 
     return (
         <div ref={containerRef} className="pt-32 pb-20 px-6 md:px-12 min-h-screen bg-background">
@@ -604,52 +392,16 @@ const Catalog = () => {
                     </div>
                 </header>
 
-                {/* ═══ TOOLBAR: Счётчик + Вид + Сортировка + Кнопка фильтров (mobile) ═══ */}
+                {/* ═══ TOOLBAR: Счётчик + Сортировка ═══ */}
                 <div className="flex items-center justify-between mb-8 catalog-reveal">
-                    <div className="flex items-center gap-4">
-                        {/* Мобильная кнопка фильтров */}
-                        <button
-                            onClick={() => setSidebarOpen(true)}
-                            className="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-surface border border-primary/8 rounded-xl text-xs text-primary/70 hover:border-accent/30 transition-colors duration-300 cursor-pointer"
-                        >
-                            <FilterIcon />
-                            <span>Фильтры</span>
-                            {selectedMaterials.length > 0 && (
-                                <span className="w-5 h-5 rounded-full bg-accent text-white text-[10px] flex items-center justify-center">
-                                    {selectedMaterials.length}
-                                </span>
-                            )}
-                        </button>
+                    {/* Счётчик товаров */}
+                    <p className="text-sm text-secondary">
+                        <span className="text-primary font-medium">{filteredProducts.length}</span>{' '}
+                        {pluralProducts(filteredProducts.length)}
+                    </p>
 
-                        {/* Счётчик товаров */}
-                        <p className="text-sm text-secondary">
-                            <span className="text-primary font-medium">{filteredProducts.length}</span>{' '}
-                            {pluralProducts(filteredProducts.length)}
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        {/* Переключатель вида: сетка / список */}
-                        <div className="hidden md:flex items-center gap-1 bg-surface border border-primary/8 rounded-xl p-1">
-                            <button
-                                onClick={() => setViewMode('grid')}
-                                className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer ${viewMode === 'grid' ? 'bg-primary/5' : 'hover:bg-primary/5'}`}
-                                title="Сетка"
-                            >
-                                <GridIcon active={viewMode === 'grid'} />
-                            </button>
-                            <button
-                                onClick={() => setViewMode('list')}
-                                className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer ${viewMode === 'list' ? 'bg-primary/5' : 'hover:bg-primary/5'}`}
-                                title="Список"
-                            >
-                                <ListIcon active={viewMode === 'list'} />
-                            </button>
-                        </div>
-
-                        {/* Сортировка */}
-                        <SortDropdown value={sort} onChange={setSort} />
-                    </div>
+                    {/* Сортировка */}
+                    <SortDropdown value={sort} onChange={setSort} />
                 </div>
 
                 {/* Активные теги фильтров */}
@@ -659,163 +411,31 @@ const Catalog = () => {
                     onClearAll={clearAllFilters}
                 />
 
-                {/* ═══ ОСНОВНОЙ КОНТЕНТ: Сайдбар + Сетка товаров ═══ */}
-                <div className="flex gap-10 lg:gap-14">
-
-                    {/* ── Десктопный сайдбар (скрыт на мобилках) ── */}
-                    <aside className="hidden lg:block w-64 flex-shrink-0 catalog-reveal">
-                        <div className="sticky top-32">
-                            <h3 className="text-[10px] uppercase tracking-[0.3em] text-accent mb-6">Фильтры</h3>
-
-                            {/* Фильтр: Тип мебели */}
-                            <FilterSection title="Тип мебели" defaultOpen={true}>
-                                <div className="space-y-0.5">
-                                    {categories.filter(c => c !== 'All').map(cat => (
-                                        <FilterCheckbox
-                                            key={cat}
-                                            label={CATEGORY_MAP[cat]}
-                                            checked={category === cat}
-                                            onChange={() => setCategory(category === cat ? 'All' : cat)}
-                                            count={categoryCounts[cat]}
-                                        />
-                                    ))}
-                                </div>
-                            </FilterSection>
-
-                            {/* Фильтр: Материал */}
-                            {allMaterials.length > 0 && (
-                                <FilterSection title="Материал" defaultOpen={true}>
-                                    <div className="space-y-0.5">
-                                        {allMaterials.map(mat => (
-                                            <FilterCheckbox
-                                                key={mat}
-                                                label={mat}
-                                                checked={selectedMaterials.includes(mat)}
-                                                onChange={() => toggleMaterial(mat)}
-                                            />
-                                        ))}
-                                    </div>
-                                </FilterSection>
-                            )}
-
-                            {/* Кнопка сброса */}
-                            {activeFilters.length > 0 && (
-                                <button
-                                    onClick={clearAllFilters}
-                                    className="mt-6 w-full py-3 text-[11px] uppercase tracking-[0.15em] text-secondary hover:text-accent border border-primary/8 rounded-xl hover:border-accent/30 transition-colors duration-300 cursor-pointer"
-                                >
-                                    Сбросить все фильтры
-                                </button>
-                            )}
-                        </div>
-                    </aside>
-
-                    {/* ── Мобильный сайдбар (оверлей) ── */}
-                    <>
-                        {/* Backdrop */}
-                        <div
-                            className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity duration-400 ease-out ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-                            onClick={closeSidebar}
-                        />
-                        {/* Панель */}
-                        <div className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-background z-50 lg:hidden overflow-y-auto shadow-floating p-6 pt-8 transition-transform duration-400 ease-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                                <div className="flex items-center justify-between mb-8">
-                                    <h3 className="text-[10px] uppercase tracking-[0.3em] text-accent">Фильтры</h3>
-                                    <button
-                                        onClick={closeSidebar}
-                                        className="p-2 hover:bg-primary/5 rounded-lg transition-colors duration-200 cursor-pointer"
-                                    >
-                                        <CloseIcon />
-                                    </button>
-                                </div>
-
-                                {/* Тип мебели */}
-                                <FilterSection title="Тип мебели" defaultOpen={true}>
-                                    <div className="space-y-0.5">
-                                        {categories.filter(c => c !== 'All').map(cat => (
-                                            <FilterCheckbox
-                                                key={cat}
-                                                label={CATEGORY_MAP[cat]}
-                                                checked={category === cat}
-                                                onChange={() => setCategory(category === cat ? 'All' : cat)}
-                                                count={categoryCounts[cat]}
-                                            />
-                                        ))}
-                                    </div>
-                                </FilterSection>
-
-                                {/* Материал */}
-                                {allMaterials.length > 0 && (
-                                    <FilterSection title="Материал" defaultOpen={true}>
-                                        <div className="space-y-0.5">
-                                            {allMaterials.map(mat => (
-                                                <FilterCheckbox
-                                                    key={mat}
-                                                    label={mat}
-                                                    checked={selectedMaterials.includes(mat)}
-                                                    onChange={() => toggleMaterial(mat)}
-                                                />
-                                            ))}
-                                        </div>
-                                    </FilterSection>
-                                )}
-
-                                {/* Кнопки */}
-                                <div className="mt-8 space-y-3">
-                                    <button
-                                        onClick={closeSidebar}
-                                        className="w-full py-3 bg-accent text-white text-[11px] uppercase tracking-[0.15em] rounded-xl hover:bg-accent/90 transition-colors duration-300 cursor-pointer"
-                                    >
-                                        Показать {filteredProducts.length} {pluralProducts(filteredProducts.length)}
-                                    </button>
-                                    {activeFilters.length > 0 && (
-                                        <button
-                                            onClick={() => { clearAllFilters(); closeSidebar(); }}
-                                            className="w-full py-3 text-[11px] uppercase tracking-[0.15em] text-secondary hover:text-accent border border-primary/8 rounded-xl hover:border-accent/30 transition-colors duration-300 cursor-pointer"
-                                        >
-                                            Сбросить все фильтры
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        </>
-
-                    {/* ── Сетка товаров ── */}
-                    <div className="flex-1 min-w-0">
-                        {viewMode === 'grid' ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-16">
-                                {filteredProducts.map((product) => (
-                                    <ProductCard key={product.id} product={product} viewMode="grid" categoryMap={CATEGORY_MAP} />
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="flex flex-col gap-4">
-                                {filteredProducts.map((product) => (
-                                    <ProductCard key={product.id} product={product} viewMode="list" categoryMap={CATEGORY_MAP} />
-                                ))}
-                            </div>
-                        )}
-
-                        {/* Пустое состояние */}
-                        {filteredProducts.length === 0 && (
-                            <div className="text-center py-24">
-                                <div className="mb-6">
-                                    <svg className="w-16 h-16 mx-auto text-primary/10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="0.5">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                                    </svg>
-                                </div>
-                                <p className="font-serif text-2xl text-primary/40 mb-4">Ничего не найдено</p>
-                                <p className="text-sm text-secondary/60 mb-8">Попробуйте изменить параметры поиска или сбросить фильтры</p>
-                                <button
-                                    onClick={clearAllFilters}
-                                    className="inline-flex items-center gap-2 px-6 py-3 bg-accent/10 text-accent text-[11px] uppercase tracking-[0.15em] rounded-full hover:bg-accent/20 transition-colors duration-200 cursor-pointer"
-                                >
-                                    Сбросить фильтры
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                {/* ═══ СЕТКА ТОВАРОВ (полная ширина) ═══ */}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-16">
+                    {filteredProducts.map((product) => (
+                        <ProductCard key={product.id} product={product} viewMode="grid" categoryMap={CATEGORY_MAP} />
+                    ))}
                 </div>
+
+                {/* Пустое состояние */}
+                {filteredProducts.length === 0 && (
+                    <div className="text-center py-24">
+                        <div className="mb-6">
+                            <svg className="w-16 h-16 mx-auto text-primary/10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="0.5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
+                        </div>
+                        <p className="font-serif text-2xl text-primary/40 mb-4">Ничего не найдено</p>
+                        <p className="text-sm text-secondary/60 mb-8">Попробуйте изменить параметры поиска или сбросить фильтры</p>
+                        <button
+                            onClick={clearAllFilters}
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-accent/10 text-accent text-[11px] uppercase tracking-[0.15em] rounded-full hover:bg-accent/20 transition-colors duration-200 cursor-pointer"
+                        >
+                            Сбросить фильтры
+                        </button>
+                    </div>
+                )}
 
                 {/* ═══ CTA: Не нашли что искали? ═══ */}
                 <section className="mt-16 md:mt-28 mb-4 catalog-reveal">
