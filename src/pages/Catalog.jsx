@@ -14,24 +14,8 @@ const buildCategoryMap = (categories) => {
     return map;
 };
 
-/* ─── Маппинг сортировок ─── */
-const SORT_OPTIONS = [
-    { value: 'popular', label: 'По популярности' },
-    { value: 'name-asc', label: 'По алфавиту: А-Я' },
-    { value: 'name-desc', label: 'По алфавиту: Я-А' },
-];
-
-/* ─── Склонение «товар/товара/товаров» ─── */
-const pluralProducts = (count) => {
-    const mod10 = count % 10;
-    const mod100 = count % 100;
-    if (mod10 === 1 && mod100 !== 11) return 'товар';
-    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'товара';
-    return 'товаров';
-};
-
 /* ═════════════════════════════════════════════════════════
-   SVG-иконки (инлайн для скорости, без внешних зависимостей)
+   SVG-иконки
 ═════════════════════════════════════════════════════════ */
 const SearchIcon = () => (
     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
@@ -44,75 +28,6 @@ const CloseIcon = () => (
         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
     </svg>
 );
-
-const ChevronIcon = ({ open }) => (
-    <svg className={`w-3.5 h-3.5 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-    </svg>
-);
-
-
-/* ═════════════════════════════════════════════════════════
-   Компонент: Выпадающий список сортировки
-═════════════════════════════════════════════════════════ */
-const SortDropdown = ({ value, onChange }) => {
-    const [open, setOpen] = useState(false);
-    const ref = useRef(null);
-    const dropdownRef = useRef(null);
-
-    const currentLabel = SORT_OPTIONS.find(o => o.value === value)?.label || 'По популярности';
-
-    useEffect(() => {
-        const handler = (e) => {
-            if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-        };
-        document.addEventListener('mousedown', handler);
-        return () => document.removeEventListener('mousedown', handler);
-    }, []);
-
-    useEffect(() => {
-        if (!dropdownRef.current) return;
-        if (open) {
-            gsap.killTweensOf(dropdownRef.current);
-            gsap.fromTo(dropdownRef.current,
-                { opacity: 0, y: 6, scale: 0.98 },
-                { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: 'power3.out' }
-            );
-        }
-    }, [open]);
-
-    return (
-        <div ref={ref} className="relative">
-            <button
-                onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-surface rounded-xl border border-primary/8 text-xs text-primary/80 hover:border-accent/30 transition-colors duration-300 cursor-pointer focus-visible:outline-2 focus-visible:outline-accent"
-            >
-                <span>{currentLabel}</span>
-                <ChevronIcon open={open} />
-            </button>
-            {open && (
-                <div
-                    ref={dropdownRef}
-                    className="absolute bottom-full right-0 mb-2 bg-surface border border-primary/8 rounded-xl shadow-floating overflow-hidden z-30 min-w-[200px]"
-                >
-                    {SORT_OPTIONS.map(opt => (
-                        <button
-                            key={opt.value}
-                            onClick={() => { onChange(opt.value); setOpen(false); }}
-                            className={`w-full text-left px-4 py-3 text-xs transition-colors duration-200 cursor-pointer ${
-                                value === opt.value
-                                    ? 'text-accent bg-accent/5'
-                                    : 'text-primary/70 hover:bg-primary/5 hover:text-primary'
-                            }`}
-                        >
-                            {opt.label}
-                        </button>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-};
 
 /* ═════════════════════════════════════════════════════════
    Компонент: Активные теги фильтров (удаляемые)
@@ -144,35 +59,7 @@ const ActiveFilters = ({ filters, onRemove, onClearAll }) => {
 /* ═════════════════════════════════════════════════════════
    Компонент: Карточка товара
 ═════════════════════════════════════════════════════════ */
-const ProductCard = ({ product, viewMode, categoryMap = {} }) => {
-    if (viewMode === 'list') {
-        return (
-            <Link
-                to={`/product/${product.slug}`}
-                className="product-card group flex gap-6 md:gap-10 opacity-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl p-4 hover:bg-surface/50 transition-colors duration-300"
-            >
-                <div className="w-40 md:w-56 flex-shrink-0 aspect-[4/3] overflow-hidden rounded-xl bg-surface shadow-elevated group-hover:shadow-floating transition-shadow duration-500 relative">
-                    <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105"
-                        loading="lazy"
-                        decoding="async"
-                        width="224"
-                        height="168"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                </div>
-                <div className="flex flex-col justify-center min-w-0 flex-1">
-                    <span className="text-[10px] text-secondary uppercase tracking-widest mb-2">{categoryMap[product.category] || product.category}</span>
-                    <h3 className="text-xl md:text-2xl font-serif text-primary group-hover:text-accent transition-colors duration-300 mb-2 truncate">{product.name}</h3>
-                    <p className="text-sm text-secondary leading-relaxed mb-3 line-clamp-2 hidden md:block">{product.description}</p>
-                    <span className="text-lg font-serif text-primary/90">Цена по запросу</span>
-                </div>
-            </Link>
-        );
-    }
-
+const ProductCard = ({ product, categoryMap = {} }) => {
     return (
         <Link
             to={`/product/${product.slug}`}
@@ -222,7 +109,6 @@ const Catalog = () => {
     // ── Состояния фильтров ──
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('All');
-    const [sort, setSort] = useState('popular');
 
     // ── Извлечение данных для фильтров ──
     const categories = useMemo(() => Object.keys(CATEGORY_MAP), [CATEGORY_MAP]);
@@ -255,20 +141,8 @@ const Catalog = () => {
             result = result.filter(p => p.category === category);
         }
 
-        // Сортировка
-        switch (sort) {
-            case 'name-asc':
-                result.sort((a, b) => a.name.localeCompare(b.name));
-                break;
-            case 'name-desc':
-                result.sort((a, b) => b.name.localeCompare(a.name));
-                break;
-            default: // 'popular' — оригинальный порядок
-                break;
-        }
-
         return result;
-    }, [products, search, category, sort]);
+    }, [products, search, category]);
 
     // ── Активные теги фильтров ──
     const activeFilters = useMemo(() => {
@@ -392,18 +266,6 @@ const Catalog = () => {
                     </div>
                 </header>
 
-                {/* ═══ TOOLBAR: Счётчик + Сортировка ═══ */}
-                <div className="flex items-center justify-between mb-8 catalog-reveal">
-                    {/* Счётчик товаров */}
-                    <p className="text-sm text-secondary">
-                        <span className="text-primary font-medium">{filteredProducts.length}</span>{' '}
-                        {pluralProducts(filteredProducts.length)}
-                    </p>
-
-                    {/* Сортировка */}
-                    <SortDropdown value={sort} onChange={setSort} />
-                </div>
-
                 {/* Активные теги фильтров */}
                 <ActiveFilters
                     filters={activeFilters}
@@ -412,9 +274,9 @@ const Catalog = () => {
                 />
 
                 {/* ═══ СЕТКА ТОВАРОВ (полная ширина) ═══ */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16">
                     {filteredProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} viewMode="grid" categoryMap={CATEGORY_MAP} />
+                        <ProductCard key={product.id} product={product} categoryMap={CATEGORY_MAP} />
                     ))}
                 </div>
 
