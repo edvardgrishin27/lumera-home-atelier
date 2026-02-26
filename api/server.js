@@ -48,6 +48,22 @@ function sanitizeFilename(name) {
         .substring(0, 100);
 }
 
+// ─── Slug generation (server-side, canonical) ───
+function generateSlug(name) {
+    const translitMap = {
+        'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'yo','ж':'zh','з':'z','и':'i','й':'j',
+        'к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f',
+        'х':'kh','ц':'ts','ч':'ch','ш':'sh','щ':'shch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya',
+    };
+    return name.toLowerCase()
+        .split('')
+        .map(ch => translitMap[ch] !== undefined ? translitMap[ch] : ch)
+        .join('')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        .substring(0, 80);
+}
+
 // ─── In-memory cache ───
 const cache = {
     content: null,
@@ -617,7 +633,10 @@ app.put('/api/content/:key', authMiddleware, adminRateLimit, async (c) => {
 app.post('/api/products', authMiddleware, adminRateLimit, async (c) => {
     try {
         const body = await c.req.json();
-        const { slug, ...data } = body;
+        const { slug: _clientSlug, ...data } = body;
+
+        // Server always generates slug from name (canonical source of truth)
+        const slug = generateSlug(data.name || '');
 
         const errors = validateProduct({ ...data, slug });
         if (errors.length > 0) {
@@ -693,7 +712,10 @@ app.put('/api/products/:id', authMiddleware, adminRateLimit, async (c) => {
         if (isNaN(id)) return c.json({ error: 'Invalid product ID' }, 400);
 
         const body = await c.req.json();
-        const { slug, ...data } = body;
+        const { slug: _clientSlug, ...data } = body;
+
+        // Server always generates slug from name (canonical source of truth)
+        const slug = generateSlug(data.name || '');
 
         const errors = validateProduct({ ...data, slug });
         if (errors.length > 0) {
@@ -721,7 +743,7 @@ app.put('/api/products/:id', authMiddleware, adminRateLimit, async (c) => {
 
         invalidateCache();
         log.products.info('Updated product', { id, slug });
-        return c.json({ ok: true });
+        return c.json({ ok: true, slug });
     } catch (err) {
         log.products.error('Failed to update product', { error: err.message });
         return c.json({ error: 'Failed to update product' }, 500);

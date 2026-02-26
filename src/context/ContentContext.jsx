@@ -71,7 +71,7 @@ const defaultContent = {
         description1: 'Мы не просто продаем мебель. Мы курируем эстетику вашего пространства. Lumera была основана с идеей объединить вневременной дизайн и безупречное качество.',
         description2: 'Каждый предмет в нашей коллекции проходит строгий отбор. Мы работаем напрямую с фабриками, которые разделяют наши ценности: уважение к материалу, любовь к форме и внимание к деталям.',
         image1: 'https://s3.twcstorage.ru/0a6d6471-klikai-screenshots/lumera/pages/about.jpg',
-        stats1Value: '5+',
+        stats1Value: '12+',
         stats1Label: 'Лет опыта',
         stats2Value: '500+',
         stats2Label: 'Проектов',
@@ -180,12 +180,12 @@ const defaultContent = {
         ],
     },
     settings: {
-        phone: '+7 (985) 835-11-90',
+        phone: '8 (499) 877-16-78',
         email: 'info@lumerahome.ru',
         scheduleMSK: 'Пн-Пт 10:00 - 20:00, Сб-Вс 11:00 - 19:00',
         scheduleSPB: 'Пн-Вс 11:00 - 19:00',
-        whatsapp: 'https://wa.me/79858351190',
-        telegram: 'https://t.me/veromill',
+        whatsapp: 'https://whatsapp.com',
+        telegram: 'https://t.me/lumera',
         footerAddressLabel: 'Флагманский салон',
         footerAddress: 'г. Москва, ул. Примерная, 10',
     },
@@ -194,7 +194,7 @@ const defaultContent = {
 
 const CACHE_KEY = 'lumera_content';
 const CACHE_VERSION_KEY = 'lumera_content_v';
-const CACHE_VERSION = 10; // bump to invalidate stale localStorage cache
+const CACHE_VERSION = 9; // bump to invalidate stale localStorage cache
 
 const ContentContext = createContext();
 
@@ -354,6 +354,18 @@ export const ContentProvider = ({ children }) => {
             const { id, ...data } = merged;
             debouncedSave(`product-${productId}`, () =>
                 api.updateProduct(productId, { slug: merged.slug, ...data })
+                    .then(res => {
+                        // Server is canonical source of slug — update frontend state
+                        if (res?.slug && res.slug !== merged.slug) {
+                            setContent(prev2 => ({
+                                ...prev2,
+                                products: prev2.products.map(p =>
+                                    p.id === productId ? { ...p, slug: res.slug } : p
+                                ),
+                            }));
+                        }
+                        return res;
+                    })
             );
 
             return {
@@ -378,7 +390,7 @@ export const ContentProvider = ({ children }) => {
                 setContent(prev => ({
                     ...prev,
                     products: prev.products.map(p =>
-                        p.id === tempId ? { ...p, id: res.id } : p
+                        p.id === tempId ? { ...p, id: res.id, slug: res.slug || p.slug } : p
                     ),
                 }));
                 toast.success('Товар добавлен');
