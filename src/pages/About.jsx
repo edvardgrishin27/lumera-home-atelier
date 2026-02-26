@@ -151,6 +151,25 @@ const FounderCard = ({ name, role, image, quote, bio, fullBio, expertise, revers
     );
 };
 
+/* ─── Данные карусели «Наши основатели в СМИ» ─── */
+const MEDIA_ITEMS = [
+    { brand: 'Яндекс', url: 'https://pay.yandex.ru/special/retail/edward-grishin' },
+    { brand: 'Коммерсантъ', url: 'https://www.kommersant.ru/doc/7533518' },
+    { brand: 'Т-Банк', url: 'https://vk.com/video-225081464_456239024?to=L3ZpZGVvLTIyNTA4MTQ2NF80NTYyMzkwMjQ/' },
+    { brand: 'Секрет Фирмы', url: 'https://secretmag.ru/survival/professii-budushego-kotorye-tak-i-ne-stali-populyarnymi.htm' },
+    { brand: 'Рамблер', url: 'https://pro.rambler.ru/karernyy-rost/54579383-pyat-navykov-kotorye-ischut-lidery-rynka-chto-vazhno-dlya-sotrudnika-buduschego/' },
+    { brand: 'Т-Бизнес', url: 'https://secrets.tbank.ru/lichnyj-opyt/edvard-grishin-o-servise-kuper/' },
+    { brand: 'VC', url: 'https://vc.ru/marketing/566436-marketologi-v-mobaile-itogi-goda-2022-chast-1' },
+    { brand: 'Коммерсантъ', url: 'https://www.kommersant.ru/doc/7659184' },
+    { brand: 'Digital Report', url: 'https://digital-report.ru/top-40-instrumentov-s-iskusstvennym-intellektom-dlja-raboty-v-2025-godu/' },
+    { brand: 'Т-Банк', url: 'https://www.youtube.com/watch?v=YBlv-dROzJ4' },
+    { brand: '2ГИС', url: 'https://m.youtube.com/watch?si=FUD69VL-xWyapBkP&v=prT9dfYVdyA&feature=youtu.be' },
+    { brand: 'Секрет Фирмы', url: 'https://secretmag.ru/enciklopediya/seller.htm?ysclid=m7pz0cm9wk421148010' },
+    { brand: '24TTL', url: 'https://praktikadays.ru/product/kak-ai-menyaet-e-commmerce-trendy-i-instrumenty-mitap-24ttl' },
+    { brand: 'Т-Бизнес', url: 'https://secrets.tbank.ru/blogi-kompanij/pro-trendy-ecom-2025/?internal_source=copypaste' },
+    { brand: 'ПрактикаDays', url: 'https://www.youtube.com/watch?v=V2o9IgJ6bUE' },
+];
+
 const About = () => {
     const containerRef = useRef(null);
     const { content } = useContent();
@@ -229,7 +248,7 @@ const About = () => {
             {/* ═══════════════════════════════════════════════════════
                 СЕКЦИЯ: ОСНОВАТЕЛИ — поверх всего контента
             ═══════════════════════════════════════════════════════ */}
-            <div className="max-w-[1600px] mx-auto content-layer mb-12 md:mb-40">
+            <div className="max-w-[1600px] mx-auto content-layer mb-0">
 
                 {/* Заголовок секции */}
                 <div className="text-center mb-8 md:mb-28 reveal">
@@ -278,6 +297,67 @@ const About = () => {
                     expertise={ab.founder2Expertise}
                     reverse={true}
                 />
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════
+                СЕКЦИЯ: НАШИ ОСНОВАТЕЛИ В СМИ — бесконечная карусель
+            ═══════════════════════════════════════════════════════ */}
+            <div className="py-10 md:py-20 border-y border-primary/10 reveal">
+                <style>{`
+                    @keyframes media-marquee {
+                        from { transform: translateX(0); }
+                        to { transform: translateX(-50%); }
+                    }
+                    .media-marquee-track {
+                        animation: media-marquee 60s linear infinite;
+                        will-change: transform;
+                    }
+                    .media-marquee-track:hover {
+                        animation-play-state: paused;
+                    }
+                `}</style>
+
+                {/* Заголовок секции */}
+                <div className="text-center mb-8 md:mb-14 px-5">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4 block">
+                        Публикации
+                    </span>
+                    <h2 className="text-2xl md:text-5xl font-serif font-thin text-primary tracking-tight leading-[1]">
+                        Наши основатели в СМИ
+                    </h2>
+                </div>
+
+                {/* Маркиз с затуханием по краям */}
+                <div
+                    className="overflow-hidden"
+                    style={{
+                        maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
+                        WebkitMaskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
+                    }}
+                >
+                    <div className="media-marquee-track flex items-center w-max">
+                        {[...MEDIA_ITEMS, ...MEDIA_ITEMS].map((item, i) => (
+                            <React.Fragment key={i}>
+                                <a
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group shrink-0 px-5 md:px-8 py-2
+                                               focus-visible:outline-2 focus-visible:outline-accent
+                                               focus-visible:outline-offset-4"
+                                    style={{ transition: 'transform 0.2s ease' }}
+                                >
+                                    <span className="text-base md:text-2xl font-serif font-thin text-primary/30
+                                                     group-hover:text-accent whitespace-nowrap tracking-wide
+                                                     transition-colors duration-300">
+                                        {item.brand}
+                                    </span>
+                                </a>
+                                <span className="text-accent/20 text-[6px] shrink-0 select-none" aria-hidden="true">&#9670;</span>
+                            </React.Fragment>
+                        ))}
+                    </div>
+                </div>
             </div>
 
             {/* ═══════════════════════════════════════════════════════
