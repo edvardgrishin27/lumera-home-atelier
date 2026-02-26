@@ -27,9 +27,13 @@ FROM nginx:alpine
 # Copy the build output to Nginx's html directory
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy custom Nginx configuration (log format + server)
+# Copy custom Nginx configuration (log format + cache + server)
 COPY nginx-log.conf /etc/nginx/conf.d/00-log.conf
+COPY nginx-cache.conf /etc/nginx/conf.d/01-cache.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Create cache directory for S3 proxy
+RUN mkdir -p /var/cache/nginx/s3
 
 # Expose port 80
 EXPOSE 80

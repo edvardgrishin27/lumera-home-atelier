@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useContent } from '../context/ContentContext';
 import SEO from '../components/SEO';
+import { mediaUrl } from '../utils/mediaUrl';
 
 const StarIcon = () => (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -281,7 +282,7 @@ const Home = () => {
                             {/* Full card is the image */}
                             <div className="aspect-[3/4] overflow-hidden bg-surface relative rounded-2xl shadow-elevated group-hover:shadow-floating transition-shadow duration-500">
                                 <img
-                                    src={product.image}
+                                    src={mediaUrl(product.image)}
                                     className="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105"
                                     alt={product.name}
                                     loading="lazy"

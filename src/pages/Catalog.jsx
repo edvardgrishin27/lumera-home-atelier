@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useContent } from '../context/ContentContext';
 import SEO from '../components/SEO';
 import RequestModal from '../components/RequestModal';
+import { mediaUrl } from '../utils/mediaUrl';
 
 /* ─── Маппинг категорий EN → RU (строится динамически из content.catalog.categories) ─── */
 const buildCategoryMap = (categories) => {
@@ -67,7 +68,7 @@ const ProductCard = ({ product, categoryMap = {} }) => {
         >
             <div className="bg-surface aspect-[4/3] overflow-hidden mb-6 relative rounded-2xl shadow-elevated group-hover:shadow-floating transition-shadow duration-500">
                 <img
-                    src={product.image}
+                    src={mediaUrl(product.image)}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105"
                     loading="lazy"

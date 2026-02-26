@@ -6,6 +6,7 @@ import { useContent } from '../context/ContentContext';
 import SEO from '../components/SEO';
 import OrderModal from '../components/OrderModal';
 import RequestModal from '../components/RequestModal';
+import { mediaUrl } from '../utils/mediaUrl';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -195,7 +196,7 @@ const StickyProductBar = ({ product, visible, onOrder }) => {
                 {/* Left: product image + name + price */}
                 <div className="flex items-center gap-4 min-w-0">
                     <img
-                        src={product.image}
+                        src={productImage}
                         alt={product.name}
                         className="w-12 h-12 rounded-xl object-cover flex-shrink-0 shadow-elevated"
                         width="48"
@@ -239,7 +240,8 @@ const ProductDetail = () => {
     const colors = product?.colors || [];
     const sizes = product?.sizes || [];
 
-    const gallery = product?.gallery || [product?.image, product?.image, product?.image, product?.image];
+    const gallery = (product?.gallery || [product?.image, product?.image, product?.image, product?.image]).map(mediaUrl);
+    const productImage = mediaUrl(product?.image);
 
     const isVideo = (url) => url && url.match(/\.(mp4|webm|ogg)$/i);
 
@@ -323,7 +325,7 @@ const ProductDetail = () => {
             <SEO
                 title={`${product.name} — купить из Китая с доставкой | Lumera Home Atelier`}
                 description={`${product.name} — купить в Lumera Home Atelier. ${product.category === 'Sofas' ? 'Дизайнерский диван' : product.category === 'Armchairs' ? 'Дизайнерское кресло' : product.category === 'Tables' ? 'Дизайнерский стол' : 'Мебель'} из Китая под заказ. Цена по запросу. Доставка по России от 45 дней.`}
-                image={product.image}
+                image={productImage}
                 url={`/product/${product.slug}`}
                 type="product"
                 breadcrumbs={[
@@ -505,7 +507,7 @@ const ProductDetail = () => {
                     )}
 
                     <div className="aspect-[3/4] overflow-hidden reveal">
-                        <img src={gallery[1] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt={`${product.name} — вид сбоку`} loading="lazy" decoding="async" width="800" height="1067" />
+                        <img src={gallery[1] || productImage} className="w-full h-full object-cover parallax-media scale-110" alt={`${product.name} — вид сбоку`} loading="lazy" decoding="async" width="800" height="1067" />
                     </div>
 
                     <div className="aspect-[3/4] bg-background p-12 flex flex-col justify-center items-center text-center reveal">
@@ -514,7 +516,7 @@ const ProductDetail = () => {
                     </div>
 
                     <div className="aspect-square md:aspect-[4/3] overflow-hidden md:col-span-2 reveal">
-                        <img src={gallery[2] || product.image} className="w-full h-full object-cover parallax-media scale-110" alt={`${product.name} — детали и текстура`} loading="lazy" decoding="async" width="1200" height="900" />
+                        <img src={gallery[2] || productImage} className="w-full h-full object-cover parallax-media scale-110" alt={`${product.name} — детали и текстура`} loading="lazy" decoding="async" width="1200" height="900" />
                     </div>
 
                 </div>
