@@ -556,6 +556,29 @@ const ProductDetail = () => {
                 </div>
             </div>
 
+            {/* ═══ CTA: Не нашли что искали? ═══ */}
+            <section className="w-full bg-background py-12 md:py-20 pb-28 md:pb-20">
+                <div className="max-w-3xl mx-auto px-6 md:px-12 text-center">
+                    <div className="relative bg-surface rounded-3xl p-8 md:p-16 overflow-hidden">
+                        <div className="w-10 h-px bg-accent mx-auto mb-6 md:mb-8" />
+                        <h2 className="text-3xl md:text-5xl font-serif font-light text-primary mb-4 md:mb-6 tracking-tight">
+                            Не нашли что искали?
+                        </h2>
+                        <p className="text-secondary font-sans text-sm md:text-lg leading-relaxed max-w-xl mx-auto mb-8 md:mb-12">
+                            У&nbsp;нас миллионы товаров доступны под заказ&nbsp;— просто напишите нам,
+                            и&nbsp;мы подберём именно то, что вам нужно
+                        </p>
+                        <Link
+                            to="/request"
+                            className="inline-flex items-center gap-3 bg-accent hover:bg-accent/85 active:scale-95 text-white px-8 md:px-10 py-4 md:py-5 rounded-full text-xs uppercase tracking-[0.18em] shadow-[0_4px_20px_rgba(196,162,101,0.3)] hover:shadow-[0_0_30px_rgba(196,162,101,0.5)] hover:-translate-y-0.5 transition-all duration-500 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
+                        >
+                            Оставить заявку
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
             {/* Mobile Fixed CTA Bottom Bar */}
             <div className="fixed bottom-0 left-0 right-0 z-[48] md:hidden bg-surface/95 backdrop-blur-xl border-t border-primary/10 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]"
                 style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
