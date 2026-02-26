@@ -170,9 +170,8 @@ const StickyProductBar = ({ product, visible, onOrder }) => {
         const measure = () => {
             const header = document.querySelector('header');
             if (header) {
-                // .bottom = distance from viewport top to header bottom edge
-                // This naturally includes safe-area, transforms, everything
-                setTopPx(header.getBoundingClientRect().bottom);
+                // Use Math.ceil to avoid sub-pixel gaps on retina/mobile screens
+                setTopPx(Math.ceil(header.getBoundingClientRect().bottom));
             }
         };
         measure();
@@ -186,7 +185,7 @@ const StickyProductBar = ({ product, visible, onOrder }) => {
 
     return (
     <div
-        className={`fixed left-0 w-full z-[45] transition-opacity duration-500 ease-out ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed left-0 w-full z-[51] transition-opacity duration-500 ease-out ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         style={{ top: `${topPx}px` }}
     >
         {/* Top accent separator */}
