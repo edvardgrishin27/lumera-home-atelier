@@ -196,7 +196,7 @@ const StickyProductBar = ({ product, visible, onOrder }) => {
                 {/* Left: product image + name + price */}
                 <div className="flex items-center gap-4 min-w-0">
                     <img
-                        src={productImage}
+                        src={mediaUrl(product.image)}
                         alt={product.name}
                         className="w-12 h-12 rounded-xl object-cover flex-shrink-0 shadow-elevated"
                         width="48"
@@ -496,7 +496,7 @@ const ProductDetail = () => {
                                 loop
                                 muted
                                 playsInline
-                                poster={product.image}
+                                poster={productImage}
                             >
                                 <source src={product.video} type="video/mp4" />
                             </video>
