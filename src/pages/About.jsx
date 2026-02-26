@@ -7,7 +7,7 @@ import SEO from '../components/SEO';
 gsap.registerPlugin(ScrollTrigger);
 
 /* ─── Карточка основателя: компактный портрет + декоративная рамка ─── */
-const FounderCard = ({ name, role, image, quote, bio, fullBio, expertise, reverse }) => {
+const FounderCard = ({ name, role, image, quote, bio, fullBio, expertise, reverse, priority = false }) => {
     const [expanded, setExpanded] = useState(false);
     const fullBioRef = useRef(null);
 
@@ -63,10 +63,13 @@ const FounderCard = ({ name, role, image, quote, bio, fullBio, expertise, revers
                                 src={image}
                                 alt={name}
                                 className="w-full h-full object-cover object-top transition-transform duration-700 ease-spring group-hover:scale-105"
-                                loading="lazy"
-                                decoding="async"
+                                loading={priority ? 'eager' : 'lazy'}
+                                fetchpriority={priority ? 'high' : 'auto'}
+                                decoding={priority ? 'sync' : 'async'}
                                 width="360"
                                 height="480"
+                                style={{ opacity: 0, transition: 'opacity 0.6s ease' }}
+                                onLoad={e => { e.target.style.opacity = '1'; }}
                             />
                         )}
                         {/* Кинематографический градиент на hover (как в каталоге) */}
@@ -256,6 +259,7 @@ const About = () => {
                     fullBio={ab.founder1FullBio}
                     expertise={ab.founder1Expertise}
                     reverse={false}
+                    priority={true}
                 />
 
                 {/* Золотой разделитель */}
@@ -293,6 +297,8 @@ const About = () => {
                                 decoding="async"
                                 width="800"
                                 height="1000"
+                                style={{ opacity: 0, transition: 'opacity 0.6s ease' }}
+                                onLoad={e => { e.target.style.opacity = '1'; }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                         </div>

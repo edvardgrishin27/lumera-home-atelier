@@ -91,13 +91,13 @@ const B2B = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-40 mb-10 md:mb-40 content-layer">
                 <div className="reveal-item group">
                     <div className="aspect-[3/2] md:aspect-[4/5] bg-surface overflow-hidden relative mb-4 md:mb-8 rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
-                        <img src={b.image1} className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105" alt="Мебель для ресторанов из Китая — интерьер с дизайнерской мебелью Lumera" loading="lazy" decoding="async" width="800" height="1000" />
+                        <img src={b.image1} className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105" alt="Мебель для ресторанов из Китая — интерьер с дизайнерской мебелью Lumera" loading="eager" fetchpriority="high" decoding="sync" width="800" height="1000" style={{ opacity: 0, transition: 'opacity 0.6s ease' }} onLoad={e => { e.target.style.opacity = '1'; }} />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     </div>
                 </div>
                 <div className="hidden md:block md:pt-40 reveal-item group">
                     <div className="aspect-[4/5] bg-surface overflow-hidden relative mb-8 rounded-2xl shadow-elevated group-hover:shadow-hover-glow transition-shadow duration-500">
-                        <img src={b.image2} className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105" alt="Мебель для офисов и коворкингов — дизайнерские решения Lumera Home Atelier" loading="lazy" decoding="async" width="800" height="1000" />
+                        <img src={b.image2} className="w-full h-full object-cover transition-transform duration-1000 ease-spring group-hover:scale-105" alt="Мебель для офисов и коворкингов — дизайнерские решения Lumera Home Atelier" loading="eager" fetchpriority="high" decoding="async" width="800" height="1000" style={{ opacity: 0, transition: 'opacity 0.6s ease' }} onLoad={e => { e.target.style.opacity = '1'; }} />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     </div>
                 </div>
