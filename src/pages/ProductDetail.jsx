@@ -164,9 +164,22 @@ const Lightbox = ({ images, activeIndex, onClose, onPrev, onNext, productName })
 };
 
 /* ─── Sticky Product Bar (appears BELOW the main header) ─── */
-const StickyProductBar = ({ product, visible, onOrder }) => (
+const StickyProductBar = ({ product, visible, onOrder }) => {
+    const [headerH, setHeaderH] = useState(0);
+    useEffect(() => {
+        const measure = () => {
+            const header = document.querySelector('header');
+            if (header) setHeaderH(header.getBoundingClientRect().height);
+        };
+        measure();
+        window.addEventListener('resize', measure);
+        return () => window.removeEventListener('resize', measure);
+    }, []);
+
+    return (
     <div
-        className={`fixed left-0 w-full z-[45] transition-all duration-500 ease-out top-[83px] md:top-[96px] ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+        className={`fixed left-0 w-full z-[45] transition-all duration-500 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+        style={{ top: headerH ? `${headerH}px` : '0px' }}
     >
         {/* Top accent separator */}
         <div className="h-px w-full bg-accent/30" />
@@ -197,7 +210,8 @@ const StickyProductBar = ({ product, visible, onOrder }) => (
             </div>
         </div>
     </div>
-);
+    );
+};
 
 const ProductDetail = () => {
     const { slug } = useParams();
