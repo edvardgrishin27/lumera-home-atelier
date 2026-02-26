@@ -27,12 +27,16 @@ const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 /* ─── Метки details, которые являются материалами ─── */
 const MATERIAL_LABELS = ['Материал каркаса', 'Обивка', 'Наполнитель', 'Материал'];
 
+/* ─── Нормализация details: объект {} → пустой массив, массив → как есть ─── */
+const normalizeDetails = (details) => Array.isArray(details) ? details : [];
+
 /* ─── Извлечение уникальных материалов из details товаров ─── */
 const extractMaterials = (products) => {
     const mats = new Set();
     products.forEach(p => {
-        if (p.details) {
-            p.details
+        const details = normalizeDetails(p.details);
+        if (details.length > 0) {
+            details
                 .filter(d => MATERIAL_LABELS.some(l => d.label.includes(l)))
                 .forEach(d => {
                     // Разбиваем значение — но аккуратно: не ломаем скобки
@@ -53,21 +57,6 @@ const extractMaterials = (products) => {
         }
     });
     return Array.from(mats).sort();
-};
-
-/* ─── Извлечение уникальных цветов ─── */
-const extractColors = (products) => {
-    const colorMap = new Map();
-    products.forEach(p => {
-        if (p.colors) {
-            p.colors.forEach(c => {
-                if (!colorMap.has(c.hex)) {
-                    colorMap.set(c.hex, c.name);
-                }
-            });
-        }
-    });
-    return Array.from(colorMap.entries()).map(([hex, name]) => ({ hex, name }));
 };
 
 /* ─── Склонение «товар/товара/товаров» ─── */
@@ -403,14 +392,12 @@ const Catalog = () => {
     const [category, setCategory] = useState('All');
     const [sort, setSort] = useState('popular');
     const [selectedMaterials, setSelectedMaterials] = useState([]);
-    const [selectedColors, setSelectedColors] = useState([]);
     const [viewMode, setViewMode] = useState('grid');
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     // ── Извлечение данных для фильтров ──
     const categories = useMemo(() => Object.keys(CATEGORY_MAP), [CATEGORY_MAP]);
     const allMaterials = useMemo(() => extractMaterials(products), [products]);
-    const allColors = useMemo(() => extractColors(products), [products]);
 
     // ── Подсчёт товаров по категориям ──
     const categoryCounts = useMemo(() => {
@@ -443,9 +430,10 @@ const Catalog = () => {
         // Материалы
         if (selectedMaterials.length > 0) {
             result = result.filter(p => {
-                if (!p.details) return false;
+                const details = normalizeDetails(p.details);
+                if (details.length === 0) return false;
                 return selectedMaterials.some(mat =>
-                    p.details.some(d => d.value.includes(mat))
+                    details.some(d => d.value.includes(mat))
                 );
             });
         }
@@ -469,7 +457,7 @@ const Catalog = () => {
         }
 
         return result;
-    }, [products, search, category, selectedMaterials, selectedColors, sort]);
+    }, [products, search, category, selectedMaterials, sort]);
 
     // ── Активные теги фильтров ──
     const activeFilters = useMemo(() => {
@@ -484,7 +472,7 @@ const Catalog = () => {
             tags.push({ type: 'search', value: search, label: `«${search}»` });
         }
         return tags;
-    }, [category, selectedMaterials, selectedColors, search, allColors]);
+    }, [category, selectedMaterials, search]);
 
     const removeFilter = useCallback((filter) => {
         switch (filter.type) {

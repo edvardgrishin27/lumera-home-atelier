@@ -172,6 +172,32 @@ const CatalogTab = () => {
                 </div>
             </div>
 
+            {/* ═══ ТЕКСТ НА КАРТОЧКЕ ТОВАРА ═══ */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">✏️ Текст на странице товара</h3>
+                <p className="text-xs text-gray-400 mb-6">Заголовок и подпись в секции «В интерьере» на каждой карточке товара.</p>
+                <div className="space-y-4">
+                    <div>
+                        <label className="text-[10px] uppercase tracking-widest text-gray-400 block mb-2 font-semibold">Заголовок</label>
+                        <input
+                            value={content.catalog?.interiorQuote || ''}
+                            onChange={(e) => updateContentPage('catalog', 'interiorQuote', e.target.value)}
+                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:border-blue-400 outline-none transition-colors"
+                            placeholder="Детали создают совершенство"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-[10px] uppercase tracking-widest text-gray-400 block mb-2 font-semibold">Подпись</label>
+                        <input
+                            value={content.catalog?.interiorSubtext || ''}
+                            onChange={(e) => updateContentPage('catalog', 'interiorSubtext', e.target.value)}
+                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:border-blue-400 outline-none transition-colors"
+                            placeholder="Каждый шов, каждый изгиб выверен с точностью до миллиметра."
+                        />
+                    </div>
+                </div>
+            </div>
+
             {/* ═══ ПОРЯДОК ТОВАРОВ ═══ */}
             <h3 className="text-sm font-semibold text-gray-700 mb-4">📦 Порядок товаров</h3>
             <div className="space-y-6">

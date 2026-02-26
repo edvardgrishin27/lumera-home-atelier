@@ -434,7 +434,7 @@ const ProductDetail = () => {
                             </div>
 
                             {/* 3. Characteristics */}
-                            {product.details && product.details.length > 0 && (
+                            {Array.isArray(product.details) && product.details.length > 0 && (
                                 <div className="space-y-3 pb-6 mb-6 border-b border-primary/5">
                                     <div className="text-[10px] uppercase tracking-[0.2em] text-secondary">Характеристики</div>
                                     {product.details.map((detail, i) => (
@@ -443,6 +443,14 @@ const ProductDetail = () => {
                                             <span className="font-serif text-primary text-right">{detail.value}</span>
                                         </div>
                                     ))}
+                                </div>
+                            )}
+
+                            {/* Specs (краткие размеры) */}
+                            {product.specs && (
+                                <div className="pb-6 mb-6 border-b border-primary/5">
+                                    <div className="text-[10px] uppercase tracking-[0.2em] text-secondary mb-2">Размеры</div>
+                                    <span className="font-serif text-primary">{product.specs}</span>
                                 </div>
                             )}
 
@@ -501,8 +509,8 @@ const ProductDetail = () => {
                     </div>
 
                     <div className="aspect-[3/4] bg-background p-12 flex flex-col justify-center items-center text-center reveal">
-                        <h3 className="text-3xl font-serif mb-4 italic">"Детали создают совершенство"</h3>
-                        <p className="opacity-50 text-sm max-w-xs">Каждый шов, каждый изгиб выверен с точностью до миллиметра.</p>
+                        <h3 className="text-3xl font-serif mb-4 italic">"{content.catalog?.interiorQuote || 'Детали создают совершенство'}"</h3>
+                        <p className="opacity-50 text-sm max-w-xs">{content.catalog?.interiorSubtext || 'Каждый шов, каждый изгиб выверен с точностью до миллиметра.'}</p>
                     </div>
 
                     <div className="aspect-square md:aspect-[4/3] overflow-hidden md:col-span-2 reveal">

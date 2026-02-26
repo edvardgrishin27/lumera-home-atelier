@@ -27,7 +27,8 @@ const ProductsTab = () => {
     };
 
     const saveEdit = () => {
-        updateProduct(editingId, editData);
+        const newSlug = generateSlug(editData.name);
+        updateProduct(editingId, { ...editData, slug: newSlug });
         setEditingId(null);
     };
 
