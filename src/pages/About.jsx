@@ -277,63 +277,80 @@ const About = () => {
             </div>
 
             {/* ═══════════════════════════════════════════════════════
-                СЕКЦИЯ: О КОМПАНИИ (оригинальный контент)
+                СЕКЦИЯ: О КОМПАНИИ — картинка слева, весь текст справа
             ═══════════════════════════════════════════════════════ */}
             <div className="max-w-[1600px] mx-auto content-layer mb-0">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-start">
 
-                {/* Заголовок — полная ширина */}
-                <div className="mb-10 md:mb-16 reveal">
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-4 block">{ab.title}</span>
-                    <h1 className="text-4xl md:text-8xl font-serif font-thin mb-4 md:mb-6 text-primary tracking-tightest leading-[0.9]">
-                        Искусство<br />жить
-                    </h1>
-                    <p className="text-lg md:text-2xl font-serif max-w-xl text-primary/80 leading-relaxed">
-                        {ab.subtitle}
-                    </p>
-                </div>
-
-                {/* Контент — два раздела рядом */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-20">
-
-                    {/* Философия — с изображением */}
-                    <div className="lg:col-span-7 reveal">
-                        <div className="aspect-[4/3] bg-surface overflow-hidden relative mb-4 md:mb-8 rounded-2xl shadow-elevated transition-shadow duration-500 hover:shadow-hover-glow cursor-crosshair">
-                            <img src={ab.image1} className="w-full h-full object-cover parallax-media scale-110" alt="Ателье Lumera Home Atelier — мастерская дизайнерской мебели" loading="lazy" decoding="async" width="800" height="600" />
+                    {/* Левая колонка — только изображение */}
+                    <div className="lg:col-span-5 reveal">
+                        <div className="aspect-[4/5] bg-surface overflow-hidden relative rounded-2xl shadow-elevated transition-shadow duration-500 hover:shadow-hover-glow cursor-crosshair">
+                            <img
+                                src={ab.image1}
+                                className="w-full h-full object-cover parallax-media scale-110"
+                                alt="Ателье Lumera Home Atelier — мастерская дизайнерской мебели"
+                                loading="lazy"
+                                decoding="async"
+                                width="800"
+                                height="1000"
+                            />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                         </div>
-                        <h2 className="text-3xl font-serif mb-4 text-primary">Философия</h2>
-                        <p className="text-sm text-secondary leading-relaxed">
-                            {ab.description1}
-                        </p>
                     </div>
 
-                    {/* Подход — текстовый, выровнен по низу */}
-                    <div className="lg:col-span-5 reveal flex flex-col justify-end pb-0 md:pb-4">
-                        <h2 className="text-3xl font-serif mb-4 text-primary">Подход</h2>
-                        <p className="text-sm text-secondary leading-relaxed">
-                            {ab.description2}
-                        </p>
-                    </div>
+                    {/* Правая колонка — весь текст сверху вниз */}
+                    <div className="lg:col-span-7 flex flex-col gap-8 md:gap-10 reveal">
 
+                        {/* Заголовок */}
+                        <div>
+                            <span className="text-[10px] uppercase tracking-[0.3em] text-accent mb-3 block">{ab.title}</span>
+                            <h1 className="text-4xl md:text-6xl xl:text-7xl font-serif font-thin mb-4 text-primary tracking-tightest leading-[0.9]">
+                                Искусство<br />жить
+                            </h1>
+                            <p className="text-lg md:text-xl font-serif text-primary/70 leading-relaxed">
+                                {ab.subtitle}
+                            </p>
+                        </div>
+
+                        {/* Разделитель */}
+                        <div className="w-16 h-px bg-accent/30" />
+
+                        {/* Философия */}
+                        <div>
+                            <h2 className="text-xl md:text-2xl font-serif mb-3 text-primary">Философия</h2>
+                            <p className="text-sm text-secondary leading-[1.8]">
+                                {ab.description1}
+                            </p>
+                        </div>
+
+                        {/* Подход */}
+                        <div>
+                            <h2 className="text-xl md:text-2xl font-serif mb-3 text-primary">Подход</h2>
+                            <p className="text-sm text-secondary leading-[1.8]">
+                                {ab.description2}
+                            </p>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
-            {/* Статистика — полноширинная полоска */}
-            <div className="border-t border-primary/10 reveal">
-                <div className="max-w-[1600px] mx-auto flex items-center justify-center md:justify-start gap-8 md:gap-20 py-6 md:py-10">
-                    <div className="text-center md:text-left">
+            {/* Статистика — полоска по центру */}
+            <div className="border-t border-primary/10 reveal mt-10 md:mt-16">
+                <div className="max-w-[1600px] mx-auto flex items-center justify-center gap-12 md:gap-24 py-8 md:py-12">
+                    <div className="text-center">
                         <span className="block text-2xl md:text-4xl font-serif text-primary mb-1">{ab.stats1Value}</span>
-                        <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats1Label}</span>
+                        <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-secondary">{ab.stats1Label}</span>
                     </div>
-                    <div className="w-px h-10 bg-primary/10 hidden md:block"></div>
-                    <div className="text-center md:text-left">
+                    <div className="w-px h-10 bg-primary/10" />
+                    <div className="text-center">
                         <span className="block text-2xl md:text-4xl font-serif text-primary mb-1">{ab.stats2Value}</span>
-                        <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats2Label}</span>
+                        <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-secondary">{ab.stats2Label}</span>
                     </div>
-                    <div className="w-px h-10 bg-primary/10 hidden md:block"></div>
-                    <div className="text-center md:text-left">
+                    <div className="w-px h-10 bg-primary/10" />
+                    <div className="text-center">
                         <span className="block text-2xl md:text-4xl font-serif text-primary mb-1">{ab.stats3Value}</span>
-                        <span className="text-[8px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-secondary">{ab.stats3Label}</span>
+                        <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-secondary">{ab.stats3Label}</span>
                     </div>
                 </div>
             </div>
