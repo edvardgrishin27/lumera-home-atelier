@@ -346,7 +346,7 @@ const ProductCard = ({ product, viewMode, categoryMap = {} }) => {
                     <span className="text-[10px] text-secondary uppercase tracking-widest mb-2">{categoryMap[product.category] || product.category}</span>
                     <h3 className="text-xl md:text-2xl font-serif text-primary group-hover:text-accent transition-colors duration-300 mb-2 truncate">{product.name}</h3>
                     <p className="text-sm text-secondary leading-relaxed mb-3 line-clamp-2 hidden md:block">{product.description}</p>
-                    <span className="text-lg font-serif text-primary/90">По запросу</span>
+                    <span className="text-lg font-serif text-primary/90">Цена по запросу</span>
                 </div>
             </Link>
         );
@@ -372,7 +372,7 @@ const ProductCard = ({ product, viewMode, categoryMap = {} }) => {
             <div className="pt-4 px-2">
                 <div className="flex justify-between items-baseline mb-2">
                     <h3 className="text-2xl font-serif text-primary group-hover:text-accent transition-colors duration-300 ease-spring">{product.name}</h3>
-                    <span className="text-lg font-serif text-primary/90">По запросу</span>
+                    <span className="text-lg font-serif text-primary/90">Цена по запросу</span>
                 </div>
                 <div className="flex flex-col gap-2">
                     <span className="text-[10px] text-secondary uppercase tracking-widest">{categoryMap[product.category] || product.category}</span>

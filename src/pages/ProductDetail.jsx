@@ -203,7 +203,7 @@ const StickyProductBar = ({ product, visible, onOrder }) => {
                     />
                     <div className="min-w-0">
                         <p className="text-sm font-serif text-primary truncate leading-tight">{product.name}</p>
-                        <p className="text-base font-serif text-accent font-medium">По запросу</p>
+                        <p className="text-base font-serif text-accent font-medium">Цена по запросу</p>
                     </div>
                 </div>
 
@@ -430,7 +430,7 @@ const ProductDetail = () => {
                             <div className="border-b border-primary/10 pb-6 mb-6">
                                 <h1 className="text-4xl md:text-5xl font-serif mb-3 leading-tight tracking-tightest text-primary">{product.name}</h1>
                                 <p className="text-xs uppercase tracking-[0.2em] text-secondary mb-4">{product.category}</p>
-                                <p className="text-2xl font-serif text-accent">По запросу</p>
+                                <p className="text-2xl font-serif text-accent">Цена по запросу</p>
                             </div>
 
                             {/* 3. Characteristics */}

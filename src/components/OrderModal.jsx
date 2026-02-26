@@ -130,7 +130,7 @@ const OrderModal = ({ isOpen, onClose, product }) => {
                                     />
                                     <div className="min-w-0">
                                         <p className="text-sm font-serif text-primary truncate">{product.name}</p>
-                                        <p className="text-sm font-serif text-accent">По запросу</p>
+                                        <p className="text-sm font-serif text-accent">Цена по запросу</p>
                                     </div>
                                 </div>
 
