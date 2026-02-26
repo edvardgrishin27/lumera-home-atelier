@@ -835,6 +835,55 @@ app.post('/api/presign', authMiddleware, adminRateLimit, async (c) => {
     }
 });
 
+// ─── POST /api/upload — Server-side S3 upload (bypasses CORS) ───
+app.post('/api/upload', authMiddleware, adminRateLimit, async (c) => {
+    try {
+        const formData = await c.req.formData();
+        const file = formData.get('file');
+        const folder = formData.get('folder') || 'products';
+
+        if (!file || !(file instanceof File)) {
+            return c.json({ error: 'No file provided' }, 400);
+        }
+
+        if (!ALLOWED_FOLDERS.includes(folder)) {
+            return c.json({ error: `Invalid folder. Allowed: ${ALLOWED_FOLDERS.join(', ')}` }, 400);
+        }
+
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            return c.json({ error: `Invalid content type. Allowed: ${ALLOWED_TYPES.join(', ')}` }, 400);
+        }
+
+        const maxSize = file.type.startsWith('video/') ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+            return c.json({ error: `File too large. Max: ${maxSize / 1024 / 1024}MB` }, 400);
+        }
+
+        const sanitized = sanitizeFilename(file.name);
+        const timestamp = Date.now();
+        const key = `${S3_PREFIX}/${folder}/${timestamp}-${sanitized}`;
+
+        const buffer = Buffer.from(await file.arrayBuffer());
+
+        const command = new PutObjectCommand({
+            Bucket: S3_BUCKET,
+            Key: key,
+            ContentType: file.type,
+            Body: buffer,
+        });
+
+        await s3.send(command);
+
+        const publicUrl = `https://s3.twcstorage.ru/${S3_BUCKET}/${key}`;
+        log.presign.info('Server-side upload complete', { folder, filename: sanitized, publicUrl, size: file.size });
+
+        return c.json({ publicUrl });
+    } catch (err) {
+        log.presign.error('Server-side upload failed', { error: err.message });
+        return c.json({ error: 'Upload failed: ' + err.message }, 500);
+    }
+});
+
 // ─── Initialize DB and start server ───
 async function start() {
     try {

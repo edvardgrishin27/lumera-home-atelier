@@ -59,7 +59,7 @@ async function optimizeImage(file, maxDim = 2000, quality = 0.85) {
 }
 
 /**
- * Загрузить файл на S3
+ * Загрузить файл на S3 через серверный proxy
  * @param {File} file - Файл для загрузки
  * @param {string} folder - Папка в S3: products, pages, blog, video, local
  * @returns {Promise<string>} - Public URL загруженного файла
@@ -68,41 +68,23 @@ export async function uploadFile(file, folder = 'pages') {
     // 1. Оптимизация (только для изображений)
     const optimized = await optimizeImage(file);
 
-    // 2. Получить presigned URL
-    const presignRes = await fetch('/api/presign', {
+    // 2. Загрузить через серверный proxy (обходит CORS)
+    const formData = new FormData();
+    formData.append('file', optimized);
+    formData.append('folder', folder);
+
+    const res = await fetch('/api/upload', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            ...getAuthHeaders(),
-        },
-        body: JSON.stringify({
-            filename: optimized.name,
-            folder,
-            contentType: optimized.type,
-        }),
+        headers: getAuthHeaders(),
+        body: formData,
     });
 
-    if (!presignRes.ok) {
-        const err = await presignRes.text();
-        throw new Error(`Presign failed: ${err}`);
+    if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`Upload failed: ${err}`);
     }
 
-    const { uploadUrl, publicUrl } = await presignRes.json();
-
-    // 3. Загрузить напрямую на S3
-    const uploadRes = await fetch(uploadUrl, {
-        method: 'PUT',
-        body: optimized,
-        headers: {
-            'Content-Type': optimized.type,
-        },
-    });
-
-    if (!uploadRes.ok) {
-        throw new Error(`S3 upload failed: ${uploadRes.status}`);
-    }
-
-    // 4. Вернуть постоянный public URL
+    const { publicUrl } = await res.json();
     return publicUrl;
 }
 
