@@ -936,6 +936,27 @@ async function start() {
         // Seed if empty
         await seed();
 
+        // ─── Auto-fix slugs: regenerate from product name if stale ───
+        try {
+            const allProducts = await pool.query('SELECT id, slug, data FROM products');
+            for (const row of allProducts.rows) {
+                const name = row.data?.name;
+                if (!name) continue;
+                const correctSlug = generateSlug(name);
+                if (correctSlug && correctSlug !== row.slug) {
+                    // Check for uniqueness before updating
+                    const dup = await pool.query('SELECT id FROM products WHERE slug = $1 AND id != $2', [correctSlug, row.id]);
+                    if (dup.rows.length === 0) {
+                        await pool.query('UPDATE products SET slug = $1, updated_at = NOW() WHERE id = $2', [correctSlug, row.id]);
+                        log.products.info('Auto-fixed slug', { id: row.id, oldSlug: row.slug, newSlug: correctSlug });
+                    }
+                }
+            }
+            invalidateCache();
+        } catch (err) {
+            log.products.warn('Slug auto-fix failed (non-fatal)', { error: err.message });
+        }
+
         // Log auth status
         if (ADMIN_PASSWORD_HASH && TOTP_SECRET) {
             log.auth.info('Server-side authentication configured');
