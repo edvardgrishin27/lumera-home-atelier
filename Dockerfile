@@ -24,6 +24,9 @@ RUN npm run build
 # Stage 2: Serve the application with Nginx
 FROM nginx:alpine
 
+# Install CA certificates for outgoing HTTPS proxy (S3)
+RUN apk add --no-cache ca-certificates
+
 # Copy the build output to Nginx's html directory
 COPY --from=build /app/dist /usr/share/nginx/html
 
