@@ -296,9 +296,6 @@ function validateProduct(data) {
     if (!data.category || typeof data.category !== 'string') {
         errors.push('category is required');
     }
-    if (data.price === undefined || data.price === null || typeof data.price !== 'number' || data.price <= 0) {
-        errors.push('price must be a positive number');
-    }
     if (!data.slug || typeof data.slug !== 'string' || data.slug.trim().length === 0) {
         errors.push('slug is required');
     }

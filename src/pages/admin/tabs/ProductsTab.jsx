@@ -13,7 +13,7 @@ const ProductsTab = () => {
     const [showAdd, setShowAdd] = useState(false);
 
     const [newProduct, setNewProduct] = useState({
-        name: '', category: categories[0]?.key || 'Sofas', price: 0, image: '', description: '', specs: '', video: '',
+        name: '', category: categories[0]?.key || 'Sofas', image: '', description: '', specs: '', video: '',
         details: {}, gallery: []
     });
 
@@ -50,8 +50,8 @@ const ProductsTab = () => {
         if (!newProduct.name) return;
         const slug = generateSlug(newProduct.name);
         if (!slug) return;
-        addProduct({ ...newProduct, slug, price: parseInt(newProduct.price) || 0 });
-        setNewProduct({ name: '', category: 'Sofas', price: 0, image: '', description: '', specs: '', video: '', details: {}, gallery: [] });
+        addProduct({ ...newProduct, slug });
+        setNewProduct({ name: '', category: 'Sofas', image: '', description: '', specs: '', video: '', details: {}, gallery: [] });
         setShowAdd(false);
     };
 
@@ -80,7 +80,6 @@ const ProductsTab = () => {
                                 {categories.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
                             </select>
                         </div>
-                        <Field label="Цена (₽)" value={newProduct.price} onChange={v => setNewProduct({ ...newProduct, price: v })} type="number" />
                         <FileUpload label="Фото" value={newProduct.image} onChange={v => setNewProduct({ ...newProduct, image: v })} folder="products" />
                         <div className="md:col-span-2">
                             <Field label="Описание" value={newProduct.description} onChange={v => setNewProduct({ ...newProduct, description: v })} type="textarea" />
@@ -125,7 +124,6 @@ const ProductsTab = () => {
                                             )}
                                         </select>
                                     </div>
-                                    <Field label="Цена (₽)" value={editData.price} onChange={v => setEditData({ ...editData, price: parseInt(v) || 0 })} type="number" />
                                     <FileUpload label="Главное фото" value={editData.image} onChange={v => setEditData({ ...editData, image: v })} folder="products" />
                                     <div className="md:col-span-2">
                                         <Field label="Описание" value={editData.description} onChange={v => setEditData({ ...editData, description: v })} type="textarea" rows={4} />
@@ -153,7 +151,7 @@ const ProductsTab = () => {
                                 <img src={product.image} alt="" className="w-16 h-16 object-cover rounded-full bg-gray-100 flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <h3 className="font-medium text-gray-900 truncate">{product.name}</h3>
-                                    <p className="text-xs text-gray-500">{categories.find(c => c.key === product.category)?.label || product.category} · {product.price.toLocaleString()} ₽</p>
+                                    <p className="text-xs text-gray-500">{categories.find(c => c.key === product.category)?.label || product.category}</p>
                                 </div>
                                 <div className="flex gap-2 flex-shrink-0">
                                     <button onClick={() => startEdit(product)} className="text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-full text-sm transition-colors">Изменить</button>
